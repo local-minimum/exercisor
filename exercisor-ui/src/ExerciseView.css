@@ -1,0 +1,33 @@
+table {
+  margin: 6px 2vw;
+}
+
+td, th {
+  padding: 4px 12px;
+  text-align: left;
+}
+
+th {
+}
+
+td {
+  border: 1px solid #666;
+}
+
+tr:nth-child(even) {
+  background-color: #bbb;
+}
+
+.small-input {
+  width: 5em;
+}
+
+.year-summary {
+  margin-left: 6px;
+}
+
+.action-btn {
+  padding: 3px;
+  border-radius: 2px;
+  font-size: 60%;
+}

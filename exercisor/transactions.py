@@ -36,7 +36,7 @@ def get_all_summaries(db: Database, user: str):
         {
             "id": str(doc["_id"]),
             "user": doc["user"],
-            "date": doc['date'].isoformat(),
+            "date": doc['date'].date().isoformat(),
             "calories": doc.get("summary", {}).get("calories"),
             "distance": doc.get("summary", {}).get("distance"),
             "duration": doc.get("summary", {}).get("duration"),

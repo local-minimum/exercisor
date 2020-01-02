@@ -10,6 +10,21 @@ function makeActionCreator(type, ...argNames) {
 
 export const SET_NAME = 'SET_NAME';
 export const SET_EVENTS = 'SET_EVENTS';
-
+export const SET_YEARS = 'SET_YEARS';
+export const CLEAR_ENTRY = 'CLEAR_ENTRY';
+export const SET_ENTRY_DATE = 'SET_ENTRY_DATE';
+export const SET_ENTRY_DISTANCE = 'SET_ENTRY_DISTANCE';
+export const SET_ENTRY_DURATION = 'SET_ENTRY_DURATION';
+export const SET_ENTRY_CALORIES = 'SET_ENTRY_CALORIES';
+export const SET_ENTRY = 'SET_ENTRY';
+export const SET_EDITKEY = 'SET_EDITKEY';
 export const setName = makeActionCreator(SET_NAME, 'name');
 export const setEvents = makeActionCreator(SET_EVENTS, 'events');
+export const setYears = makeActionCreator(SET_YEARS, 'years');
+export const setEntryDate = makeActionCreator(SET_ENTRY_DATE , 'date');
+export const setEntryDuration = makeActionCreator(SET_ENTRY_DURATION, 'duration');
+export const setEntryDistance = makeActionCreator(SET_ENTRY_DISTANCE, 'distance');
+export const setEntryCalories = makeActionCreator(SET_ENTRY_CALORIES, 'calories');
+export const setEntry = makeActionCreator(SET_ENTRY, 'entry');
+export const clearEntry = makeActionCreator(CLEAR_ENTRY);
+export const setEditKey = makeActionCreator(SET_EDITKEY, 'key');
