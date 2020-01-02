@@ -1,7 +1,16 @@
-import React from 'react';
+import { connect } from 'react-redux';
+import ExerciseView from './ExerciseView';
+import { loadEvents } from './redux/thunks';
 
-function Temp() {
-  return <p className="App-main-item">Here be stuff..</p>;
-}
+const mapStateToProps = (state, ownProps) => ({
+  excercises: state.events.length,
+  events: state.events,
+  name: ownProps.match.params.name,
+  userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
+});
 
-export default Temp;
+const mapDispatchToProps = dispatch => ({
+  onReloadUser: (user, year) => dispatch(loadEvents(user, year)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

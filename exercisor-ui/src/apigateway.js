@@ -1,9 +1,8 @@
-import jQuery from 'jQuery';
+import $ from 'jquery';
 
-BASE_URL = '//exercisor/api';
-BASE_PORT = 8081
+const BASE_URL = '/exercisor/api';
 
-const get_user_list = (user, editKey) => {
-  return jQuery
+export const getUserList = (user, editKey) => {
+  return $
     .getJSON(`${BASE_URL}/${user}?edit-key=${editKey}`);
 }
