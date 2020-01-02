@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  api:
+    build: exercisor/
+    ports: ["5000"]
+    environment:
+      - EXERCISOR_MONGO_HOST=mongodb
+    depends_on:
+      - mongodb
+    restart: "unless-stopped"
+
+  ui:
+    build: exercisor-ui/
+    ports: ["8081"]
+    restart: "unless-stopped"
+
+  mongodb:
+    image: mongo:3.4
+    volumes:
+      - mongo-data:/data/db
+    restart: "unless-stopped"
+
+volumes:
+  mongo-data:
