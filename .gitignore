@@ -1,3 +1,4 @@
 /data
 /run_mongo.bat
 /.idea
+__pycache__
