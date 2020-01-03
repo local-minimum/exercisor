@@ -9,7 +9,7 @@ function NoUserHeader(props) {
     if (e.key === 'Enter') {
       const { url } = props.match;
       const prefix = url.endsWith('/') ? url : `${url}/`
-      props.history.push(`${prefix}${e.target.value}`);
+      props.history.push(`${prefix}${e.target.value.toLocaleLowerCase()}`);
     }
   }
   return  (
