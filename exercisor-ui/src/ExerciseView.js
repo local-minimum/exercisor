@@ -27,7 +27,7 @@ class ExerciseView extends React.Component {
       const oneDay = 1000 * 60 * 60 * 24;
       const stats = {distance: 0, events: events.length, periodStart: 0, periodEnd: 0};
       events.forEach(evt => {
-        stats.distance != null && stats.distance += evt.distance;
+        stats.distance = stats.distance += (evt.distance == null ? 0 : evt.distance);
         stats.periodStart = Math.min(stats.periodStart, new Date(evt.date).getTime());
         stats.periodEnd = Math.max(stats.periodEnd, new Date(evt.date).getTime());
       });
