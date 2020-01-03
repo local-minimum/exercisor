@@ -30,11 +30,15 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Switch>
+          <Route path="/exercisor" component={NoUserHeader} />
+          <Route path="/exercisor/:name" component={UserHeader} />
           <Route path="/:name" component={UserHeader} />
           <Route path="/" component={NoUserHeader} />
         </Switch>
         <div className="App-main">
           <Switch>
+            <Route path="/exercisor" component={null} />
+            <Route path="/exercisor/:name" component={ExerciseContainer} />
             <Route path="/:name" component={ExerciseContainer} />
           </Switch>
         </div>
