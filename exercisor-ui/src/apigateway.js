@@ -23,10 +23,17 @@ const jsonRequest = (url, data, type='POST') => {
     .catch(ajaxErrorHandler);
 }
 
+
+const str2minutes = (str) => {
+  const arr = str.split(":");
+  if (arr.length === 1) return str;
+  return Number(arr[0]) + Number(arr[1]) / 60;
+}
+
 export const putEvent = (user, editKey, evt) => {
   const data = {
     date: evt.date,
-    duration: Number(evt.duration),
+    duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
   };
@@ -40,7 +47,7 @@ export const putEvent = (user, editKey, evt) => {
 export const postEvent = (user, id, editKey, evt) => {
   const data = {
     date: evt.date,
-    duration: Number(evt.duration),
+    duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
   };

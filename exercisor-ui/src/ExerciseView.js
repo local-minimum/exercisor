@@ -1,6 +1,15 @@
 import React from 'react';
 import './ExerciseView.css'
 
+const minutes2str = (minutes) => {
+    const whole = Math.round(minutes);
+    if (minutes === whole) {
+        return `${minutes}`;
+    }
+    const seconds = Math.round((minutes - whole) * 60);
+    return `${minutes}:${seconds}`;
+}
+
 class ExerciseView extends React.Component {
   componentDidMount() {
     const { onReloadUser, name } = this.props;
@@ -53,7 +62,7 @@ class ExerciseView extends React.Component {
       <tr key={event.id}>
         <td>{event.date} {btns}</td>
         <td>{event.distance}</td>
-        <td>{event.duration}</td>
+        <td>{minutes2str(event.duration)}</td>
         <td>{event.calories}</td>
         <td>CrossTrainer</td>
       </tr>
@@ -85,7 +94,7 @@ class ExerciseView extends React.Component {
                 <th>Datum</th>
                 <th>Distans [km]</th>
                 <th>Tid [min]</th>
-                <th>Kalorier</th>
+                <th>Energi [kcal]</th>
                 <th>Typ</th>
               </tr>
             </thead>
