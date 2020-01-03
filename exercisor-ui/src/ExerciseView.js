@@ -68,7 +68,7 @@ class ExerciseView extends React.Component {
         settings, onListAll,
       } = this.props;
       const eventRows = events
-        .slice(Math.max(settings.listAll ? 0 : events.length - 5, 0))
+        .slice(0, Math.max(settings.listAll ? events.length, 5))
         .map(evt => this.renderTableRow(evt, onSetEntry, onRemoveEntry, editKey.length > 0));
       const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
       const saveBtn = canSave ? <input type='button' className='small-input' value="Spara" onClick={onSave}/> : null;
