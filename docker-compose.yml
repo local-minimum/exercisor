@@ -14,6 +14,7 @@ services:
     restart: "unless-stopped"
 
   ui:
+    ports: ["5013:4000"]
     build: exercisor-ui/
     restart: "unless-stopped"
 
