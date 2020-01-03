@@ -25,9 +25,13 @@ class ExerciseView extends React.Component {
         .map(([year, count]) => this.renderYear(year, count));
 
       const oneDay = 1000 * 60 * 60 * 24;
-      const stats = {distance: 0, events: events.length};
-      events.forEach(evt => stats.distance += evt.distance);
-      const timeSpan = events.length > 0 ? Math.floor((new Date(events[0].date) - new Date(events[events.length - 1].date)) / oneDay + 1) : 0;
+      const stats = {distance: 0, events: events.length, periodStart: 0, periodEnd: 0};
+      events.forEach(evt => {
+        stats.distance != null && stats.distance += evt.distance;
+        stats.periodStart = Math.min(stats.periodStart, new Date(evt.date).getTime());
+        stats.periodEnd = Math.max(stats.periodEnd, new Date(evt.date).getTime());
+      });
+      const timeSpan = events.length > 0 ? Math.floor((stats.periodEnd - stats.periodStart) / oneDay) + 1 : 0;
       return (
         <div>
           <h2>Sammanställning</h2>
@@ -62,7 +66,6 @@ class ExerciseView extends React.Component {
       } = this.props;
       const eventRows = events
         .slice(Math.max(events.length - 5, 0))
-        .reverse()
         .map(evt => this.renderTableRow(evt, onSetEntry, onRemoveEntry, editKey.length > 0));
       const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
       const saveBtn = canSave ? <input type='button' className='small-input' value="Spara" onClick={onSave}/> : null;
