@@ -6,7 +6,11 @@ import './App.css';
 
 function NoUserHeader(props) {
   const onLinkEnter = (e) => {
-    if (e.key === 'Enter') props.history.push(`/${e.target.value}`);
+    if (e.key === 'Enter') {
+      const { url } = props.match;
+      const prefix = url.endsWith('/') ? url : `${url}/`
+      props.history.push(`${prefix}${e.target.value}`);
+    }
   }
   return  (
     <header className="App-header header-only">
@@ -30,16 +34,16 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Switch>
-          <Route path="/exercisor" component={NoUserHeader} />
-          <Route path="/exercisor/:name" component={UserHeader} />
-          <Route path="/:name" component={UserHeader} />
-          <Route path="/" component={NoUserHeader} />
+          <Route exact path="/exercisor" component={NoUserHeader} />
+          <Route exact path="/exercisor/:name" component={UserHeader} />
+          <Route exact path="/:name" component={UserHeader} />
+          <Route exact path="/" component={NoUserHeader} />
         </Switch>
         <div className="App-main">
           <Switch>
-            <Route path="/exercisor" component={null} />
-            <Route path="/exercisor/:name" component={ExerciseContainer} />
-            <Route path="/:name" component={ExerciseContainer} />
+            <Route exact path="/exercisor" component={null} />
+            <Route exact path="/exercisor/:name" component={ExerciseContainer} />
+            <Route exact path="/:name" component={ExerciseContainer} />
           </Switch>
         </div>
       </BrowserRouter>
