@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function ExerciseYears({ years, match }) {
-    const path = match.path.split('/')
-    console.log(path, match);
+    const path = match.url.split('/')
     const prefix = path.slice(0, path.indexOf(match.params.name) + 1).join('/')
     const yearsSpans = Object
       .entries(years)
