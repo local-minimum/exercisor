@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import ExerciseContainer from './ExerciseContainer';
+import ExerciseContainer from './containers/ExerciseContainer';
 import './App.css';
 
 

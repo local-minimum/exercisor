@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
-import ExerciseView from './ExerciseView';
-import { loadEvents, saveEvent, removeEvent } from './redux/thunks';
+import ExerciseView from '../components/ExerciseView';
+import { loadEvents, saveEvent, removeEvent } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEditKey, setEntry, settingListAll,
-} from './redux/actions';
+} from '../redux/actions';
 
 const date2year = (date) => Number(date.split("-")[0])
 
