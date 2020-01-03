@@ -3,7 +3,7 @@ WORKDIR /app
 RUN ["pip", "install", "gunicorn", "pipenv"]
 COPY "Pipfile" "Pipfile"
 RUN ["pipenv", "install", "--system"]
-MKDIR "exercisor"
+RUN ["mkdir", "exercisor"]
 COPY "*.py" "exercisor"
 ENV GUNICORN_CMD_ARGS="--bind=0.0.0.0:5000"
 EXPOSE 5000
