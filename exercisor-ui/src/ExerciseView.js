@@ -32,7 +32,7 @@ class ExerciseView extends React.Component {
         <div>
           <h2>Sammanställning</h2>
           <div>{yearsSpans}</div>
-          <div>Totalt {stats.distance} km och {stats.events} pass. Hållt på i {timeSpan} dagar, {(stats.events / timeSpan / 7).toFixed(2)} pass i veckan.</div>
+          <div>Totalt {stats.distance} km och {stats.events} pass. Hållt på i {timeSpan} dagar, {(stats.events / timeSpan * 7).toFixed(2)} pass i veckan.</div>
         </div>
       );
   }
