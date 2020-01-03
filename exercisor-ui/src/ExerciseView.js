@@ -27,7 +27,7 @@ class ExerciseView extends React.Component {
       const oneDay = 1000 * 60 * 60 * 24;
       const stats = {distance: 0, events: events.length};
       events.forEach(evt => stats.distance += evt.distance);
-      const timeSpan = events.length > 0 ? Math.floor((new Date(events[events.length - 1].date) - new Date(events[0].date)) / oneDay + 1) : 0;
+      const timeSpan = events.length > 0 ? Math.floor((new Date(events[0].date) - new Date(events[events.length - 1].date)) / oneDay + 1) : 0;
       return (
         <div>
           <h2>Sammanställning</h2>
