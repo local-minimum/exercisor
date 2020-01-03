@@ -67,15 +67,25 @@ class ListUser(Resource):
 
 
 def may_view(user, edit_key):
-    settings = transactions.get_user_settings(db(), user)
-    if settings['public']:
-        return True
-    return pwd_hash(edit_key) == settings['edit-key-hash']
+    try:
+        settings = transactions.get_user_settings(db(), user)
+    except DatabaseError:
+        abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
+    else:
+        if settings['public']:
+            return True
+        return pwd_hash(edit_key) == settings['edit-key-hash']
+    return False
 
 
 def may_edit(user, edit_key):
-    settings = transactions.get_user_settings(db(), user)
-    return pwd_hash(edit_key) == settings['edit-key-hash']
+    try:
+        settings = transactions.get_user_settings(db(), user)
+    except DatabaseError:
+        abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
+    else:
+        return pwd_hash(edit_key) == settings['edit-key-hash']
+    return False
 
 
 class ListUserEvents(Resource):
