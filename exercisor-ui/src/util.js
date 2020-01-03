@@ -10,9 +10,10 @@ export const filterEvents = (events, year) => {
 }
 
 export const events2timeSeries = (events) => {
+  console.log(events);
   const data = {
     columns: ["index", "duration", "distance", "calories", "type"],
-    points: events.map(evt => [
+    points: events.slice().reverse().map(evt => [
       evt.date,
       evt.duration,
       evt.distance,

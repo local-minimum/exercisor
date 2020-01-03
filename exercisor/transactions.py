@@ -2,6 +2,7 @@ import datetime as dt
 from typing import Dict, Optional
 
 from pymongo.database import Database
+from pymongo import DESCENDING
 from bson.objectid import ObjectId
 
 from .exceptions import DatabaseError
@@ -40,7 +41,7 @@ def get_all_summaries(db: Database, user: str):
             "calories": doc.get("summary", {}).get("calories"),
             "distance": doc.get("summary", {}).get("distance"),
             "duration": doc.get("summary", {}).get("duration"),
-        } for doc in db[EVENTS_COLLECTION].find({"user": user}).sort("time", 1)
+        } for doc in db[EVENTS_COLLECTION].find({"user": user}).sort("date", DESCENDING)
     ]
 
 
