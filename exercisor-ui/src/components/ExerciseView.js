@@ -1,7 +1,8 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 import ExerciseYears from './ExerciseYears';
-import ExerciseSummary from './ExerciseSummary';
-import ExerciseTable from './ExerciseTable';
+import ExerciseViewYear from './ExerciseViewYear';
+import ExerciseViewAll from './ExerciseViewAll';
 import './ExerciseView.css'
 
 class ExerciseView extends React.Component {
@@ -16,11 +17,13 @@ class ExerciseView extends React.Component {
   }
 
   render() {
-    const { years, events } = this.props;
+    const { years, match } = this.props;
     return <div className="App-main-item">
-      <ExerciseYears years={years} />
-      <ExerciseSummary events={events} />
-      <ExerciseTable {...this.props} />
+      <ExerciseYears years={years} match={match} />
+      <Switch>
+        <Route path={`${match.path}/:year`}><ExerciseViewYear {...this.props} /></Route>
+        <Route path={`${match.path}`}><ExerciseViewAll {...this.props} /></Route>
+      </Switch>
     </div>;
   }
 }
