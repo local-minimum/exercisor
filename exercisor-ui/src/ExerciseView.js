@@ -2,12 +2,12 @@ import React from 'react';
 import './ExerciseView.css'
 
 const minutes2str = (minutes) => {
-    const whole = Math.round(minutes);
+    const whole = Math.floor(minutes);
     if (minutes === whole) {
         return `${minutes}`;
     }
     const seconds = Math.round((minutes - whole) * 60);
-    return `${minutes}:${seconds}`;
+    return `${whole}:${seconds}`;
 }
 
 class ExerciseView extends React.Component {
