@@ -25,13 +25,14 @@ class ExerciseView extends React.Component {
         .map(([year, count]) => this.renderYear(year, count));
 
       const oneDay = 1000 * 60 * 60 * 24;
-      const stats = {distance: 0, events: events.length, periodStart: 0, periodEnd: 0};
+      const stats = {distance: 0, events: events.length, periodStart: null, periodEnd: null};
       events.forEach(evt => {
         stats.distance = stats.distance += (evt.distance == null ? 0 : evt.distance);
-        stats.periodStart = Math.min(stats.periodStart, new Date(evt.date).getTime());
-        stats.periodEnd = Math.max(stats.periodEnd, new Date(evt.date).getTime());
+        const timestamp = new Date(evt.date).getTime();
+        stats.periodStart = stats.periodStart == null ? timestamp : Math.min(stats.periodStart, timestamp);
+        stats.periodEnd = stats.periodEnd == null ? timestamp : Math.max(stats.periodEnd, timestamp);
       });
-      const timeSpan = events.length > 0 ? Math.floor((stats.periodEnd - stats.periodStart) / oneDay) + 1 : 0;
+      const timeSpan = stats.periodStart != null ? Math.floor((stats.periodEnd - stats.periodStart) / oneDay) + 1 : 0;
       return (
         <div>
           <h2>Sammanställning</h2>
