@@ -29,21 +29,36 @@ function UserHeader(props) {
   );
 }
 
+function ExercisorRoutingHeader({ match }) {
+  return (
+    <Switch>
+      <Route path={`${match.path}/:name`} component={UserHeader} />
+      <Route path={`${match.path}`} component={NoUserHeader} />
+    </Switch>
+  );
+}
+
+function ExercisorRoutingBody({ match }) {
+  return (
+    <Switch>
+      <Route path={`${match.path}/:name`} component={ExerciseContainer} />
+    </Switch>
+  );
+}
+
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Switch>
-          <Route exact path="/exercisor" component={NoUserHeader} />
-          <Route exact path="/exercisor/:name" component={UserHeader} />
-          <Route exact path="/:name" component={UserHeader} />
-          <Route exact path="/" component={NoUserHeader} />
+          <Route path="/exercisor" component={ExercisorRoutingHeader} />
+          <Route path="/:name" component={UserHeader} />
+          <Route path="/" component={NoUserHeader} />
         </Switch>
         <div className="App-main">
           <Switch>
-            <Route exact path="/exercisor" component={null} />
-            <Route exact path="/exercisor/:name" component={ExerciseContainer} />
-            <Route exact path="/:name" component={ExerciseContainer} />
+            <Route path="/exercisor" component={ExercisorRoutingBody} />
+            <Route path="/:name" component={ExerciseContainer} />
           </Switch>
         </div>
       </BrowserRouter>
