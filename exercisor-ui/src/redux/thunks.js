@@ -12,14 +12,12 @@ function yearCount(events) {
     return count;
 }
 
-export function loadEvents(name, year) {
+export function loadEvents(name) {
   return (dispatch, getState) => {
     dispatch(setName(name));
     return getUserList(name)
       .then(events => {
-        if (year == null) {
-          dispatch(setYears(yearCount(events)));
-        }
+        dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))
       });
   }
@@ -32,12 +30,12 @@ export function saveEvent() {
     if (entry.id == null) {
       return putEvent(name, editKey, entry)
         .then(res => {
-            dispatch(loadEvents(name, null));
+            dispatch(loadEvents(name));
         });
     }
     return postEvent(name, entry.id, editKey, entry)
         .then(res => {
-            dispatch(loadEvents(name, null));
+            dispatch(loadEvents(name));
         });
   }
 }
@@ -47,7 +45,7 @@ export function removeEvent(evtId) {
     const { name, editKey } = getState();
     return deleteEvent(name, evtId, editKey)
       .then(res => {
-        dispatch(loadEvents(name, null));
+        dispatch(loadEvents(name));
       });
   }
 }

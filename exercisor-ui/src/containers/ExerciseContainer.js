@@ -6,26 +6,18 @@ import {
   setEditKey, setEntry, settingListAll,
 } from '../redux/actions';
 
-const date2year = (date) => Number(date.split("-")[0])
-
-const filterEvents = (events, match) => {
-  const year = match.params.year;
-  if (year == null) return events;
-  return events.filter(evt => date2year(evt.date) === year);
-}
-
 const mapStateToProps = (state, ownProps) => ({
   settings: state.settings,
   editKey: state.editKey,
   entry: state.entry,
-  events: filterEvents(state.events, ownProps.match),
+  events: state.events,
   name: ownProps.match.params.name,
   years: state.years,
   userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onReloadUser: (user, year) => dispatch(loadEvents(user, year)),
+  onReloadUser: user => dispatch(loadEvents(user)),
   onEntryDate: date => dispatch(setEntryDate(date)),
   onEntryDuration: duration => dispatch(setEntryDuration(duration)),
   onEntryDistance: distance => dispatch(setEntryDistance(distance)),
