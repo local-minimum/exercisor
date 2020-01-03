@@ -2,8 +2,18 @@ import { combineReducers } from 'redux';
 import {
   SET_NAME, SET_EVENTS, SET_YEARS,
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
-  SET_EDITKEY, SET_ENTRY,
+  SET_EDITKEY, SET_ENTRY, SETTING_LISTALL,
 } from './actions';
+
+const defaultSettings = {listAll: false};
+const settings = (state = defaultSettings, action) => {
+  switch (action.type) {
+    case SETTING_LISTALL:
+      return Object.assign({}, state, {listAll: action.value});
+    default:
+      return state;
+  }
+};
 
 const defaultEntry = {date: "", distance: "", duration: "", calories: "", id: null};
 
@@ -70,5 +80,5 @@ const years = (state = {}, action) => {
 }
 
 export default combineReducers({
-  name, events, years, entry, editKey,
+  name, events, years, entry, editKey, settings,
 });

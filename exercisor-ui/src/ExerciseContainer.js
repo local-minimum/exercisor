@@ -3,10 +3,11 @@ import ExerciseView from './ExerciseView';
 import { loadEvents, saveEvent, removeEvent } from './redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
-  setEditKey, setEntry,
+  setEditKey, setEntry, settingListAll,
 } from './redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
+  settings: state.settings,
   editKey: state.editKey,
   entry: state.entry,
   events: state.events,
@@ -24,7 +25,8 @@ const mapDispatchToProps = dispatch => ({
   onSave: () => dispatch(saveEvent()),
   onSetEditKey: key => dispatch(setEditKey(key)),
   onSetEntry: entry => dispatch(setEntry(entry)),
-  onRemoveEntry: entryId => dispatch(removeEvent(entryId))
+  onRemoveEntry: entryId => dispatch(removeEvent(entryId)),
+  onListAll: value => dispatch(settingListAll(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

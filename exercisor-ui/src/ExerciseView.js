@@ -33,11 +33,12 @@ class ExerciseView extends React.Component {
         stats.periodEnd = stats.periodEnd == null ? timestamp : Math.max(stats.periodEnd, timestamp);
       });
       const timeSpan = stats.periodStart != null ? Math.floor((stats.periodEnd - stats.periodStart) / oneDay) + 1 : 0;
+      const perWeek = timeSpan === 0 ? "0" : (stats.events / timeSpan * 7).toFixed(2);
       return (
         <div>
           <h2>Sammanställning</h2>
           <div>{yearsSpans}</div>
-          <div>Totalt {stats.distance} km och {stats.events} pass. Hållt på i {timeSpan} dagar, {(stats.events / timeSpan * 7).toFixed(2)} pass i veckan.</div>
+          <div>Totalt {stats.distance} km och {stats.events} pass. Hållt på i {timeSpan} dagar, {perWeek} pass i veckan.</div>
         </div>
       );
   }
@@ -63,42 +64,51 @@ class ExerciseView extends React.Component {
       const {
         events,
         onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
-        entry, onSave, onSetEditKey, editKey, onSetEntry, onRemoveEntry
+        entry, onSave, onSetEditKey, editKey, onSetEntry, onRemoveEntry,
+        settings, onListAll,
       } = this.props;
       const eventRows = events
         .slice(Math.max(events.length - 5, 0))
         .map(evt => this.renderTableRow(evt, onSetEntry, onRemoveEntry, editKey.length > 0));
       const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
       const saveBtn = canSave ? <input type='button' className='small-input' value="Spara" onClick={onSave}/> : null;
+      const viewModeBtn = <input
+        type="button"
+        value={settings.listAll ? "Visa bara senaste" : "Visa alla"}
+        onClick={() => onListAll(!settings.listAll)}
+      />;
       return (
-        <table>
-          <thead>
-            <tr>
-              <th>Datum</th>
-              <th>Distans [km]</th>
-              <th>Tid [min]</th>
-              <th>Kalorier</th>
-              <th>Typ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eventRows}
-          </tbody>
-          <tfoot>
-            {editKey !== "" &&
+        <div>
+          <table>
+            <thead>
               <tr>
-                <td><input type='date' onChange={evt => onEntryDate(evt.target.value)} value={entry.date}/></td>
-                <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
-                <td><input type='text' className='small-input' onChange={evt => onEntryDuration(evt.target.value)} value={entry.duration}/></td>
-                <td><input type='text' className='small-input' onChange={evt => onEntryCalories(evt.target.value)} value={entry.calories}/></td>
-                <td>{saveBtn}</td>
+                <th>Datum</th>
+                <th>Distans [km]</th>
+                <th>Tid [min]</th>
+                <th>Kalorier</th>
+                <th>Typ</th>
               </tr>
-            }
-            <tr>
-              <td colSpan={2}>Edit Key: <input type="password" value={editKey} onChange={evt => onSetEditKey(evt.target.value)}/></td>
-            </tr>
-          </tfoot>
-        </table>
+            </thead>
+            <tbody>
+              {eventRows}
+            </tbody>
+            <tfoot>
+              {editKey !== "" &&
+                <tr>
+                  <td><input type='date' onChange={evt => onEntryDate(evt.target.value)} value={entry.date}/></td>
+                  <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
+                  <td><input type='text' className='small-input' onChange={evt => onEntryDuration(evt.target.value)} value={entry.duration}/></td>
+                  <td><input type='text' className='small-input' onChange={evt => onEntryCalories(evt.target.value)} value={entry.calories}/></td>
+                  <td>{saveBtn}</td>
+                </tr>
+              }
+              <tr>
+                <td colSpan={2}>Edit Key: <input type="password" value={editKey} onChange={evt => onSetEditKey(evt.target.value)}/></td>
+              </tr>
+            </tfoot>
+          </table>
+          {viewModeBtn}
+        </div>
       );
   }
 
