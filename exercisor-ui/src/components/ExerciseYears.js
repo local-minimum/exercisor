@@ -8,8 +8,8 @@ export default function ExerciseYears({ years, match }) {
     const yearsSpans = Object
       .entries(years)
       .map(([year, count]) => (
-        <Link to={`${prefix}/${year}`}>
-          <span className="year-summary" key={year}>
+        <Link to={`${prefix}/${year}`} key={year}>
+          <span className="year-summary">
             <strong>{year}</strong> ({count})
           </span>
         </Link>

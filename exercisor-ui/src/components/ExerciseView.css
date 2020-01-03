@@ -31,3 +31,9 @@ tr:nth-child(even) {
   border-radius: 2px;
   font-size: 60%;
 }
+
+.charts-box {
+  margin: 6px;
+  padding: 6px;
+  background: white;
+}
