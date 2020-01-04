@@ -38,7 +38,8 @@ const calcLoad = (arr, lb, ub, rest) => {
       calories += evt.calories;
     }
   });
-  const factor = rest * (n === 0 ? 1 : 1 / n);
+  const avgRest = n === 0 ? 1 : ((ub - lb) / aDay + 1) / n;
+  const factor = Math.log(rest) / Math.log(avgRest) * (n === 0 ? 1 : 1 / n);
   return {
     duration: duration * factor,
     distance: distance * factor,
@@ -60,7 +61,7 @@ export const events2convTimeSeries = (events) => {
       const date = new Date(time);
       const low = time - span;
       const high = time - aDay;
-      const leadingRest = prevTime == null ? 1 : Math.log(Math.min(4, (time - prevTime) / aDay)) + 1;
+      const leadingRest = prevTime == null ? 1 : (time - prevTime) / aDay;
       const curLoad = calcLoad(rawEvents, low, high, leadingRest);
       const load = prevTime == null ? nullLoad : curLoad;
       convEvents.push({
