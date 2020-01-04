@@ -68,19 +68,19 @@ export default function CompensateCalories({ events }) {
     .entries(countGood)
     .filter(([key, count]) => count > 0)
     .map(([key, count]) => (
-      <div class="pill" key={key}><strong>{count}</strong> {names[key][count > 1 ? 1 : 0]}</div>
+      <div className="pill" key={key}><strong>{count}</strong> {names[key][count > 1 ? 1 : 0]}</div>
     ));
   const badLI = Object
     .entries(countBad)
     .filter(([key, count]) => count > 0)
     .map(([key, count]) => (
-      <div class="pill" key={key}><strong>{count}</strong> {names[key][count > 1 ? 1 : 0]}</div>
+      <div className="pill" key={key}><strong>{count}</strong> {names[key][count > 1 ? 1 : 0]}</div>
     ));
   return (
     <div>
       <h2>Kalorikompensation</h2>
       <em>Så mycket måste du stoppa i dig {calories.toFixed(0)} kcal!</em>
-      <div class="pill-box">
+      <div className="pill-box">
         {goodLI}
         {badLI}
       </div>
