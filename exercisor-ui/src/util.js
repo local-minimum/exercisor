@@ -1,6 +1,6 @@
 import { TimeSeries } from "pondjs";
 
-const aDay = 1000 * 60 * 60 * 24;
+export const aDay = 1000 * 60 * 60 * 24;
 
 export const date2year = (date) => Number(date.split("-")[0])
 

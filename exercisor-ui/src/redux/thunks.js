@@ -1,8 +1,11 @@
 import { setName, setEvents, setYears, clearEntry } from './actions';
 import { getUserList, putEvent, postEvent, deleteEvent } from '../apigateway';
+import { aDay } from '../util';
 
 function yearCount(events) {
-    const count = {}
+    const now = new Date()
+    const next2Weeks = new Date(now.getTime() + aDay * 14);
+    const count = {[now.getFullYear()]: 0, [next2Weeks.getFullYear()]: 0};
     const year = evt => Number(evt.date.split("-")[0])
     const inc = year => {
       if (count[year] == null) count[year] = 0
