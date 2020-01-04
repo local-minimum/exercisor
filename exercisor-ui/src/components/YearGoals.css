@@ -1,0 +1,22 @@
+.progress-symbol h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+}
+
+.progress-symbol-events {
+  color: #007944;
+}
+
+.react-sweet-progress-symbol-absolute {
+  font-size: 22px;
+  position: relative;
+  top: calc(-100% + 26px);
+}
+
+.goals-meters {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-around;
+}
