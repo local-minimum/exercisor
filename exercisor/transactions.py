@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 from pymongo.database import Database
 from pymongo import DESCENDING
@@ -9,6 +9,30 @@ from .exceptions import DatabaseError
 
 EVENTS_COLLECTION = 'events'
 USER_SETTINGS = 'users'
+USER_GOALS = 'goals'
+
+
+def get_user_goal(db: Database, user: str, year: int):
+    res = db[USER_GOALS].find_one({"user": user, "year": year});
+    if res is None:
+        return None
+    return {
+        "user": user,
+        "year": year,
+        "sums": res["sums"],
+    }
+
+
+def upsert_user_goal(db: Database, user: str, year: int, sums: Dict[str, Union[int, float]]):
+    return db[USER_GOALS].update_one(
+        {"user": user, "year": year},
+        {"$set": {
+            "user": user,
+            "year": year,
+            "sums": sums,
+        }},
+        upsert=True,
+    )
 
 
 def get_user_settings(db: Database, user: str):

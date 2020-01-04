@@ -88,6 +88,31 @@ def may_edit(user, edit_key):
     return False
 
 
+goals_parser = reqparse.RequestParser()
+goals_parser.add_argument("edit-key", type=str, default=None)
+goals_parser.add_argument("sum-events", type=int, help="Total number of events this year")
+
+
+class UserYearGoals(Resource):
+    def get(self, user: str, year: int):
+        if may_view(user, view_parser.parse_args()['edit-key']):
+            return transactions.get_user_goal(db(), user, year)
+        abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
+
+    def post(self, user: str, year: int):
+        args = goals_parser.parse_args()
+        if not may_edit(user, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
+        transactions.upsert_user_goal(
+            db(),
+            user,
+            year,
+            {
+                "events": args['sum-events'],
+            }
+        )
+
+
 class ListUserEvents(Resource):
     def get(self, user: str):
         if may_view(user, view_parser.parse_args()['edit-key']):
@@ -106,7 +131,7 @@ class ListUserEvents(Resource):
                 get_summary(args),
             )
         except DatabaseError:
-            abort(HTTPStatus.FORBIDDEN.value)
+            abort(HTTPStatus.FORBIDDEN.value, message="Unknown error")
 
 
 class UserEvent(Resource):
