@@ -39,7 +39,7 @@ export default function ExerciseTable({
   const saveBtn = canSave ? <input type='button' className='small-input' value="Spara" onClick={onSave}/> : null;
   const viewModeBtn = <input
     type="button"
-    value={settings.listAll ? "Visa bara senaste" : "Visa alla"}
+    value={settings.listAll ? "Lista 5 senaste" : "Lista alla"}
     onClick={() => onListAll(!settings.listAll)}
   />;
   return (
