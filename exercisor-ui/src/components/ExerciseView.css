@@ -37,3 +37,18 @@ tr:nth-child(even) {
   padding: 6px;
   background: white;
 }
+
+.pill-box {
+  padding: 6px;
+}
+
+.pill {
+  display:  inline;
+  padding: 2px 6px;
+  margin: 0px 2px;
+  color: black;
+  border-radius: 6px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
+}

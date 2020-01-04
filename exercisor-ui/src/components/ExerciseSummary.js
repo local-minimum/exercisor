@@ -14,14 +14,14 @@ export default function ExerciseSummary({ events, year }) {
       <div className="summary">
         <h2>Sammanställning {year != null ? `${year}` : "all tid"}</h2>
         <div className="summaries-box">
-          <div className="summaries-group">
+          <div className="summaries-group pill-box">
             <h3>Totalt</h3>
             <div className="pill"><strong>{stats.distance.toFixed(0)}</strong> km</div>
             <div className="pill"><strong>{stats.duration.toFixed(0)}</strong> min</div>
             <div className="pill"><strong>{stats.calories.toFixed(0)}</strong> kcal</div>
             <div className="pill"><strong>{stats.events}</strong> pass</div>
           </div>
-          <div className="summaries-group">
+          <div className="summaries-group pill-box">
             <h3>Veckovis</h3>
             <div className="pill"><strong>{(stats.distance * weekly).toFixed(1)}</strong> km</div>
             <div className="pill"><strong>{(stats.duration * weekly).toFixed(1)}</strong> min</div>

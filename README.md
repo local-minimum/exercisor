@@ -13,10 +13,12 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Add ui setting n-events goal
 - [x] View Progress towards goal (event count) on year view
 - [ ] Display distance travelled on earth
-- [ ] Display food kcal consumed
+- [x] Display food kcal consumed
 - [ ] API Errors should show in UI
 - [x] Summary should count to year end or today
 - [x] Should show current year even if nothing on it
 - [x] Should show next year if less than 12 days to it
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
-- [ ] Should not show most things if no events
+- [x] Should not show most things if no events
+- [ ] Create new user
+- [ ] Histogram of Distance and Energy

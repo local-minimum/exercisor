@@ -5,6 +5,7 @@ import { filterEvents } from '../util';
 import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import YearGoalsEdit from './YearGoalsEdit';
 import YearGoals from './YearGoals';
+import CompensateCalories from './CompensateCalories';
 import { events2timeSeries, events2convTimeSeries } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
@@ -35,6 +36,7 @@ export default class ExerciseViewYear extends React.Component {
         {Goals}
         <ExerciseTable {...this.props} events={events} />
         <ExerciseOverviewCharts series={series} convSeries={convSeries} />
+        <CompensateCalories events={events} />
       </div>
     );
   }
