@@ -84,7 +84,7 @@ export default class ExerciseOverviewCharts extends React.Component {
           id={`${channelName}_axis`}
           label={label}
           values={summary}
-          min={series.min(channelName)}
+          min={convSeries.min(channelName)}
           max={series.max(channelName)}
           width={140}
           type="linear"

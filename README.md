@@ -8,7 +8,7 @@ A tool for manual entry of exercise results without the need of anyone spying an
   * `/:user/event/`
   * `/:user/event/:id`
 - [x] Plot points not lines for events
-- [ ] Plot add line for rolling window if possible (7 days)
+- [x] Plot add line for rolling window if possible (7 days)
 - [ ] View Progress towards goal (event count) on year view
 - [ ] Display distance travelled on earth
 - [ ] Display food kcal consumed

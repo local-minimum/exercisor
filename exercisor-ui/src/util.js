@@ -51,7 +51,7 @@ export const events2convTimeSeries = (events) => {
   const span = 3 * aDay;
   if (rawEvents.length > 0) {
     const rangeStart = rawEvents[0].time
-    const rangeEnd = rawEvents[1].time
+    const rangeEnd = rawEvents[rawEvents.length - 1].time
     for (let now = rangeStart; now <= rangeEnd; now += aDay) {
       const date = new Date(now);
       const low = Math.max(rangeStart, now - span);
