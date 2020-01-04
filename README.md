@@ -16,3 +16,4 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [ ] Summary should count to year end or today
 - [ ] Should show current year even if nothing on it
 - [ ] Should show next year if less than 12 days to it
+- [ ] Ask if sick, hurt or lazy if seems to dropping in frequency

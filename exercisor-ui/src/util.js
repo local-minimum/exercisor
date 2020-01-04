@@ -23,7 +23,8 @@ export const events2timeSeries = (events) => {
   return new TimeSeries(data);
 }
 
-const conv = (arr, lb, ub, range) => {
+const calcLoad = (arr, lb, ub, range, rest) => {
+  const factor = rest / range;
   let duration = 0;
   let distance = 0;
   let calories = 0;
@@ -35,9 +36,9 @@ const conv = (arr, lb, ub, range) => {
     }
   });
   return {
-    duration: duration / range,
-    distance: distance / range,
-    calories: calories / range,
+    duration: duration * factor,
+    distance: distance * factor,
+    calories: calories * factor,
   }
 }
 
@@ -48,21 +49,25 @@ export const events2convTimeSeries = (events) => {
   }));
   const convEvents = [];
   const aDay = 1000 * 60 * 60 * 24;
-  const span = 3 * aDay;
+  const span = 15 * aDay;
   if (rawEvents.length > 0) {
-    const rangeStart = rawEvents[0].time
-    const rangeEnd = rawEvents[rawEvents.length - 1].time
-    for (let now = rangeStart; now <= rangeEnd; now += aDay) {
-      const date = new Date(now);
-      const low = Math.max(rangeStart, now - span);
-      const high = Math.min(rangeEnd, now + span);
+    const nullLoad = { distance: null, duration: null, calories: null};
+    let prevTime = null;
+    rawEvents.forEach(({time}) => {
+      const date = new Date(time);
+      const low = time - span;
+      const high = time - aDay;
       const range = (high - low) / aDay + 1;
+      const leadingRest = prevTime == null ? 0 : Math.min(3, (time - prevTime) / aDay);
+      const curLoad = calcLoad(rawEvents, low, high, range, leadingRest);
+      const load = prevTime == null ? nullLoad : curLoad;
       convEvents.push({
         date: date.toISOString().split("T")[0],
         type: null,
-        ...conv(rawEvents, low, high, range),
-      })
-    }
+        ...load,
+      });
+      prevTime = time;
+    });
   }
   return events2timeSeries(convEvents.reverse());
 }
