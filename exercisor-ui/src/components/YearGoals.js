@@ -1,7 +1,7 @@
 import React from 'react';
 import { Progress } from 'react-sweet-progress';
 import GaugeChart from 'react-gauge-chart';
-import { getPeriodDuration, getYearDuration } from '../util';
+import { getYearDurationSoFar, getYearDuration } from '../util';
 import './YearGoals.css';
 
 export default function YearGoals({ events, goals, year }) {
@@ -19,7 +19,7 @@ export default function YearGoals({ events, goals, year }) {
           {`${count}/${target}`}
         </div>
       );
-      const period = getPeriodDuration(events, year);
+      const period = getYearDurationSoFar(year);
       const yearDuration = getYearDuration(year);
       const gauge = Math.max(
         Math.min(

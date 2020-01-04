@@ -39,6 +39,15 @@ export const getYearDuration = (year) => {
   return Math.floor((end - start) / aDay) + 1;
 }
 
+export const getYearDurationSoFar = (year) => {
+  const start = new Date(`${year}-01-01`).getTime();
+  const end = Math.min(
+    new Date(`${year}-12-31`).getTime(),
+    new Date().getTime()
+  );
+  return Math.floor((end - start) / aDay) + 1;
+}
+
 export const filterEvents = (events, year) => {
   if (year == null) return events;
   return events.filter(evt => date2year(evt.date) === year);
