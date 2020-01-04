@@ -22,3 +22,4 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Should not show most things if no events
 - [ ] Create new user
 - [ ] Histogram of Distance and Energy
+- [ ] Exercise Type for real
