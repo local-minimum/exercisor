@@ -10,7 +10,7 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Plot points not lines for events
 - [x] Plot a "load"-line that considers previous exercises and rest comming up to next event.
 - [x] Add setting n-events goal api
-- [ ] Add ui setting n-events goal
+- [x] Add ui setting n-events goal
 - [ ] View Progress towards goal (event count) on year view
 - [ ] Display distance travelled on earth
 - [ ] Display food kcal consumed

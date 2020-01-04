@@ -4,6 +4,7 @@ import ExerciseTable from './ExerciseTable';
 import { filterEvents } from '../util';
 import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import YearGoalsEdit from './YearGoalsEdit';
+import YearGoals from './YearGoals';
 import { events2timeSeries, events2convTimeSeries } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
@@ -27,7 +28,7 @@ export default class ExerciseViewYear extends React.Component {
       onSetGoalsEventSum={onSetGoalsEventSum}
       onSaveGoals={onSaveGoals}
       name={this.getName()}
-    /> : null;
+    /> : <YearGoals year={year} goals={goals} events={events} />;
     return (
       <div>
         <ExerciseSummary events={events} year={year} />
