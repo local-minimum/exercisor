@@ -6,6 +6,39 @@ export const date2year = (date) => Number(date.split("-")[0])
 
 export const date2time = (date) => new Date(date).getTime()
 
+export const getPeriod = (events, year) => {
+  let periodStart = 0;
+  let periodEnd = 0;
+  if (year == null) {
+    if (events.length > 0) {
+      periodStart = new Date(events[events.length - 1].date).getTime();
+      periodEnd = new Date(events[0].date).getTime();
+    }
+  } else {
+    periodStart = new Date(`${year}-01-01`).getTime();
+    if (events.length > 0) {
+      const firstDate = new Date(events[events.length - 1].date).getTime();
+      if ((firstDate - periodStart) / aDay > 10) periodStart = firstDate;
+    }
+    periodEnd = Math.min(
+      new Date(`${year}-12-31`).getTime(),
+      new Date().getTime()
+    );
+  }
+  return { start: periodStart, end: periodEnd };
+}
+
+export const getPeriodDuration = (events, year) => {
+  const period = getPeriod(events, year);
+  return Math.floor((period.end - period.start) / aDay) + 1;
+}
+
+export const getYearDuration = (year) => {
+  const start = new Date(`${year}-01-01`).getTime();
+  const end = new Date(`${year}-12-31`).getTime();
+  return Math.floor((end - start) / aDay) + 1;
+}
+
 export const filterEvents = (events, year) => {
   if (year == null) return events;
   return events.filter(evt => date2year(evt.date) === year);

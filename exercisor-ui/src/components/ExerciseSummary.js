@@ -1,5 +1,5 @@
 import React from 'react';
-import { aDay } from '../util';
+import { getPeriodDuration } from '../util';
 import './ExerciseSummary.css';
 
 export default function ExerciseSummary({ events, year }) {
@@ -9,25 +9,7 @@ export default function ExerciseSummary({ events, year }) {
       stats.duration += (evt.duration == null ? 0 : evt.duration);
       stats.calories += (evt.calories == null ? 0 : evt.calories);
     });
-    let periodStart = 0;
-    let periodEnd = 0;
-    if (year == null) {
-      if (events.length > 0) {
-        periodStart = new Date(events[events.length - 1].date).getTime();
-        periodEnd = new Date(events[0].date).getTime();
-      }
-    } else {
-      periodStart = new Date(`${year}-01-01`).getTime();
-      if (events.length > 0) {
-        const firstDate = new Date(events[events.length - 1].date).getTime();
-        if ((firstDate - periodStart) / aDay > 10) periodStart = firstDate;
-      }
-      periodEnd = Math.min(
-        new Date(`${year}-12-31`).getTime(),
-        new Date().getTime()
-      );
-    }
-    const weekly = 7 / (Math.floor((periodEnd - periodStart) / aDay) + 1);
+    const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
         <h2>Sammanställning {year != null ? `${year}` : "all tid"}</h2>

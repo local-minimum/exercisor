@@ -4,7 +4,7 @@
   margin-bottom: 0px;
 }
 
-.progress-symbol-events {
+.progress-events {
   color: #007944;
 }
 
@@ -16,7 +16,18 @@
 
 .goals-meters {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
   align-content: space-around;
+}
+
+.gauge-caption h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 0px;
+}
+
+.gauge-caption {
+  font-size: 14px;
 }
