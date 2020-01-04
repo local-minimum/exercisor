@@ -13,7 +13,7 @@ export default function YearGoals({ events, goals, year }) {
       const percent = 100 * count / target;
       const symbol = (
         <div className="progress-symbol progress-symbol-events">
-          <h3>Träningspass</h3>
+          <h3>{percent >= 100 ? '✔ ' : ''}Pass</h3>
           {`${count}/${target}`}
         </div>
       );
