@@ -29,19 +29,16 @@ const calcLoad = (arr, lb, ub, rest) => {
   let duration = 0;
   let distance = 0;
   let calories = 0;
-  let minTime = null;
-  let maxTime = null;
+  let n = 0
   arr.forEach(evt => {
     if (evt.time >= lb && evt.time <= ub) {
-      if (minTime == null) minTime = evt.time;
-      maxTime = evt.time;
+      n += 1;
       duration += evt.duration;
       distance += evt.distance;
       calories += evt.calories;
     }
   });
-  const range = (maxTime - minTime) / aDay + 1;
-  const factor = rest / range;
+  const factor = rest * (n === 0 ? 1 : 1 / n);
   return {
     duration: duration * factor,
     distance: distance * factor,
@@ -63,7 +60,7 @@ export const events2convTimeSeries = (events) => {
       const date = new Date(time);
       const low = time - span;
       const high = time - aDay;
-      const leadingRest = prevTime == null ? 0 : Math.min(3, (time - prevTime) / aDay);
+      const leadingRest = prevTime == null ? 1 : Math.log(Math.min(4, (time - prevTime) / aDay)) + 1;
       const curLoad = calcLoad(rawEvents, low, high, leadingRest);
       const load = prevTime == null ? nullLoad : curLoad;
       convEvents.push({

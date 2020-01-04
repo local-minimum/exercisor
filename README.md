@@ -14,6 +14,6 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [ ] Display food kcal consumed
 - [ ] API Errors should show in UI
 - [ ] Summary should count to year end or today
-- [ ] Should show current year even if nothing on it
-- [ ] Should show next year if less than 12 days to it
+- [x] Should show current year even if nothing on it
+- [x] Should show next year if less than 12 days to it
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
