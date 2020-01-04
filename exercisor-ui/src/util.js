@@ -1,5 +1,7 @@
 import { TimeSeries } from "pondjs";
 
+const aDay = 1000 * 60 * 60 * 24;
+
 export const date2year = (date) => Number(date.split("-")[0])
 
 export const date2time = (date) => new Date(date).getTime()
@@ -23,18 +25,23 @@ export const events2timeSeries = (events) => {
   return new TimeSeries(data);
 }
 
-const calcLoad = (arr, lb, ub, range, rest) => {
-  const factor = rest / range;
+const calcLoad = (arr, lb, ub, rest) => {
   let duration = 0;
   let distance = 0;
   let calories = 0;
+  let minTime = null;
+  let maxTime = null;
   arr.forEach(evt => {
     if (evt.time >= lb && evt.time <= ub) {
+      if (minTime == null) minTime = evt.time;
+      maxTime = evt.time;
       duration += evt.duration;
       distance += evt.distance;
       calories += evt.calories;
     }
   });
+  const range = (maxTime - minTime) / aDay + 1;
+  const factor = rest / range;
   return {
     duration: duration * factor,
     distance: distance * factor,
@@ -48,7 +55,6 @@ export const events2convTimeSeries = (events) => {
     duration, distance, calories,
   }));
   const convEvents = [];
-  const aDay = 1000 * 60 * 60 * 24;
   const span = 15 * aDay;
   if (rawEvents.length > 0) {
     const nullLoad = { distance: null, duration: null, calories: null};
@@ -57,9 +63,8 @@ export const events2convTimeSeries = (events) => {
       const date = new Date(time);
       const low = time - span;
       const high = time - aDay;
-      const range = (high - low) / aDay + 1;
       const leadingRest = prevTime == null ? 0 : Math.min(3, (time - prevTime) / aDay);
-      const curLoad = calcLoad(rawEvents, low, high, range, leadingRest);
+      const curLoad = calcLoad(rawEvents, low, high, leadingRest);
       const load = prevTime == null ? nullLoad : curLoad;
       convEvents.push({
         date: date.toISOString().split("T")[0],
