@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import ExerciseYears from './ExerciseYears';
 import ExerciseViewYear from './ExerciseViewYear';
 import ExerciseViewAll from './ExerciseViewAll';
+import EditKey from './EditKey';
 import './ExerciseView.css'
 
 class ExerciseView extends React.Component {
@@ -17,8 +18,9 @@ class ExerciseView extends React.Component {
   }
 
   render() {
-    const { years, match } = this.props;
+    const { years, match, editKey, onSetEditKey } = this.props;
     return <div className="App-main-item">
+      <EditKey editKey={editKey} onSetEditKey={onSetEditKey} />
       <ExerciseYears years={years} match={match} />
       <Switch>
         <Route path={`${match.path}/:year`}><ExerciseViewYear {...this.props} /></Route>

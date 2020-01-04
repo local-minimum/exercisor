@@ -67,9 +67,6 @@ export default function ExerciseTable({
               <td>{saveBtn}</td>
             </tr>
           }
-          <tr>
-            <td colSpan={2}>Edit Key: <input type="password" value={editKey} onChange={evt => onSetEditKey(evt.target.value)}/></td>
-          </tr>
         </tfoot>
       </table>
       {viewModeBtn}

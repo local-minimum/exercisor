@@ -2,13 +2,15 @@ A tool for manual entry of exercise results without the need of anyone spying an
 
 # Considered ToDo
 
-- [ ] Move Edit Key to top so it can be used in setting goals
-- [ ] Refactor API:
+- [x] Move Edit Key to top so it can be used in setting goals
+- [x] Refactor API:
   * `/:user/goal/:year`
   * `/:user/event/`
   * `/:user/event/:id`
 - [x] Plot points not lines for events
 - [x] Plot a "load"-line that considers previous exercises and rest comming up to next event.
+- [ ] Add setting n-events goal api
+- [ ] Add ui setting n-events goal
 - [ ] View Progress towards goal (event count) on year view
 - [ ] Display distance travelled on earth
 - [ ] Display food kcal consumed
