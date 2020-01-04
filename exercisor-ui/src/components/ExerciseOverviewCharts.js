@@ -56,7 +56,7 @@ export default class ExerciseOverviewCharts extends React.Component {
   handleTrackerChanged = t => this.setState({ tracker: t })
 
   renderChartRow = channelName => {
-    const { series } = this.props;
+    const { series, convSeries } = this.props;
     const { tracker } = this.state;
     const { decimals, label, unit } = settings[channelName];
     const summary = [
@@ -94,7 +94,7 @@ export default class ExerciseOverviewCharts extends React.Component {
           <LineChart
               key={`line-${channelName}`}
               axis={`${channelName}_axis`}
-              series={series}
+              series={convSeries}
               columns={[channelName]}
               style={style}
               breakLine
