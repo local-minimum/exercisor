@@ -19,6 +19,7 @@ export default function YearGoals({ events, goals, year }) {
       );
       Goals.push(
         <Progress
+          key="events-progress"
           type="circle"
           percent={percent}
           status="success"

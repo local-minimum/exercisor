@@ -1,20 +1,52 @@
 import React from 'react';
+import { aDay } from '../util';
+import './ExerciseSummary.css';
 
 export default function ExerciseSummary({ events, year }) {
-    const oneDay = 1000 * 60 * 60 * 24;
-    const stats = {distance: 0, events: events.length, periodStart: null, periodEnd: null};
+    const stats = {distance: 0, duration: 0, calories: 0, events: events.length};
     events.forEach(evt => {
-      stats.distance = stats.distance += (evt.distance == null ? 0 : evt.distance);
-      const timestamp = new Date(evt.date).getTime();
-      stats.periodStart = stats.periodStart == null ? timestamp : Math.min(stats.periodStart, timestamp);
-      stats.periodEnd = stats.periodEnd == null ? timestamp : Math.max(stats.periodEnd, timestamp);
+      stats.distance += (evt.distance == null ? 0 : evt.distance);
+      stats.duration += (evt.duration == null ? 0 : evt.duration);
+      stats.calories += (evt.calories == null ? 0 : evt.calories);
     });
-    const timeSpan = stats.periodStart != null ? Math.floor((stats.periodEnd - stats.periodStart) / oneDay) + 1 : 0;
-    const perWeek = timeSpan === 0 ? "0" : (stats.events / timeSpan * 7).toFixed(2);
+    let periodStart = 0;
+    let periodEnd = 0;
+    if (year == null) {
+      if (events.length > 0) {
+        periodStart = new Date(events[events.length - 1].date).getTime();
+        periodEnd = new Date(events[0].date).getTime();
+      }
+    } else {
+      periodStart = new Date(`${year}-01-01`).getTime();
+      if (events.length > 0) {
+        const firstDate = new Date(events[events.length - 1].date).getTime();
+        if ((firstDate - periodStart) / aDay > 10) periodStart = firstDate;
+      }
+      periodEnd = Math.min(
+        new Date(`${year}-12-31`).getTime(),
+        new Date().getTime()
+      );
+    }
+    const weekly = 7 / (Math.floor((periodEnd - periodStart) / aDay) + 1);
     return (
-      <div>
+      <div className="summary">
         <h2>Sammanställning {year != null ? `${year}` : "all tid"}</h2>
-        <div>Totalt {stats.distance.toFixed(0)} km och {stats.events} pass. Hållt på i {timeSpan} dagar, {perWeek} pass i veckan.</div>
+        <div className="summaries-box">
+          <div className="summaries-group">
+            <h3>Totalt</h3>
+            <div className="pill"><strong>{stats.distance.toFixed(0)}</strong> km</div>
+            <div className="pill"><strong>{stats.duration.toFixed(0)}</strong> min</div>
+            <div className="pill"><strong>{stats.calories.toFixed(0)}</strong> kcal</div>
+            <div className="pill"><strong>{stats.events}</strong> pass</div>
+          </div>
+          <div className="summaries-group">
+            <h3>Veckovis</h3>
+            <div className="pill"><strong>{(stats.distance * weekly).toFixed(1)}</strong> km</div>
+            <div className="pill"><strong>{(stats.duration * weekly).toFixed(1)}</strong> min</div>
+            <div className="pill"><strong>{(stats.calories * weekly).toFixed(1)}</strong> kcal</div>
+            <div className="pill"><strong>{(stats.events * weekly).toFixed(1)}</strong> pass</div>
+          </div>
+        </div>
       </div>
     );
 };
