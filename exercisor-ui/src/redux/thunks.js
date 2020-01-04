@@ -1,5 +1,5 @@
 import { setName, setEvents, setYears, clearEntry } from './actions';
-import { getUserList, putEvent, postEvent, deleteEvent } from '../apigateway';
+import { getUserEventList, putEvent, postEvent, deleteEvent } from '../apigateway';
 import { aDay } from '../util';
 
 function yearCount(events) {
@@ -18,7 +18,7 @@ function yearCount(events) {
 export function loadEvents(name) {
   return (dispatch, getState) => {
     dispatch(setName(name));
-    return getUserList(name)
+    return getUserEventList(name)
       .then(events => {
         dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))

@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 const BASE_URL = '/exercisor/api';
 
-export const getUserList = (user, editKey) => {
+export const getUserEventList = (user, editKey) => {
   return $
-    .getJSON(`${BASE_URL}/${user}?edit-key=${editKey}`);
+    .getJSON(`${BASE_URL}/${user}/event?edit-key=${editKey}`);
 }
 
 const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
@@ -38,7 +38,7 @@ export const putEvent = (user, editKey, evt) => {
     calories: Number(evt.calories),
   };
   return jsonRequest(
-    `${BASE_URL}/${user}?edit-key=${editKey}`,
+    `${BASE_URL}/${user}/event?edit-key=${editKey}`,
     data,
     'PUT',
   );
@@ -52,7 +52,7 @@ export const postEvent = (user, id, editKey, evt) => {
     calories: Number(evt.calories),
   };
   return jsonRequest(
-    `${BASE_URL}/${user}/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/${user}/event/${id}?edit-key=${editKey}`,
     data,
     'POST',
   );
@@ -61,7 +61,7 @@ export const postEvent = (user, id, editKey, evt) => {
 export const deleteEvent = (user, id, editKey) => {
   const data = {};
   return jsonRequest(
-    `${BASE_URL}/${user}/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/${user}/event/${id}?edit-key=${editKey}`,
     data,
     'DELETE',
   );
