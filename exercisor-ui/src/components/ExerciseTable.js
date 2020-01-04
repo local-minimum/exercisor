@@ -44,6 +44,7 @@ export default function ExerciseTable({
   />;
   return (
     <div>
+      <h2>Motionspass</h2>
       <table>
         <thead>
           <tr>

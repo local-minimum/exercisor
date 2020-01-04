@@ -66,3 +66,20 @@ export const deleteEvent = (user, id, editKey) => {
     'DELETE',
   );
 }
+
+export const getGoals = (user, year, editKey) => {
+  return $
+    .getJSON(`${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`);
+}
+
+export const upsertGoals = (user, year, goals, editKey) => {
+  const sums = goals && goals.sums;
+  const data = {
+    "sum-events": sums && sums.events,
+  };
+  return jsonRequest(
+    `${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`,
+    data,
+    'POST',
+  );
+}

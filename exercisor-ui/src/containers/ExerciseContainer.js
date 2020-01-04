@@ -1,12 +1,15 @@
 import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
-import { loadEvents, saveEvent, removeEvent } from '../redux/thunks';
+import {
+  loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals,
+} from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
-  setEditKey, setEntry, settingListAll,
+  setEditKey, setEntry, settingListAll, setGoalsEventSum,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
+  goals: state.goals,
   settings: state.settings,
   editKey: state.editKey,
   entry: state.entry,
@@ -27,6 +30,9 @@ const mapDispatchToProps = dispatch => ({
   onSetEntry: entry => dispatch(setEntry(entry)),
   onRemoveEntry: entryId => dispatch(removeEvent(entryId)),
   onListAll: value => dispatch(settingListAll(value)),
+  onLoadGoals: (user, year) => dispatch(loadYearGoals(user, year)),
+  onSetGoalsEventSum: events => dispatch(setGoalsEventSum(events)),
+  onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

@@ -9,7 +9,7 @@ export default class ExerciseOverviewCharts extends React.Component {
 
   autoCollapse = () => {
       const { lastEdit, expanded } = this.state;
-      if (expanded && new Date().getTime() - lastEdit > closeDelay) {
+      if (expanded && new Date().getTime() - lastEdit >= closeDelay - 10) {
         this.setState({expanded: false});
       }
   }

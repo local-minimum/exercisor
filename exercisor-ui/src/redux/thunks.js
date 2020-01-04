@@ -1,5 +1,7 @@
-import { setName, setEvents, setYears, clearEntry } from './actions';
-import { getUserEventList, putEvent, postEvent, deleteEvent } from '../apigateway';
+import { setName, setEvents, setYears, clearEntry, setGoals } from './actions';
+import {
+  getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
+} from '../apigateway';
 import { aDay } from '../util';
 
 function yearCount(events) {
@@ -15,10 +17,42 @@ function yearCount(events) {
     return count;
 }
 
+export function loadYearGoals(name, year) {
+  return (dispatch, getState) => {
+    const { goals, editKey } = getState();
+    const invalid = goals == null || goals.user !== name || goals.year !== Number(year);
+    if (invalid) {
+      return getGoals(name, year, editKey)
+        .then(goals => {
+          if (goals == null) {
+            dispatch(setGoals({
+              fake: true,
+              year: Number(year),
+              user: name,
+              sums: {events: 0}}));
+          } else {
+            dispatch(setGoals(goals));
+          }
+        });
+    }
+  }
+}
+
+export function saveGoals(name, year) {
+  return (dispatch, getState) => {
+    const { goals, editKey } = getState();
+    if (goals != null) {
+      upsertGoals(name, year, goals, editKey)
+        .then(_ => dispatch(loadYearGoals(name, year)));
+    }
+  }
+}
+
 export function loadEvents(name) {
   return (dispatch, getState) => {
+    const { editKey } = getState();
     dispatch(setName(name));
-    return getUserEventList(name)
+    return getUserEventList(name, editKey)
       .then(events => {
         dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))

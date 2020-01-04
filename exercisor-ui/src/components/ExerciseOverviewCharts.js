@@ -131,9 +131,9 @@ export default class ExerciseOverviewCharts extends React.Component {
     const channels = ['distance', 'calories', 'duration'];
     const { series } = this.props;
     const { tracker } = this.state;
-    if (series.range() == null) {
+    if (series.size() < 2) {
       return (
-        <div>Loading...</div>
+        <div>Inte tillräcklig data för att plotta</div>
       );
     }
     return (
