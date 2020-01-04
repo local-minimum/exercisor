@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ChartContainer, ChartRow, Resizable, Charts, LineChart, Baseline,
-  LabelAxis, ValueAxis,
+  LabelAxis, ValueAxis, ScatterChart,
   styler,
 } from 'react-timeseries-charts';
 
@@ -98,7 +98,15 @@ export default class ExerciseOverviewCharts extends React.Component {
               columns={[channelName]}
               style={style}
               breakLine
-            />
+          />
+          <ScatterChart
+              key={`line-${channelName}`}
+              axis={`${channelName}_axis`}
+              series={series}
+              columns={[channelName]}
+              style={style}
+              radius={4}
+          />
           <Baseline
             key={`baseline-${channelName}`}
             axis={`${channelName}_axis`}
