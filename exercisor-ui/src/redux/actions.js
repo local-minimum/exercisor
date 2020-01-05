@@ -21,6 +21,9 @@ export const SET_EDITKEY = 'SET_EDITKEY';
 export const SETTING_LISTALL = 'SETTING_LISTALL';
 export const SET_GOALS = 'SET_GOALS';
 export const SET_GOALS_EVENTSSUM = 'SET_GOALS_EVENTSSUM';
+export const SET_OSM_LOCATION = 'SET_OSM_LOCATION';
+export const SET_OSM_ROUTE = 'SET_OSM_ROUTE';
+
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
 export const setName = makeActionCreator(SET_NAME, 'name');
 export const setEvents = makeActionCreator(SET_EVENTS, 'events');
@@ -34,3 +37,5 @@ export const clearEntry = makeActionCreator(CLEAR_ENTRY);
 export const setEditKey = makeActionCreator(SET_EDITKEY, 'key');
 export const setGoals = makeActionCreator(SET_GOALS, 'goals');
 export const setGoalsEventSum = makeActionCreator(SET_GOALS_EVENTSSUM, 'events');
+export const setOSMLocation = makeActionCreator(SET_OSM_LOCATION, 'location', 'coords');
+export const setOSMRoute = makeActionCreator(SET_OSM_ROUTE, 'from', 'to', 'route');

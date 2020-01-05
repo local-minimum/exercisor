@@ -1,7 +1,13 @@
-import { setName, setEvents, setYears, clearEntry, setGoals } from './actions';
+import {
+  setName, setEvents, setYears, clearEntry, setGoals,
+  setOSMLocation, setOSMRoute,
+} from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
 } from '../apigateway';
+import {
+  getLocation, getRouteCoordinates,
+} from '../osmgateway';
 import { aDay } from '../util';
 
 function yearCount(events) {
@@ -85,4 +91,50 @@ export function removeEvent(evtId) {
         dispatch(loadEvents(name));
       });
   }
+}
+
+function getOSMLocationCoords(state, locationName) {
+  if (state.locations == null) return null;
+  const location = state.locations[locationName];
+  if (location == null) return null;
+  return {lat: location.lat, lon: location.lon};
+}
+
+function getOSMRouteCoords(state, fromName, toName) {
+  if (state.routes == null) return null;
+  const fromRoutes = state.routes[fromName];
+  if (fromRoutes == null) return null;
+  return fromRoutes[toName];
+}
+
+export function loadRoute(from, to) {
+  return (dispatch, getState) => {
+    const route = getOSMRouteCoords(getState(), from, to);
+    if (route != null) return Promise.resolve(route);
+    const locationPromises = [];
+    const knownFrom = getOSMLocationCoords(getState(), from);
+    if (knownFrom == null) {
+      locationPromises.push(
+        getLocation(from)
+          .then(coords => dispatch(setOSMLocation(from, coords)))
+      );
+    }
+    const knownTo = getOSMLocationCoords(getState(), to);
+    if (knownTo == null) {
+      locationPromises.push(
+        getLocation(to)
+          .then(coords => dispatch(setOSMLocation(to, coords)))
+      );
+    }
+    return Promise.all(locationPromises)
+      .then(() => {
+          const fromLoc = getOSMLocationCoords(getState(), from);
+          const toLoc = getOSMLocationCoords(getState(), to);
+          getRouteCoordinates(fromLoc, toLoc)
+            .then(route => {
+              console.log(route);
+              setOSMRoute(from, to, route)
+            });
+      });
+  };
 }

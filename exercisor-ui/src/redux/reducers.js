@@ -3,6 +3,7 @@ import {
   SET_NAME, SET_EVENTS, SET_YEARS,
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
   SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
+  SET_OSM_ROUTE, SET_OSM_LOCATION,
 } from './actions';
 
 const defaultSettings = {listAll: false};
@@ -98,6 +99,32 @@ const goals = (state = null, action) => {
   }
 }
 
+const locations = (state = {}, action) => {
+  switch (action.type) {
+    case SET_OSM_LOCATION:
+      return Object.assign({}, state, {[action.location]: action.coords});
+    default:
+      return state;
+  }
+}
+
+const routes = (state = {}, action) => {
+  switch (action.type) {
+    case SET_OSM_ROUTE:
+      return Object.assign(
+        {},
+        state,
+        {[action.from]: Object.assign(
+          {},
+          state[action.from],
+          {[action.to]: action.coords},
+        )},
+      );
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
-  name, events, years, entry, editKey, settings, goals,
+  name, events, years, entry, editKey, settings, goals, locations, routes,
 });
