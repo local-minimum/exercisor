@@ -16,9 +16,14 @@ const waypoints = [
 
 function lerpPositionsToCoord(from, to, fraction) {
   const factor = Math.min(1, Math.max(fraction, 0));
+  const dLat = to.lat - from.lat;
+  const dLon = to.lon - from.lon;
+  const angle = Math.atan2(dLat, dLon);
+  const length = Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLon, 2));
+  const nextLength = factor * length
   return [
-    from.lon + factor * (to.lon - from.lon),
-    from.lat + factor * (to.lat - from.lat),
+    from.lon + nextLength * Math.cos(angle),
+    from.lat + nextLength * Math.sin(angle),
   ];
 }
 
@@ -67,24 +72,32 @@ export default class DistanceOnEarth extends React.Component {
       let endFraction = startFraction;
       coords.push([legStart.lon, legStart.lat]);
       route
-        .slice(idxStartLeg)
         .some((leg, idxLeg) => {
+          if (idxLeg < idxStartLeg) return false;
           if (leg.distance <= eventRemaining) {
             if (leg.lon !== coords[0][0] && leg.lat !== coords[0][1]) coords.push([leg.lon, leg.lat]);
             eventRemaining -= leg.distance;
             endFraction = 0
-            idxEndLeg = idxStartLeg + idxLeg + 1;
+            idxEndLeg = idxLeg + 1;
             return eventRemaining === 0;
           } else {
-            endFraction = eventRemaining / leg.distance
-            coords.push(lerpPositionsToCoord(
-              idxLeg === 0 ? legStart: route[idxStartLeg + idxLeg - 1],
-              leg,
-              endFraction,
-            ));
-            eventRemaining = 0;
-            idxEndLeg = idxStartLeg + idxLeg;
-            return eventRemaining === 0;
+            endFraction = startFraction + eventRemaining / leg.distance;
+            if (endFraction > 1) {
+              coords.push([leg.lon, leg.lat]);
+              eventRemaining = (1 - startFraction) * leg.distance;
+              endFraction = 0
+              idxEndLeg = idxLeg + 1;
+              return false;
+            } else {
+              coords.push(lerpPositionsToCoord(
+                idxLeg === 0 ? legStart: route[idxLeg - 1],
+                leg,
+                endFraction,
+              ));
+              eventRemaining = 0;
+              idxEndLeg = idxLeg;
+              return eventRemaining === 0;
+            }
           }
         });
       return {
@@ -213,11 +226,10 @@ export default class DistanceOnEarth extends React.Component {
 
   refreshVectors() {
     const {lines, exhausted} = this.getLineStringsData();
-    const features = this.getFeatures(lines);
     this.vectorSource.clear()
-    this.vectorSource.addFeatures(features);
-    this.vectorSource.changed();
     if (lines.length > 0) {
+      const features = this.getFeatures(lines);
+      this.vectorSource.addFeatures(features);
       // this.olmap.getView().setCenter(lines[0][0]);
       // this.olmap.getView().setZoom(3);
     }

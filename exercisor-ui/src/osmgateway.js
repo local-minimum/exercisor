@@ -58,14 +58,14 @@ function extractStepCoordinates(step, fromCoordsArr) {
       (location.lon !== endLocation.lon || location.lat !== endLocation.lat)
     );
 
-  if (intersectionCoords.length === 0) return [endLocation];
+  //TODO: Fix bug that makes so can't use intersections
+  if (intersectionCoords.length === 0 || true) return [endLocation];
 
   intersectionCoords.push({
     lon: endLocation.lon,
     lat: endLocation.lat,
     coordsDistance: calcDistance(prevCoordArr, maneuver.location),
   });
-  console.log(intersectionCoords, intersectionCoords.reduce((acc, loc) => acc + loc.coordsDistance, 0), distance);
   const distFactor = distance / intersectionCoords.reduce((acc, loc) => acc + loc.coordsDistance, 0);
   const result = intersectionCoords.map(({lat, lon, coordsDistance}) => ({
     distance: coordsDistance * distFactor, lat, lon
@@ -78,7 +78,6 @@ function extractCoordinatesFromLeg(leg, fromCoords) {
   return leg.steps.map(step => {
     const coords = extractStepCoordinates(step, prevCoords);
     const {lat, lon} = coords[coords.length - 1];
-    console.log(prevCoords, coords);
     prevCoords = [lon, lat];
     return coords;
   });
