@@ -15,6 +15,6 @@ export default class DistanceOnEarth extends React.Component {
     }
 
     componentDidMount() {
-      this.props.onLoadRoute(route[0][0], route[0][1]);
+      //this.props.onLoadRoute(route[0][0], route[0][1]);
     }
 };

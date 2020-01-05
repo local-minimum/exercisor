@@ -117,7 +117,7 @@ const routes = (state = {}, action) => {
         {[action.from]: Object.assign(
           {},
           state[action.from],
-          {[action.to]: action.coords},
+          {[action.to]: action.route},
         )},
       );
     default:

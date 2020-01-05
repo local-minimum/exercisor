@@ -132,8 +132,7 @@ export function loadRoute(from, to) {
           const toLoc = getOSMLocationCoords(getState(), to);
           getRouteCoordinates(fromLoc, toLoc)
             .then(route => {
-              console.log(route);
-              setOSMRoute(from, to, route)
+              dispatch(setOSMRoute(from, to, route));
             });
       });
   };
