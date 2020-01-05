@@ -34,14 +34,10 @@ function calcDistance(fromArr, toArr) {
   );
 }
 
-function extractStepCoordinates(step, fromCoordsArr) {
+function extractStepCoordinates(step, toCoordsArr) {
   const {distance, intersections, maneuver} = step;
-  const endLocation = {
-    lon: maneuver.location[0],
-    lat: maneuver.location[1],
-    distance: distance,
-  };
-  let prevCoordArr = fromCoordsArr;
+
+  let prevCoordArr = maneuver.location;
   const intersectionCoords = intersections
     .map(intersection => {
         if (intersection.location == null) return null;
@@ -55,16 +51,19 @@ function extractStepCoordinates(step, fromCoordsArr) {
     })
     .filter(location =>
       location != null &&
-      (location.lon !== endLocation.lon || location.lat !== endLocation.lat)
+      (location.lon !== toCoordsArr[0] || location.lat !== toCoordsArr[1])
     );
 
-  //TODO: Fix bug that makes so can't use intersections
-  if (intersectionCoords.length === 0 || true) return [endLocation];
+  if (intersectionCoords.length === 0) return [{
+    lon: toCoordsArr[0],
+    lat: toCoordsArr[1],
+    distance,
+  }];
 
   intersectionCoords.push({
-    lon: endLocation.lon,
-    lat: endLocation.lat,
-    coordsDistance: calcDistance(prevCoordArr, maneuver.location),
+    lon: toCoordsArr[0],
+    lat: toCoordsArr[1],
+    coordsDistance: calcDistance(prevCoordArr, toCoordsArr),
   });
   const distFactor = distance / intersectionCoords.reduce((acc, loc) => acc + loc.coordsDistance, 0);
   const result = intersectionCoords.map(({lat, lon, coordsDistance}) => ({
@@ -73,33 +72,42 @@ function extractStepCoordinates(step, fromCoordsArr) {
   return result
 }
 
-function extractCoordinatesFromLeg(leg, fromCoords) {
-  let prevCoords = [Number(fromCoords.lon), Number(fromCoords.lat)];
-  return leg.steps.map(step => {
-    const coords = extractStepCoordinates(step, prevCoords);
-    const {lat, lon} = coords[coords.length - 1];
-    prevCoords = [lon, lat];
+function getCoordFromStep(step, toCoordsArr) {
+  if (step == null) return toCoordsArr;
+  return step.maneuver.location;
+}
+
+function extractCoordinatesFromLeg(leg, toCoordsArr) {
+  return leg.steps.map((step, idxStep) => {
+    const coords = extractStepCoordinates(
+      step,
+      getCoordFromStep(leg.steps[idxStep + 1], toCoordsArr),
+    );
     return coords;
   });
 }
 
-function extractCoordinates(result, fromCoords) {
+function getCoordFromLeg(leg, toCoords) {
+    if (leg == null) return [Number(toCoords.lon), Number(toCoords.lat)];
+    return leg.steps[0].maneuver.location;
+}
+
+function extractCoordinates(result, toCoords) {
     const { routes } = result;
     if (routes.length === 0) return [];
     const route = routes[0];
     const coords = route.legs
-      .map(leg => extractCoordinatesFromLeg(leg, fromCoords))
+      .map((leg, idx) => {
+        const toCoordsArr = getCoordFromLeg(route.legs[idx + 1], toCoords);
+        return extractCoordinatesFromLeg(leg, toCoordsArr)
+      })
       .flat(2)
       .filter(leg => leg.distance > 0);
-    return [{
-        lon: Number(fromCoords.lon),
-        lat: Number(fromCoords.lat),
-        distance: 0,
-    }].concat(coords);
+    return coords;
 }
 
 export function getRouteCoordinates(fromCoords, toCoords) {
     return $
       .getJSON(`https://routing.openstreetmap.de/routed-car/route/v1/driving/${fromCoords.lon},${fromCoords.lat};${toCoords.lon},${toCoords.lat}?overview=false&geometries=polyline&steps=true`)
-      .then(result => extractCoordinates(result, fromCoords))
+      .then(result => extractCoordinates(result, toCoords))
 }

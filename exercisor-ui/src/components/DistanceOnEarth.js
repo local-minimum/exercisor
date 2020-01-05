@@ -1,11 +1,11 @@
 import React from 'react';
-import LineString from 'ol/geom/LineString';
+import {Point, LineString} from 'ol/geom';
 import Map from 'ol/Map';
 import {Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
-import {Stroke, Style} from 'ol/style';
+import {Stroke, Style, Circle as CircleStyle, Fill} from 'ol/style';
 import {fromLonLat} from 'ol/proj';
 import 'ol/ol.css';
 
@@ -27,8 +27,15 @@ function lerpPositionsToCoord(from, to, fraction) {
   ];
 }
 
-const lineStyle = new Style({stroke: new Stroke({width: 3, color: 'blue'})});
+const lineStyle = new Style({stroke: new Stroke({width: 2, color: 'blue'})});
 const connectorStyle = new Style({stroke: new Stroke({width: 1, color: 'lightblue'})});
+const legPt = new Style({
+  image: new CircleStyle({
+    fill: new Fill({color: 'blue'}),
+    radius: 4,
+    stroke: new Stroke({width: 1, color: 'lightblue'}),
+  }),
+});
 
 export default class DistanceOnEarth extends React.Component {
   constructor(props) {
@@ -45,6 +52,9 @@ export default class DistanceOnEarth extends React.Component {
         }),
         new VectorLayer({
           source: this.vectorSource,
+          style: (feature) => {
+            return feature.get('segment') > 0 ? legPt : null;
+          },
         }),
       ],
       view: new View({
@@ -75,20 +85,25 @@ export default class DistanceOnEarth extends React.Component {
         .some((leg, idxLeg) => {
           if (idxLeg < idxStartLeg) return false;
           if (leg.distance <= eventRemaining) {
+            // We need entire leg an probably more
             if (leg.lon !== coords[0][0] && leg.lat !== coords[0][1]) coords.push([leg.lon, leg.lat]);
             eventRemaining -= leg.distance;
             endFraction = 0
             idxEndLeg = idxLeg + 1;
             return eventRemaining === 0;
           } else {
+            // The leg is larger than we need
             endFraction = startFraction + eventRemaining / leg.distance;
             if (endFraction > 1) {
+              // But we had used up so much we actually need more
               coords.push([leg.lon, leg.lat]);
-              eventRemaining = (1 - startFraction) * leg.distance;
+              eventRemaining -= (1 - startFraction) * leg.distance;
               endFraction = 0
+              startFraction = 0
               idxEndLeg = idxLeg + 1;
               return false;
             } else {
+              // We just need a part of the leg
               coords.push(lerpPositionsToCoord(
                 idxLeg === 0 ? legStart: route[idxLeg - 1],
                 leg,
@@ -140,7 +155,7 @@ export default class DistanceOnEarth extends React.Component {
           lat: coords[coords.length - 1][1],
           distance: 0,
         };
-        if (eventRemaining > 0) {
+        if (distance > 0) {
           idxWaypointPair += 1;
           startFraction = 0;
           idxStartLeg = 0;
@@ -156,21 +171,25 @@ export default class DistanceOnEarth extends React.Component {
         return [];
       }
       if (evtData.length === 1) {
-        const feat = new Feature({
+        const featLine = new Feature({
           geometry: new LineString(evtData[0].map(lonLat => fromLonLat(lonLat))),
           name: `Pass ${idx + 1}`,
         });
-        feat.setStyle(lineStyle);
-        return [feat];
+        featLine.setStyle(lineStyle);
+        const featPt = new Feature({
+          geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
+          segment: idx + 1,
+        });
+        return [featLine, featPt];
       }
-      const lines = [];
+      const feats = [];
       for (let idxPart=0; idxPart<evtData.length - 1; idxPart++) {
         const feat = new Feature({
           geometry: new LineString(evtData[idxPart].map(lonLat => fromLonLat(lonLat))),
           name: `Pass ${idx + 1}, del ${idxPart + 1}`,
         });
         feat.setStyle(lineStyle);
-        lines.push(feat);
+        feats.push(feat);
         const connector = new Feature({
           geometry: new LineString([
             fromLonLat(evtData[idxPart][evtData[idxPart].length - 1]),
@@ -179,20 +198,25 @@ export default class DistanceOnEarth extends React.Component {
           name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
         });
         connector.setStyle(connectorStyle);
-        lines.push(connector);
+        feats.push(connector);
       }
       const feat =new Feature({
         geometry: new LineString(evtData[evtData.length - 1].map(lonLat => fromLonLat(lonLat))),
         name: `Pass ${idx + 1}, del ${evtData.length}`,
       });
       feat.setStyle(lineStyle);
-      lines.push(feat);
-      return lines;
+      feats.push(feat);
+      const featPt = new Feature({
+        geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
+        segment: idx + 1,
+      });
+      feats.push(featPt);
+      return feats;
     }).flat()
   }
 
   render() {
-    const { exhausted } = this.props;
+    const { exhausted } = this.state;
     const { events } = this.props;
     const mapStyle = { width: "calc(100% - 12)", height: "360px", margin: 6};
     if (events.length === 0) {
@@ -229,8 +253,9 @@ export default class DistanceOnEarth extends React.Component {
     if (lines.length > 0) {
       const features = this.getFeatures(lines);
       this.vectorSource.addFeatures(features);
-      // this.olmap.getView().setCenter(lines[0][0]);
-      // this.olmap.getView().setZoom(3);
+      const extent = this.vectorSource.getExtent();
+      this.olmap.getView().fit(extent);
+      this.olmap.getView().adjustZoom(-1);
     }
     if (this.state.exhausted !== exhausted) this.setState({exhausted});
   }
@@ -238,7 +263,9 @@ export default class DistanceOnEarth extends React.Component {
   loadNextRoute = () => {
     const {onLoadRoute} = this.props;
     const {exhausted} = this.state;
-    if (exhausted) return;
+    if (exhausted) {
+      return;
+    };
     waypoints.some((wptPair, idx) => {
         if (wptPair != null && this.getRoute(wptPair) == null) {
           onLoadRoute(wptPair[0], wptPair[1]);
