@@ -220,7 +220,6 @@ export default class DistanceOnEarth extends React.Component {
   }
 
   componentDidUpdate() {
-    //this.loadNextRoute();
     this.refreshVectors();
   }
 
@@ -236,7 +235,17 @@ export default class DistanceOnEarth extends React.Component {
     if (this.state.exhausted !== exhausted) this.setState({exhausted});
   }
 
-  loadNextRoute() {
-    this.props.onLoadRoute(waypoints[0][0], waypoints[0][1]);
+  loadNextRoute = () => {
+    const {onLoadRoute} = this.props;
+    const {exhausted} = this.state;
+    if (exhausted) return;
+    waypoints.some((wptPair, idx) => {
+        if (wptPair != null && this.getRoute(wptPair) == null) {
+          onLoadRoute(wptPair[0], wptPair[1]);
+          setTimeout(this.loadNextRoute, 2000);
+          return true;
+        }
+        return false;
+    });
   }
 };
