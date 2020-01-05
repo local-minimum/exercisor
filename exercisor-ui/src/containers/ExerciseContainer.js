@@ -17,6 +17,8 @@ const mapStateToProps = (state, ownProps) => ({
   name: ownProps.match.params.name,
   years: state.years,
   userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
+  locations: state.locations,
+  routes: state.routes,
 });
 
 const mapDispatchToProps = dispatch => ({

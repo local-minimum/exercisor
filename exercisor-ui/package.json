@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "jquery": "^3.4.1",
+    "ol": "^6.1.1",
     "pondjs": "^0.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

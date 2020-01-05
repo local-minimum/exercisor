@@ -7,9 +7,11 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Pills should not overlap between rows
 - [ ] Display distance travelled on earth
   - [x] Get data
-  - [ ] Should not load route if not needed
-  - [ ] Get intersections too if different than next
-  - [ ] Estimate distance between intersection
+  - [x] Should not load route if not needed
+  - [x] Get intersections too if different than next
+  - [x] Estimate distance between intersection
+  - [ ] Plot a map
+  - [ ] Plot linestrings per event
 - [ ] API Errors should show in UI
 - [ ] Create new user
 - [ ] Histogram of Distance and Energy

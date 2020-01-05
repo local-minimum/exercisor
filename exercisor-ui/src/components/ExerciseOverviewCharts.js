@@ -133,21 +133,27 @@ export default class ExerciseOverviewCharts extends React.Component {
     const { tracker } = this.state;
     if (series.size() < 2) {
       return (
-        <div>Inte tillräcklig data för att plotta</div>
+        <div>
+          <h2>Analys</h2>
+          <em>Inte tillräcklig data för att plotta</em>
+        </div>
       );
     }
     return (
-      <div className="charts-box">
-        <Resizable>
-          <ChartContainer
-            timeRange={series.range()}
-            showGrid={false}
-            trackerPosition={tracker}
-            onTrackerChanged={this.handleTrackerChanged}
-          >
-            {channels.map(this.renderChartRow)}
-          </ChartContainer>
-        </Resizable>
+      <div>
+        <h2>Analys</h2>
+        <div className="charts-box">
+          <Resizable>
+            <ChartContainer
+              timeRange={series.range()}
+              showGrid={false}
+              trackerPosition={tracker}
+              onTrackerChanged={this.handleTrackerChanged}
+            >
+              {channels.map(this.renderChartRow)}
+            </ChartContainer>
+          </Resizable>
+        </div>
       </div>
     )
   }
