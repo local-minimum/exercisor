@@ -5,18 +5,14 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] **Bug:** Goals doesn't always load (Go fresh to All then click on a year with goal)
 - [x] Pills should not break for line
 - [x] Pills should not overlap between rows
-- [ ] Display distance travelled on earth
-  - [x] Get data
-  - [x] Should not load route if not needed
-  - [x] Get intersections too if different than next
-  - [x] Estimate distance between intersection
-  - [ ] Plot a map
-  - [ ] Plot linestrings per event
+- [x] Distance on earth map!
+- [ ] **Bug:** Map: The distance on the map is wrong somehow still
+- [ ] Map: Get some highlight info about the segment maybe?
 - [ ] API Errors should show in UI
 - [ ] Create new user
-- [ ] Histogram of Distance and Energy
 - [ ] Exercise Type for real
 
 ## Wishful ToDo
 
+- [ ] Histogram of Distance and Energy
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
