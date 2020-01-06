@@ -34,7 +34,7 @@ function calcDistance(fromArr, toArr) {
   );
 }
 
-function extractStepCoordinates(step, toCoordsArr) {
+function extractStepCoordinates(step, toCoordsArr, firstLegFirstStep) {
   const {distance, intersections, maneuver} = step;
 
   let prevCoordArr = maneuver.location;
@@ -69,6 +69,13 @@ function extractStepCoordinates(step, toCoordsArr) {
   const result = intersectionCoords.map(({lat, lon, coordsDistance}) => ({
     distance: coordsDistance * distFactor, lat, lon
   }));
+  if (firstLegFirstStep) {
+    return [{
+      lon: maneuver.location[0],
+      lat: maneuver.location[1],
+      distance: 0,
+    }].concat(result)
+  }
   return result
 }
 
@@ -77,11 +84,12 @@ function getCoordFromStep(step, toCoordsArr) {
   return step.maneuver.location;
 }
 
-function extractCoordinatesFromLeg(leg, toCoordsArr) {
+function extractCoordinatesFromLeg(leg, toCoordsArr, firstLeg) {
   return leg.steps.map((step, idxStep) => {
     const coords = extractStepCoordinates(
       step,
       getCoordFromStep(leg.steps[idxStep + 1], toCoordsArr),
+      firstLeg && idxStep === 0,
     );
     return coords;
   });
@@ -89,7 +97,21 @@ function extractCoordinatesFromLeg(leg, toCoordsArr) {
 
 function getCoordFromLeg(leg, toCoords) {
     if (leg == null) return [Number(toCoords.lon), Number(toCoords.lat)];
-    return leg.steps[0].maneuver.location;
+    return getCoordFromStep(leg.steps[0]);
+}
+
+function sumRouteFromRawRoute(route) {
+  return route.legs
+    .reduce(
+      (acc, leg) => acc + leg.steps.reduce(
+        (acc2, step) => acc2 + step.distance, 0
+      ),
+      0
+    );
+}
+
+function sumRouteFromCoords(coords) {
+  return coords.reduce((acc, { distance }) => acc + distance, 0);
 }
 
 function extractCoordinates(result, toCoords) {
@@ -99,10 +121,10 @@ function extractCoordinates(result, toCoords) {
     const coords = route.legs
       .map((leg, idx) => {
         const toCoordsArr = getCoordFromLeg(route.legs[idx + 1], toCoords);
-        return extractCoordinatesFromLeg(leg, toCoordsArr)
+        return extractCoordinatesFromLeg(leg, toCoordsArr, idx === 0)
       })
       .flat(2)
-      .filter(leg => leg.distance > 0);
+      .filter((leg, idx) => leg.distance > 0 || idx === 0);
     return coords;
 }
 

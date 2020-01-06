@@ -43,7 +43,6 @@ export function getLineStringData(
   let idxEndLeg = idxStartLeg;
   let endFraction = startFraction;
   coords.push([legStart.lon, legStart.lat]);
-
   // Going through adding up legs until we reach the needed length
   route
     .some((leg, idxLeg) => {
@@ -51,30 +50,32 @@ export function getLineStringData(
 
       // Skipping legs already used
       if (idxLeg < idxStartLeg) return false;
+      // If we used up previous leg completely
+      // consider this leg just be starting
+      if (endFraction >= 1) {
+        endFraction = 0;
+        startFraction = 0;
+      }
+      idxEndLeg = idxLeg;
 
       // We need entire leg an probably more
-      if (leg.distance <= remainingDistance) {
+      if (leg.distance <= remainingDistance && startFraction === 0) {
         if (leg.lon !== coords[0][0] && leg.lat !== coords[0][1]) coords.push([leg.lon, leg.lat]);
         remainingDistance -= leg.distance;
-        endFraction = 0;
-        idxEndLeg = idxLeg + 1;
+        endFraction = 1;
         return remainingDistance === 0;
 
       // The leg is larger than we need
       } else {
 
         // This may overshoot for now, if so will be handled just below
-        endFraction = startFraction + remainingDistance / leg.distance;
-
-        // But we had used up so much we actually need more
-        if (endFraction > 1) {
+        const remainingLegDist = (1 - startFraction) * leg.distance;
+        endFraction = startFraction + remainingDistance / remainingLegDist;
+        // We used up so much we might actually need more
+        if (endFraction >= 1) {
           coords.push([leg.lon, leg.lat]);
-          remainingDistance -= (1 - startFraction) * leg.distance;
-          // Since we'll continue on the next leg we're at the beginning of it
-          idxEndLeg = idxLeg + 1;
-          startFraction = 0;
-          endFraction = 0;
-          return false;
+          remainingDistance -= remainingLegDist;
+          return remainingDistance === 0;
 
         // We just need a part of the leg
         } else {
@@ -85,11 +86,14 @@ export function getLineStringData(
           ));
           remainingDistance = 0;
           // We'll still be on this leg next time
-          idxEndLeg = idxLeg;
-          return remainingDistance === 0;
+          return true;
         }
       }
     });
+  if (endFraction >= 1) {
+    endFraction = 0;
+    idxEndLeg += 1;
+  }
   return {
     coords, remainingDistance, idxEndLeg, endFraction,
   };
@@ -147,8 +151,6 @@ export function getLineStringsData(events, waypoints, getRoute) {
         legStart,
       );
       lines[idxEvent].push(coords);
-      console.log("D", distance, "C", getDistanceAlongRoute(
-        route, idxStartLeg, startFraction, idxEndLeg, endFraction));
 
       // Info needed by the next event
       idxStartLeg = idxEndLeg;
@@ -181,6 +183,13 @@ export function getDistanceAlongRoute(
 ) {
   let distance = 0;
   let fromFraction = startFraction;
+  if (idxEndLeg > route.length - 1) {
+    if (idxEndLeg > route.length) {
+      console.warn(`End leg ${idxEndLeg} is higher than expected/length of route`, route);
+    }
+    idxEndLeg = route.length - 1;
+    endFraction = 1;
+  }
   for (let idxLeg=idxStartLeg; idxLeg<=idxEndLeg; idxLeg++) {
 
     let legDistance = 0;

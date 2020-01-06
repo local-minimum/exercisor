@@ -11,8 +11,22 @@ import 'ol/ol.css';
 import { getLineStringsData } from './ol-tools/geom';
 
 const waypoints = [
-    ["Västra Bodarnevägen, Alingsås", "Örgrytemotet, Heden, Göteborg"],
-    ["Örgrytemotet, Heden, Göteborg", "Tårnby, Tårnbytunnelen/Øresundsmotorvejen"]
+    [
+      "Västra Bodarnevägen, Alingsås",
+      "Lindomemotet, Långås, Mölndals kommun",
+    ],
+    [
+      "Lindomemotet, Långås, Mölndals kommun",
+      "Tårnby, Tårnbytunnelen/Øresundsmotorvejen",
+    ],
+    [
+      "Tårnby, Tårnbytunnelen/Øresundsmotorvejen",
+      "Sønderjyske Motorvej, Seest Østerskov",
+    ],
+    [
+      "Sønderjyske Motorvej, Seest Østerskov",
+      "İzmit, Kocaeli, Marmara Region, Turkiet",
+    ]
 ];
 
 const lineStyle = new Style({stroke: new Stroke({width: 2, color: 'blue'})});
@@ -109,7 +123,7 @@ export default class DistanceOnEarth extends React.Component {
     if (events.length === 0) {
       return (
         <div>
-          <h2>Tillryggalagd Sträcka</h2>
+          <h2>Tillryggalagd sträcka</h2>
           <em>Du har inga träningspass registrerade än...</em>
           <div id="map" style={mapStyle} />
         </div>
@@ -118,7 +132,7 @@ export default class DistanceOnEarth extends React.Component {
     const intro = exhausted ? 'Varje segment är ett träningspass' : 'Laddar...';
     return (
       <div>
-        <h2>Tillryggalagd Sträcka</h2>
+        <h2>Tillryggalagd sträcka</h2>
         <em>{intro}</em>
         <div id="map" style={mapStyle} />
       </div>
