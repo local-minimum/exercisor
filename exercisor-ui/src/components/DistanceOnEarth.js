@@ -101,14 +101,15 @@ export default class DistanceOnEarth extends React.Component {
         connector.setStyle(connectorStyle);
         feats.push(connector);
       }
-      const feat =new Feature({
-        geometry: new LineString(evtData[evtData.length - 1].map(lonLat => fromLonLat(lonLat))),
+      const lastLine = evtData[evtData.length - 1]
+      const feat = new Feature({
+        geometry: new LineString(lastLine.map(lonLat => fromLonLat(lonLat))),
         name: `Pass ${idx + 1}, del ${evtData.length}`,
       });
       feat.setStyle(lineStyle);
       feats.push(feat);
       const featPt = new Feature({
-        geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
+        geometry: new Point(fromLonLat(lastLine[lastLine.length - 1])),
         segment: idx + 1,
       });
       feats.push(featPt);
