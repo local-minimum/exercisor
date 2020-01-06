@@ -187,7 +187,7 @@ export function getDistanceAlongRoute(
     try {
       legDistance = route[idxLeg].distance;
     } catch(error) {
-      console.warning(`Missing distance info on leg ${idxLeg}.`, route);
+      console.warn(`Missing distance info on leg ${idxLeg}.`, route);
     }
 
     if (idxLeg === idxEndLeg) {
