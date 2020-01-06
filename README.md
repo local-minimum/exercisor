@@ -10,7 +10,8 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [ ] Map: Get some highlight info about the segment maybe?
 - [ ] API Errors should show in UI
 - [ ] Create new user
-- [ ] Exercise Type for real
+- [x] Exercise Type for real
+- [ ] DB uses user's name and not ID...
 
 ## Wishful ToDo
 

@@ -13,7 +13,7 @@ USER_GOALS = 'goals'
 
 
 def get_user_goal(db: Database, user: str, year: int):
-    res = db[USER_GOALS].find_one({"user": user, "year": year});
+    res = db[USER_GOALS].find_one({"user": user, "year": year})
     if res is None:
         return None
     return {
@@ -65,6 +65,7 @@ def get_all_summaries(db: Database, user: str):
             "calories": doc.get("summary", {}).get("calories"),
             "distance": doc.get("summary", {}).get("distance"),
             "duration": doc.get("summary", {}).get("duration"),
+            "type": doc.get("summary", {}).get("type", "CrossTrainer"),
         } for doc in db[EVENTS_COLLECTION].find({"user": user}).sort("date", DESCENDING)
     ]
 

@@ -9,6 +9,12 @@ const minutes2str = (minutes) => {
     return `${whole}:${seconds}`;
 }
 
+const EVENT_TYPES = {
+  CrossTrainer: 'CrossTrainer',
+  Running: 'Löpning',
+  Biking: 'Cykling',
+};
+
 function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
   const btns = canEdit &&
     <span>
@@ -21,7 +27,7 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
       <td>{event.distance}</td>
       <td>{minutes2str(event.duration)}</td>
       <td>{event.calories}</td>
-      <td>CrossTrainer</td>
+      <td>{EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type]}</td>
     </tr>
   )
 }
@@ -30,7 +36,7 @@ export default function ExerciseTable({
     events,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
     entry, onSave, onSetEditKey, editKey, onSetEntry, onRemoveEntry,
-    settings, onListAll,
+    settings, onListAll, onEntryType,
   }) {
   const eventRows = events
     .slice(0, settings.listAll ? events.length : 5)
@@ -65,6 +71,15 @@ export default function ExerciseTable({
               <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryDuration(evt.target.value)} value={entry.duration}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryCalories(evt.target.value)} value={entry.calories}/></td>
+              <td>
+                <select onChange={evt => onEntryType(evt.target.value)} value={entry.type}>
+                  {Object.entries(EVENT_TYPES).map(([key, name]) => <option value={key} key={key}>{name}</option>)}
+                </select>
+              </td>
+            </tr>
+          }
+          {editKey !== "" &&
+            <tr>
               <td>{saveBtn}</td>
             </tr>
           }

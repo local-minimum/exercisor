@@ -26,6 +26,7 @@ list_parser.add_argument("date", type=str, help="Event date")
 list_parser.add_argument("calories", type=int, default=None)
 list_parser.add_argument("duration", type=float, default=None, help="In minutes")
 list_parser.add_argument("distance", type=float, default=None)
+list_parser.add_argument("type", type=str, default="CrossTrainer")
 
 view_parser = reqparse.RequestParser()
 view_parser.add_argument("edit-key", type=str, default=None)
@@ -35,6 +36,7 @@ def get_summary(args):
         "calories": args['calories'],
         "duration": args['duration'],
         "distance": args['distance'],
+        "type": args['type'],
     }
 
 
@@ -55,6 +57,10 @@ def pwd_hash(pwd: Optional[str]) -> Optional[str]:
 class ListUser(Resource):
     def put(self):
         args = user_parser.parse_args()
+        if not args["user"]:
+            abort(HTTPStatus.BAD_REQUEST.value, message="Username is needed")
+        if not args["edit-key"]:
+            abort(HTTPStatus.BAD_REQUEST.value, message="Edit key is needed")
         try:
             transactions.add_user(
                 db(),
@@ -63,7 +69,7 @@ class ListUser(Resource):
                 bool(args["public"]),
             )
         except DatabaseError:
-            abort(HTTPStatus.FORBIDDEN.value, message="Username already taken")
+            abort(HTTPStatus.FORBIDDEN.value, message="Username already taken {}".format(args))
 
 
 def may_view(user, edit_key):

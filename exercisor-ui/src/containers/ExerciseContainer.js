@@ -5,7 +5,7 @@ import {
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
-  setEditKey, setEntry, settingListAll, setGoalsEventSum,
+  setEditKey, setEntry, settingListAll, setGoalsEventSum, setEntryType,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -27,6 +27,7 @@ const mapDispatchToProps = dispatch => ({
   onEntryDuration: duration => dispatch(setEntryDuration(duration)),
   onEntryDistance: distance => dispatch(setEntryDistance(distance)),
   onEntryCalories: calories => dispatch(setEntryCalories(calories)),
+  onEntryType: type => dispatch(setEntryType(type)),
   onSave: () => dispatch(saveEvent()),
   onSetEditKey: key => dispatch(setEditKey(key)),
   onSetEntry: entry => dispatch(setEntry(entry)),

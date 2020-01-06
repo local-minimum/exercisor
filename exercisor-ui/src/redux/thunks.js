@@ -69,6 +69,7 @@ export function loadEvents(name) {
 export function saveEvent() {
   return (dispatch, getState) => {
     const {entry, name, editKey} = getState();
+    console.log(entry);
     dispatch(clearEntry());
     if (entry.id == null) {
       return putEvent(name, editKey, entry)

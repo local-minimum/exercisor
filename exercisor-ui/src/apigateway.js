@@ -36,6 +36,7 @@ export const putEvent = (user, editKey, evt) => {
     duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
+    type: evt.type,
   };
   return jsonRequest(
     `${BASE_URL}/${user}/event?edit-key=${editKey}`,
@@ -50,6 +51,7 @@ export const postEvent = (user, id, editKey, evt) => {
     duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
+    type: evt.type,
   };
   return jsonRequest(
     `${BASE_URL}/${user}/event/${id}?edit-key=${editKey}`,
