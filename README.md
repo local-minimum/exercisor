@@ -6,7 +6,7 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Pills should not break for line
 - [x] Pills should not overlap between rows
 - [x] Distance on earth map!
-- [ ] **Bug:** Map: The distance on the map is wrong somehow still
+- [x] **Bug:** Map: The distance on the map is wrong somehow still
 - [ ] Map: Get some highlight info about the segment maybe?
 - [ ] API Errors should show in UI
 - [ ] Create new user
