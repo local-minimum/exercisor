@@ -42,7 +42,9 @@ export default function ExerciseTable({
     .slice(0, settings.listAll ? events.length : 5)
     .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editKey.length > 0));
   const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
-  const saveBtn = canSave ? <input type='button' className='small-input' value="Spara" onClick={onSave}/> : null;
+  const saveBtn = canSave ?
+    <input type='button' className='small-input' value="Spara" onClick={onSave}/> :
+    <span>Måste fylla i datum och minst ett värde.</span>;
   const viewModeBtn = <input
     type="button"
     value={settings.listAll ? "Lista 5 senaste" : "Lista alla"}
@@ -80,7 +82,7 @@ export default function ExerciseTable({
           }
           {editKey !== "" &&
             <tr>
-              <td>{saveBtn}</td>
+              <td colspan={3}>{saveBtn}</td>
             </tr>
           }
         </tfoot>
