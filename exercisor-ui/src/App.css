@@ -48,6 +48,14 @@
   padding-bottom: 12px;
 }
 
+.logout {
+  color: white;
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+}
+
 h2 {
   margin-bottom: 8px;
 }

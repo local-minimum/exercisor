@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import ExerciseContainer from './containers/ExerciseContainer';
 import './App.css';
 
@@ -20,10 +20,13 @@ function NoUserHeader(props) {
   );
 }
 
-function UserHeader(props) {
-  const { name } = props.match.params;
+function UserHeader({match}) {
+  const { name } = match.params;
+  const path = match.url.split('/')
+  const root = path.slice(0, path.indexOf(match.params.name)).join('/')
   return (
     <header className="App-header header-with-main">
+      <Link className="logout" to={root}>Logga ut</Link>
       <h1>Exercisor: <span className='name'>{name}</span></h1>
     </header>
   );

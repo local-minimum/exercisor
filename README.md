@@ -7,10 +7,11 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Pills should not overlap between rows
 - [x] Distance on earth map!
 - [x] **Bug:** Map: The distance on the map is wrong somehow still
+- [x] Exercise Type for real
+- [x] Add "logout"
 - [ ] Map: Get some highlight info about the segment maybe?
 - [ ] API Errors should show in UI
 - [ ] Create new user
-- [x] Exercise Type for real
 - [ ] DB uses user's name and not ID...
 
 ## Wishful ToDo
