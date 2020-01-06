@@ -182,8 +182,15 @@ export function getDistanceAlongRoute(
   let distance = 0;
   let fromFraction = startFraction;
   for (let idxLeg=idxStartLeg; idxLeg<=idxEndLeg; idxLeg++) {
-    let legDistance = route[idxLeg].distance;
-    if (idxLeg == idxEndLeg) {
+
+    let legDistance = 0;
+    try {
+      legDistance = route[idxLeg].distance;
+    } catch(error) {
+      console.warning(`Missing distance info on leg ${idxLeg}.`, route);
+    }
+
+    if (idxLeg === idxEndLeg) {
       distance += (endFraction - fromFraction) * legDistance;
     } else {
       distance += (1 - fromFraction) * legDistance;
