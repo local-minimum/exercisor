@@ -21,7 +21,7 @@ const ratios = {
 
 const names = {
   chips: ["chipspåse", "chipspåsar"],
-  beer: ["flask öl", "flaskor öl"],
+  beer: ["flaska öl", "flaskor öl"],
   pizza: ["pizza", "pizzor"],
   icecream: ["storstrut", "storstrutar"],
   snickers: ["snickers", "snickers"],
