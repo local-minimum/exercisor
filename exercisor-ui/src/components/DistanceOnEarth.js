@@ -8,24 +8,12 @@ import Feature from 'ol/Feature';
 import {Stroke, Style, Circle as CircleStyle, Fill} from 'ol/style';
 import {fromLonLat} from 'ol/proj';
 import 'ol/ol.css';
+import { getLineStringsData } from './ol-tools/geom';
 
 const waypoints = [
     ["Västra Bodarnevägen, Alingsås", "Örgrytemotet, Heden, Göteborg"],
     ["Örgrytemotet, Heden, Göteborg", "Tårnby, Tårnbytunnelen/Øresundsmotorvejen"]
 ];
-
-function lerpPositionsToCoord(from, to, fraction) {
-  const factor = Math.min(1, Math.max(fraction, 0));
-  const dLat = to.lat - from.lat;
-  const dLon = to.lon - from.lon;
-  const angle = Math.atan2(dLat, dLon);
-  const length = Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLon, 2));
-  const nextLength = factor * length
-  return [
-    from.lon + nextLength * Math.cos(angle),
-    from.lat + nextLength * Math.sin(angle),
-  ];
-}
 
 const lineStyle = new Style({stroke: new Stroke({width: 2, color: 'blue'})});
 const connectorStyle = new Style({stroke: new Stroke({width: 1, color: 'lightblue'})});
@@ -62,107 +50,6 @@ export default class DistanceOnEarth extends React.Component {
         zoom: 1,
       }),
     });
-  }
-
-  getRoute(waypoints) {
-    if (waypoints == null) return null;
-    const { routes } = this.props;
-    const froms = routes[waypoints[0]];
-    if (froms == null) return null;
-    return froms[waypoints[1]];
-  }
-
-  getLineStringData(eventRemaining, route, idxStartLeg, startFraction, legStart) {
-      const coords = [];
-      if (eventRemaining === 0) return {
-        coords, eventRemaining,
-        idxEndLeg: idxStartLeg, endFraction: startFraction
-      };
-      let idxEndLeg = idxStartLeg;
-      let endFraction = startFraction;
-      coords.push([legStart.lon, legStart.lat]);
-      route
-        .some((leg, idxLeg) => {
-          if (idxLeg < idxStartLeg) return false;
-          if (leg.distance <= eventRemaining) {
-            // We need entire leg an probably more
-            if (leg.lon !== coords[0][0] && leg.lat !== coords[0][1]) coords.push([leg.lon, leg.lat]);
-            eventRemaining -= leg.distance;
-            endFraction = 0
-            idxEndLeg = idxLeg + 1;
-            return eventRemaining === 0;
-          } else {
-            // The leg is larger than we need
-            endFraction = startFraction + eventRemaining / leg.distance;
-            if (endFraction > 1) {
-              // But we had used up so much we actually need more
-              coords.push([leg.lon, leg.lat]);
-              eventRemaining -= (1 - startFraction) * leg.distance;
-              endFraction = 0
-              startFraction = 0
-              idxEndLeg = idxLeg + 1;
-              return false;
-            } else {
-              // We just need a part of the leg
-              coords.push(lerpPositionsToCoord(
-                idxLeg === 0 ? legStart: route[idxLeg - 1],
-                leg,
-                endFraction,
-              ));
-              eventRemaining = 0;
-              idxEndLeg = idxLeg;
-              return eventRemaining === 0;
-            }
-          }
-        });
-      return {
-        coords, eventRemaining, idxEndLeg, endFraction,
-      };
-  }
-
-  getLineStringsData() {
-    const events = this.props.events.slice().reverse();
-    let idxWaypointPair = 0;
-    const lines = [];
-
-    let exhausted = true;
-    let idxStartLeg = 0;
-    let startFraction = 0;
-    let legStart = null;
-    for (let idxEvent=0; idxEvent<events.length; idxEvent++) {
-      lines.push([]);
-      let distance = events[idxEvent].distance * 1000;
-      while (distance != null && distance > 0) {
-        const route = this.getRoute(waypoints[idxWaypointPair])
-        if (route == null) {
-          exhausted = false;
-          break;
-        }
-        if (legStart == null) legStart = route[0]
-        const {coords, eventRemaining, idxEndLeg, endFraction} = this.getLineStringData(
-          distance,
-          route,
-          idxStartLeg,
-          startFraction,
-          legStart,
-        );
-        lines[idxEvent].push(coords);
-        idxStartLeg = idxEndLeg;
-        startFraction = endFraction;
-        distance = eventRemaining;
-        legStart = {
-          lon: coords[coords.length - 1][0],
-          lat: coords[coords.length - 1][1],
-          distance: 0,
-        };
-        if (distance > 0) {
-          idxWaypointPair += 1;
-          startFraction = 0;
-          idxStartLeg = 0;
-        }
-      }
-    }
-    return {lines: lines.filter(evtLines => evtLines.length > 0), exhausted};
   }
 
   getFeatures(data) {
@@ -247,8 +134,18 @@ export default class DistanceOnEarth extends React.Component {
     this.refreshVectors();
   }
 
+
+  getRoute = (waypoints) => {
+    if (waypoints == null) return null;
+    const { routes } = this.props;
+    const froms = routes[waypoints[0]];
+    if (froms == null) return null;
+    return froms[waypoints[1]];
+  }
+
   refreshVectors() {
-    const {lines, exhausted} = this.getLineStringsData();
+    const { events } = this.props;
+    const {lines, exhausted} = getLineStringsData(events, waypoints, this.getRoute);
     this.vectorSource.clear()
     if (lines.length > 0) {
       const features = this.getFeatures(lines);
