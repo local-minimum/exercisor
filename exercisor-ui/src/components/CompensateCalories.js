@@ -5,7 +5,7 @@ const engeryContent = {
   chips: 500,
   icecream: 300,
   snickers: 250,
-  beer: 200,
+  beer: 170,
   apple: 50,
   carrot: 30,
 };
@@ -21,7 +21,7 @@ const ratios = {
 
 const names = {
   chips: ["chipspåse", "chipspåsar"],
-  beer: ["glas öl", "glas öl"],
+  beer: ["flask öl", "flaskor öl"],
   pizza: ["pizza", "pizzor"],
   icecream: ["storstrut", "storstrutar"],
   snickers: ["snickers", "snickers"],
