@@ -52,3 +52,17 @@ tr:nth-child(even) {
   border-style: solid;
   border-color: black;
 }
+
+.map-segment-info {
+  display: inline;
+  top: -42px;
+  font-size: 12px;
+  background: white;
+  padding: 3px;
+  position: relative;
+}
+
+.map-segment-info h3 {
+  display: inline-block;
+  margin-right: 12px;
+}
