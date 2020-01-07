@@ -31,6 +31,7 @@ list_parser.add_argument("type", type=str, default="CrossTrainer")
 view_parser = reqparse.RequestParser()
 view_parser.add_argument("edit-key", type=str, default=None)
 
+
 def get_summary(args):
     return {
         "calories": args['calories'],
@@ -103,7 +104,7 @@ class UserYearGoals(Resource):
     def get(self, user: str, year: int):
         uid = transactions.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
-            return transactions.get_user_goal(db(), user, year)
+            return transactions.get_user_goal(db(), uid, year)
         abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
 
     def post(self, user: str, year: int):
@@ -113,7 +114,6 @@ class UserYearGoals(Resource):
             abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
         transactions.upsert_user_goal(
             db(),
-            user,
             uid,
             year,
             {
@@ -126,7 +126,7 @@ class ListUserEvents(Resource):
     def get(self, user: str):
         uid = transactions.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
-            return transactions.get_all_summaries(db(), user)
+            return transactions.get_all_summaries(db(), uid)
         abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
 
     def put(self, user: str):
@@ -137,7 +137,6 @@ class ListUserEvents(Resource):
         try:
             transactions.add_summary(
                 db(),
-                user,
                 uid,
                 args['date'],
                 get_summary(args),
@@ -156,7 +155,6 @@ class UserEvent(Resource):
             transactions.edit_event(
                 db(),
                 doc_id,
-                user,
                 uid,
                 args['date'],
                 get_summary(args),
@@ -173,7 +171,7 @@ class UserEvent(Resource):
             transactions.delete_event(
                 db(),
                 doc_id,
-                user,
+                uid,
             )
         except DatabaseError:
             abort(HTTPStatus.NOT_FOUND.value, message="No such event")

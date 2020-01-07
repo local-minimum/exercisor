@@ -12,8 +12,8 @@ USER_SETTINGS = 'users'
 USER_GOALS = 'goals'
 
 
-def get_user_goal(db: Database, user: str, year: int):
-    res = db[USER_GOALS].find_one({"user": user, "year": year})
+def get_user_goal(db: Database, user_id: ObjectId, year: int):
+    res = db[USER_GOALS].find_one({"uid": user_id, "year": year})
     if res is None:
         return None
     return {
@@ -24,16 +24,13 @@ def get_user_goal(db: Database, user: str, year: int):
 
 def upsert_user_goal(
     db: Database,
-    user: str,
     user_id: ObjectId,
     year: int,
     sums: Dict[str, Union[int, float]],
 ):
     return db[USER_GOALS].update_one(
-        {"user": user, "year": year},
+        {"uid": user_id, "year": year},
         {"$set": {
-            "user": user,
-            "uid": user_id,
             "year": year,
             "sums": sums,
         }},
@@ -69,7 +66,7 @@ def add_user(db: Database, user: str, edit_hash: Optional[str], public: Optional
     return str(res)
 
 
-def get_all_summaries(db: Database, user: str):
+def get_all_summaries(db: Database, user_id: ObjectId):
     return [
         {
             "id": str(doc["_id"]),
@@ -78,19 +75,17 @@ def get_all_summaries(db: Database, user: str):
             "distance": doc.get("summary", {}).get("distance"),
             "duration": doc.get("summary", {}).get("duration"),
             "type": doc.get("summary", {}).get("type", "CrossTrainer"),
-        } for doc in db[EVENTS_COLLECTION].find({"user": user}).sort("date", DESCENDING)
+        } for doc in db[EVENTS_COLLECTION].find({"uid": user_id}).sort("date", DESCENDING)
     ]
 
 
 def add_summary(
     db: Database,
-    user: str,
     user_id: ObjectId,
     date: str,
     summary: Dict[str, float],
 ):
     res = db[EVENTS_COLLECTION].insert_one({
-        "user": user,
         "uid": user_id,
         "date": dt.datetime.strptime(date[:10], "%Y-%m-%d"),
         "summary": summary,
@@ -103,15 +98,13 @@ def add_summary(
 def edit_event(
     db: Database,
     doc_id: str,
-    user: str,
     user_id: ObjectId,
     date: str,
     summary: Dict[str, float],
 ):
     res = db[EVENTS_COLLECTION].update_one(
-        {'_id': ObjectId(doc_id), "user": user},
+        {'_id': ObjectId(doc_id), "uid": user_id},
         {'$set': {
-            "uid": user_id,
             "date": dt.datetime.strptime(date[:10], "%Y-%m-%d"),
             "summary": summary,
         }}
@@ -121,8 +114,8 @@ def edit_event(
     return str(res)
 
 
-def delete_event(db: Database, doc_id: str, user: str):
-    res = db[EVENTS_COLLECTION].delete_one({'_id': ObjectId(doc_id), "user": user})
+def delete_event(db: Database, doc_id: str, user_id: ObjectId):
+    res = db[EVENTS_COLLECTION].delete_one({'_id': ObjectId(doc_id), "uid": user_id})
     if res is None:
         raise DatabaseError()
     return str(res)
