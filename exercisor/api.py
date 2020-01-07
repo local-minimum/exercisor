@@ -72,9 +72,9 @@ class ListUser(Resource):
             abort(HTTPStatus.FORBIDDEN.value, message="Username already taken {}".format(args))
 
 
-def may_view(user, edit_key):
+def may_view(uid, edit_key):
     try:
-        settings = transactions.get_user_settings(db(), user)
+        settings = transactions.get_user_settings(db(), uid)
     except DatabaseError:
         abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
     else:
@@ -84,9 +84,9 @@ def may_view(user, edit_key):
     return False
 
 
-def may_edit(user, edit_key):
+def may_edit(uid, edit_key):
     try:
-        settings = transactions.get_user_settings(db(), user)
+        settings = transactions.get_user_settings(db(), uid)
     except DatabaseError:
         abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
     else:
@@ -101,13 +101,15 @@ goals_parser.add_argument("sum-events", type=int, help="Total number of events t
 
 class UserYearGoals(Resource):
     def get(self, user: str, year: int):
-        if may_view(user, view_parser.parse_args()['edit-key']):
+        uid = transactions.get_user_id(db(), user)
+        if may_view(uid, view_parser.parse_args()['edit-key']):
             return transactions.get_user_goal(db(), user, year)
         abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
 
     def post(self, user: str, year: int):
+        uid = transactions.get_user_id(db(), user)
         args = goals_parser.parse_args()
-        if not may_edit(user, args['edit-key']):
+        if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
         transactions.upsert_user_goal(
             db(),
@@ -121,18 +123,21 @@ class UserYearGoals(Resource):
 
 class ListUserEvents(Resource):
     def get(self, user: str):
-        if may_view(user, view_parser.parse_args()['edit-key']):
+        uid = transactions.get_user_id(db(), user)
+        if may_view(uid, view_parser.parse_args()['edit-key']):
             return transactions.get_all_summaries(db(), user)
         abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
 
     def put(self, user: str):
+        uid = transactions.get_user_id(db(), user)
         args = list_parser.parse_args()
-        if not may_edit(user, args['edit-key']):
+        if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
         try:
             transactions.add_summary(
                 db(),
                 user,
+                uid,
                 args['date'],
                 get_summary(args),
             )
@@ -142,14 +147,16 @@ class ListUserEvents(Resource):
 
 class UserEvent(Resource):
     def post(self, user: str, doc_id: str):
+        uid = transactions.get_user_id(db(), user)
         args = list_parser.parse_args()
-        if not may_edit(user, args['edit-key']):
+        if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
         try:
             transactions.edit_event(
                 db(),
                 doc_id,
                 user,
+                uid,
                 args['date'],
                 get_summary(args),
             )
@@ -157,8 +164,9 @@ class UserEvent(Resource):
             abort(HTTPStatus.NOT_FOUND.value, message="No such event")
 
     def delete(self, user: str, doc_id: str):
+        uid = transactions.get_user_id(db(), user)
         args = view_parser.parse_args()
-        if not may_edit(user, args['edit-key']):
+        if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
         try:
             transactions.delete_event(

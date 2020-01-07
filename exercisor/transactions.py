@@ -35,14 +35,21 @@ def upsert_user_goal(db: Database, user: str, year: int, sums: Dict[str, Union[i
     )
 
 
-def get_user_settings(db: Database, user: str):
-    res = db[USER_SETTINGS].find_one({"user": user})
+def get_user_settings(db: Database, user_id: ObjectId):
+    res = db[USER_SETTINGS].find_one({"_id": user_id})
     if res is None:
         raise DatabaseError("Doesn't exist")
     return {
         "edit-key-hash": res.get('edit'),
         "public": bool(res.get('public', False)),
     }
+
+
+def get_user_id(db: Database, user: str) -> Optional[ObjectId]:
+    res = db[USER_SETTINGS].find_one({"user": user})
+    if res is None:
+        return None
+    return res["_id"]
 
 
 def add_user(db: Database, user: str, edit_hash: Optional[str], public: Optional[bool]):
@@ -60,7 +67,6 @@ def get_all_summaries(db: Database, user: str):
     return [
         {
             "id": str(doc["_id"]),
-            "user": doc["user"],
             "date": doc['date'].date().isoformat(),
             "calories": doc.get("summary", {}).get("calories"),
             "distance": doc.get("summary", {}).get("distance"),
@@ -70,9 +76,16 @@ def get_all_summaries(db: Database, user: str):
     ]
 
 
-def add_summary(db: Database, user: str, date: str, summary: Dict[str, float]):
+def add_summary(
+    db: Database,
+    user: str,
+    user_id: ObjectId,
+    date: str,
+    summary: Dict[str, float],
+):
     res = db[EVENTS_COLLECTION].insert_one({
         "user": user,
+        "uid": user_id,
         "date": dt.datetime.strptime(date[:10], "%Y-%m-%d"),
         "summary": summary,
     })
@@ -81,10 +94,18 @@ def add_summary(db: Database, user: str, date: str, summary: Dict[str, float]):
     return str(res)
 
 
-def edit_event(db: Database, doc_id: str, user: str, date: str, summary: Dict[str, float]):
+def edit_event(
+    db: Database,
+    doc_id: str,
+    user: str,
+    user_id: ObjectId,
+    date: str,
+    summary: Dict[str, float],
+):
     res = db[EVENTS_COLLECTION].update_one(
         {'_id': ObjectId(doc_id), "user": user},
         {'$set': {
+            "uid": user_id,
             "date": dt.datetime.strptime(date[:10], "%Y-%m-%d"),
             "summary": summary,
         }}
