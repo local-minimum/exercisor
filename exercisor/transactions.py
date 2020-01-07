@@ -17,17 +17,23 @@ def get_user_goal(db: Database, user: str, year: int):
     if res is None:
         return None
     return {
-        "user": user,
         "year": year,
         "sums": res["sums"],
     }
 
 
-def upsert_user_goal(db: Database, user: str, year: int, sums: Dict[str, Union[int, float]]):
+def upsert_user_goal(
+    db: Database,
+    user: str,
+    user_id: ObjectId,
+    year: int,
+    sums: Dict[str, Union[int, float]],
+):
     return db[USER_GOALS].update_one(
         {"user": user, "year": year},
         {"$set": {
             "user": user,
+            "uid": user_id,
             "year": year,
             "sums": sums,
         }},

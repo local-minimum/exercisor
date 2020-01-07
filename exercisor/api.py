@@ -114,6 +114,7 @@ class UserYearGoals(Resource):
         transactions.upsert_user_goal(
             db(),
             user,
+            uid,
             year,
             {
                 "events": args['sum-events'],
