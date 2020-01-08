@@ -54,15 +54,21 @@ tr:nth-child(even) {
 }
 
 .map-segment-info {
-  display: inline;
-  top: -42px;
-  font-size: 12px;
-  background: white;
-  padding: 3px;
+  top: -32px;
+  height: 0px;
   position: relative;
 }
 
-.map-segment-info h3 {
+.map-segment-info-inner {
+  display: inline;
+  padding: 3px;
+  position: absolute;
+  height: 20px;
+  font-size: 12px;
+  background: white;
+}
+
+.map-segment-info-inner h3 {
   display: inline-block;
-  margin-right: 12px;
+  margin: 0px 12px 0px 0px; 
 }

@@ -67,7 +67,7 @@ export default class DistanceOnEarth extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { exhausted: false, segment: null };
+    this.state = { exhausted: false, segment: null, focusMode: 'recent' };
 
     this.vectorSource = new VectorSource();
 
@@ -180,8 +180,10 @@ export default class DistanceOnEarth extends React.Component {
     const intro = exhausted ? 'Varje segment är ett träningspass' : 'Laddar...';
     const Segment = segment && (
       <div className="map-segment-info">
-        <h3>Pass {segment}</h3>
-        <span>{events[events.length - segment].date}</span>
+        <div className="map-segment-info-inner">
+          <h3>Pass {segment}</h3>
+          <span>{events[events.length - segment].date}</span>
+        </div>
       </div>
     );
     return (
@@ -190,6 +192,11 @@ export default class DistanceOnEarth extends React.Component {
         <em>{intro}</em>
         <div id="map" style={mapStyle} />
         {Segment}
+        <div>
+          <strong>Fokusera på: </strong>
+          <button onClick={() => this.setFocus('recent')}>Senaste passet</button>
+          <button onClick={() => this.setFocus('all')}>Alla pass</button>
+        </div>
       </div>
     );
   }
@@ -220,6 +227,34 @@ export default class DistanceOnEarth extends React.Component {
     return froms[waypoints[1]];
   }
 
+  setFocusIfLoading = () => {
+    const { focusMode, exhausted } = this.state;
+    if (!exhausted) this.setFocus(focusMode);
+  }
+
+  setFocus = (focusMode) => {
+    if (focusMode === 'all') {
+      const extent = this.vectorSource.getExtent();
+      this.olmap.getView().fit(extent);
+      this.olmap.getView().adjustZoom(-1);
+      if (this.state.focusMode !== focusMode) this.setState({focusMode});
+    } else if (focusMode === 'recent') {
+      const feat = this.vectorSource.getFeatures()
+        .reduce(
+          (acc, feat) => {
+            if (acc == null) return feat;
+            return acc.get('segment') > feat.get('segment') ? acc : feat;
+          },
+          null,
+        );
+      if (feat != null) {
+          this.olmap.getView().fit(feat.getGeometry().getExtent());
+          this.olmap.getView().setZoom(9);
+      }
+      if (this.state.focusMode !== focusMode) this.setState({focusMode});
+    }
+  }
+
   refreshVectors() {
     const { events } = this.props;
     const { segment } = this.state;
@@ -228,9 +263,7 @@ export default class DistanceOnEarth extends React.Component {
     if (lines.length > 0) {
       const features = this.getFeatures(lines, segment);
       this.vectorSource.addFeatures(features);
-      const extent = this.vectorSource.getExtent();
-      this.olmap.getView().fit(extent);
-      this.olmap.getView().adjustZoom(-1);
+      this.setFocusIfLoading();
     }
     if (this.state.exhausted !== exhausted) this.setState({exhausted});
   }
@@ -241,7 +274,7 @@ export default class DistanceOnEarth extends React.Component {
     if (exhausted) {
       return;
     };
-    waypoints.some((wptPair, idx) => {
+    const loading = waypoints.some((wptPair, idx) => {
         if (wptPair != null && this.getRoute(wptPair) == null) {
           onLoadRoute(wptPair[0], wptPair[1]);
           setTimeout(this.loadNextRoute, 2000);
@@ -249,5 +282,6 @@ export default class DistanceOnEarth extends React.Component {
         }
         return false;
     });
+    if (!loading) this.setState({exhausted: true});
   }
 };
