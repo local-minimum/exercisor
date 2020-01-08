@@ -33,8 +33,8 @@ const SEG_TYPE_CONNECTOR = 'SEG_TYPE_CONNECTOR';
 const SEG_TYPE_PT = 'SEG_TYPE_PT';
 const colDark = '#1c2541';
 const colLight = '#3a506b';
-const colHighDark = '#1c3f1b';
-const colHighLight = '#3a6b39';
+const colHighDark = '#ff8c42';
+const colHighLight = '#ff3c38';
 
 const lineStyle = new Style({
   stroke: new Stroke({width: 2, color: colDark})
