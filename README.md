@@ -11,10 +11,11 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Add "logout"
 - [x] Map: Get some highlight info about the segment maybe?
 - [x] DB uses user's name and not ID...
-- [ ] API Errors should show in UI
+- [x] API Errors should show in UI
+- [ ] Make nicer error messages
 - [ ] Create new user
 - [ ] Safari error with dates
-- [ ] Fix not drawing entire line for last segment if it crosses over to next path
+- [ ] Fix not drawing entire line for event spanning two routes.
 
 ## Wishful ToDo
 
