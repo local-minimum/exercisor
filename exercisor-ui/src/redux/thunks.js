@@ -1,6 +1,6 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
-  setOSMLocation, setOSMRoute,
+  setOSMLocation, setOSMRoute, setErrorMessage
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
@@ -39,7 +39,8 @@ export function loadYearGoals(name, year) {
           } else {
             dispatch(setGoals(goals));
           }
-        });
+        })
+        .catch(message => dispatch(setErrorMessage(message)));
     }
   }
 }
@@ -49,7 +50,8 @@ export function saveGoals(name, year) {
     const { goals, editKey } = getState();
     if (goals != null) {
       upsertGoals(name, year, goals, editKey)
-        .then(_ => dispatch(loadYearGoals(name, year)));
+        .then(_ => dispatch(loadYearGoals(name, year)))
+        .catch(message => dispatch(setErrorMessage(message)));
     }
   }
 }
@@ -62,25 +64,29 @@ export function loadEvents(name) {
       .then(events => {
         dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))
-      });
+      })
+      .catch(message => dispatch(setErrorMessage(message)));
   }
 }
 
 export function saveEvent() {
   return (dispatch, getState) => {
     const {entry, name, editKey} = getState();
-    console.log(entry);
+    const {date} = entry;
     dispatch(clearEntry());
     if (entry.id == null) {
       return putEvent(name, editKey, entry)
         .then(res => {
             dispatch(loadEvents(name));
-        });
+        })
+        .catch(message => dispatch(setErrorMessage(message)));
+
     }
     return postEvent(name, entry.id, editKey, entry)
         .then(res => {
             dispatch(loadEvents(name));
-        });
+        })
+        .catch(message => dispatch(setErrorMessage(message)));
   }
 }
 
@@ -90,7 +96,8 @@ export function removeEvent(evtId) {
     return deleteEvent(name, evtId, editKey)
       .then(res => {
         dispatch(loadEvents(name));
-      });
+      })
+      .catch(message => dispatch(setErrorMessage(message)));
   }
 }
 
@@ -118,6 +125,7 @@ export function loadRoute(from, to) {
       locationPromises.push(
         getLocation(from)
           .then(coords => dispatch(setOSMLocation(from, coords)))
+          .catch(message => dispatch(setErrorMessage(message)))
       );
     }
     const knownTo = getOSMLocationCoords(getState(), to);
@@ -125,6 +133,7 @@ export function loadRoute(from, to) {
       locationPromises.push(
         getLocation(to)
           .then(coords => dispatch(setOSMLocation(to, coords)))
+          .catch(message => dispatch(setErrorMessage(message)))
       );
     }
     return Promise.all(locationPromises)
@@ -134,7 +143,8 @@ export function loadRoute(from, to) {
           getRouteCoordinates(fromLoc, toLoc)
             .then(route => {
               dispatch(setOSMRoute(from, to, route));
-            });
+            })
+            .catch(message => dispatch(setErrorMessage(message)));
       });
   };
 }

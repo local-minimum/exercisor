@@ -3,7 +3,7 @@ import {
   SET_NAME, SET_EVENTS, SET_YEARS,
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
   SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
-  SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE,
+  SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
 } from './actions';
 
 const defaultSettings = {listAll: false};
@@ -135,6 +135,23 @@ const routes = (state = {}, action) => {
   }
 }
 
+const errorMessage = (state = null, action) => {
+  switch (action.type) {
+    case SET_ERROR_MESSAGE:
+      const msg = typeof(action.message) === 'object' ? Object
+        .entries(action.message)
+        .reduce(
+          (acc, [key, val]) =>
+            acc == null ? `${key}: ${val}` : `${acc}, ${key}: ${val}`,
+          null
+        ) : action.message;
+      return msg;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
+  errorMessage,
 });

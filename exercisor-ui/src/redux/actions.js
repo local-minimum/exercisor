@@ -24,6 +24,7 @@ export const SET_GOALS = 'SET_GOALS';
 export const SET_GOALS_EVENTSSUM = 'SET_GOALS_EVENTSSUM';
 export const SET_OSM_LOCATION = 'SET_OSM_LOCATION';
 export const SET_OSM_ROUTE = 'SET_OSM_ROUTE';
+export const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
 export const setName = makeActionCreator(SET_NAME, 'name');
@@ -41,3 +42,4 @@ export const setGoals = makeActionCreator(SET_GOALS, 'goals');
 export const setGoalsEventSum = makeActionCreator(SET_GOALS_EVENTSSUM, 'events');
 export const setOSMLocation = makeActionCreator(SET_OSM_LOCATION, 'location', 'coords');
 export const setOSMRoute = makeActionCreator(SET_OSM_ROUTE, 'from', 'to', 'route');
+export const setErrorMessage = makeActionCreator(SET_ERROR_MESSAGE, 'message');

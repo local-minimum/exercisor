@@ -2,27 +2,30 @@ import $ from 'jquery';
 
 const BASE_URL = '/exercisor/api';
 
-export const getUserEventList = (user, editKey) => {
-  return $
-    .getJSON(`${BASE_URL}/${user}/event?edit-key=${editKey}`);
-}
-
 const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
   const message = responseJSON.message || statusText;
-  return Promise.reject(Error(message));
+  return Promise.reject(message);
 }
 
 const jsonRequest = (url, data, type='POST') => {
-  return $.ajax({
+  return $.ajax(Object.assign({
     type,
     url,
+  }, type === 'GET' ? null : {
     contentType: 'application/json',
     data: JSON.stringify(data),
     dataType: 'json',
-  })
+  }))
     .catch(ajaxErrorHandler);
 }
 
+export const getUserEventList = (user, editKey) => {
+  return jsonRequest(
+      `${BASE_URL}/${user}/event?edit-key=${editKey}`,
+      {},
+      'GET',
+    );
+}
 
 const str2minutes = (str) => {
   const arr = str.split(":");
@@ -30,9 +33,11 @@ const str2minutes = (str) => {
   return Number(arr[0]) + Number(arr[1]) / 60;
 }
 
+const safeDate = (str) => new Date(str).toISOString().split("T")[0]
+
 export const putEvent = (user, editKey, evt) => {
   const data = {
-    date: evt.date,
+    date: safeDate(evt.date),
     duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
@@ -47,7 +52,7 @@ export const putEvent = (user, editKey, evt) => {
 
 export const postEvent = (user, id, editKey, evt) => {
   const data = {
-    date: evt.date,
+    date: safeDate(evt.date),
     duration: str2minutes(evt.duration),
     distance: Number(evt.distance),
     calories: Number(evt.calories),
@@ -70,8 +75,11 @@ export const deleteEvent = (user, id, editKey) => {
 }
 
 export const getGoals = (user, year, editKey) => {
-  return $
-    .getJSON(`${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`);
+  return jsonRequest(
+      `${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`,
+      {},
+      'GET',
+    );
 }
 
 export const upsertGoals = (user, year, goals, editKey) => {

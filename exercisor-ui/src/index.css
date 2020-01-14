@@ -12,3 +12,9 @@ input {
   border-radius: 12px;
   border-color: #bbb;
 }
+
+.error {
+  background-color: #ff5d6c;
+  color: #fbceb5;
+  font-weight: 700;
+}

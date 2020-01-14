@@ -13,6 +13,8 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] DB uses user's name and not ID...
 - [ ] API Errors should show in UI
 - [ ] Create new user
+- [ ] Safari error with dates
+- [ ] Fix not drawing entire line for last segment if it crosses over to next path
 
 ## Wishful ToDo
 
