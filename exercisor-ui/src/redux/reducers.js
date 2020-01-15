@@ -4,6 +4,7 @@ import {
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
   SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
+  SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, CLEAR_REG,
 } from './actions';
 
 const defaultSettings = {listAll: false};
@@ -137,6 +138,8 @@ const routes = (state = {}, action) => {
 
 const errorMessage = (state = null, action) => {
   switch (action.type) {
+    case CLEAR_REG:
+      return null;
     case SET_ERROR_MESSAGE:
       const msg = typeof(action.message) === 'object' ? Object
         .entries(action.message)
@@ -151,7 +154,24 @@ const errorMessage = (state = null, action) => {
   }
 }
 
+const defaultReg = {user: '', pwd: '', pwd2: ''};
+const register = (state = defaultReg, action) => {
+    switch (action.type) {
+      case SET_REG_USER:
+        return Object.assign({}, state, {user: action.user.toLocaleLowerCase()});
+      case SET_REG_PWD:
+        return Object.assign({}, state, {pwd: action.pwd});
+      case SET_REG_PWD2:
+        return Object.assign({}, state, {pwd2: action.pwd2});
+      case CLEAR_REG:
+        return defaultReg;
+      default:
+        return state;
+
+    }
+}
+
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
-  errorMessage,
+  errorMessage, register,
 });

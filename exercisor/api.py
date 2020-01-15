@@ -44,7 +44,7 @@ def get_summary(args):
 user_parser = reqparse.RequestParser()
 user_parser.add_argument("user", type=str)
 user_parser.add_argument("edit-key", type=str, default=None)
-user_parser.add_argument("public", type=int, default=0)
+user_parser.add_argument("public", type=int, default=1)
 
 
 def pwd_hash(pwd: Optional[str]) -> Optional[str]:
@@ -70,7 +70,8 @@ class ListUser(Resource):
                 bool(args["public"]),
             )
         except DatabaseError:
-            abort(HTTPStatus.FORBIDDEN.value, message="Username already taken {}".format(args))
+            abort(HTTPStatus.FORBIDDEN.value, message="Username already taken")
+        return {}
 
 
 def may_view(uid, edit_key):
@@ -120,6 +121,7 @@ class UserYearGoals(Resource):
                 "events": args['sum-events'],
             }
         )
+        return {}
 
 
 class ListUserEvents(Resource):
@@ -143,6 +145,7 @@ class ListUserEvents(Resource):
             )
         except DatabaseError:
             abort(HTTPStatus.FORBIDDEN.value, message="Unknown error")
+        return {}
 
 
 class UserEvent(Resource):
@@ -161,6 +164,7 @@ class UserEvent(Resource):
             )
         except DatabaseError:
             abort(HTTPStatus.NOT_FOUND.value, message="No such event")
+        return {}
 
     def delete(self, user: str, doc_id: str):
         uid = transactions.get_user_id(db(), user)
@@ -175,3 +179,4 @@ class UserEvent(Resource):
             )
         except DatabaseError:
             abort(HTTPStatus.NOT_FOUND.value, message="No such event")
+        return {}

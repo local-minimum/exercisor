@@ -93,3 +93,15 @@ export const upsertGoals = (user, year, goals, editKey) => {
     'POST',
   );
 }
+
+export const registerUser = (user, editKey) => {
+  const data = {
+    user,
+    'edit-key': editKey,
+  };
+  return jsonRequest(
+    `${BASE_URL}`,
+    data,
+    'PUT',
+  );
+}

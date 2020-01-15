@@ -1,9 +1,10 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
-  setOSMLocation, setOSMRoute, setErrorMessage
+  setOSMLocation, setOSMRoute, setErrorMessage, clearReg,
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
+  registerUser,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -72,7 +73,6 @@ export function loadEvents(name) {
 export function saveEvent() {
   return (dispatch, getState) => {
     const {entry, name, editKey} = getState();
-    const {date} = entry;
     dispatch(clearEntry());
     if (entry.id == null) {
       return putEvent(name, editKey, entry)
@@ -147,4 +147,20 @@ export function loadRoute(from, to) {
             .catch(message => dispatch(setErrorMessage(message)));
       });
   };
+}
+
+export function register({history, match}) {
+  return (dispatch, getState) => {
+    const { register } = getState();
+    const { user, pwd } = register;
+    registerUser(user, pwd)
+      .then(() => {
+        const path = match.url.split('/')
+        const root = path.slice(0, path.indexOf('register') - 1).join('/')
+        history.push(`${root}${root.length > 0 ? '/' : ''}${user}`);
+      })
+      .catch(message => {
+        dispatch(setErrorMessage(message));
+      });
+  }
 }
