@@ -19,7 +19,6 @@ class ExerciseView extends React.Component {
 
   render() {
     const { years, match, editKey, onSetEditKey, errorMessage } = this.props;
-    console.log(errorMessage);
     return <div className="App-main-item">
       <EditKey editKey={editKey} onSetEditKey={onSetEditKey} />
       <ExerciseYears years={years} match={match} />

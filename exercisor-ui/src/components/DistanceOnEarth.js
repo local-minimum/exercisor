@@ -135,16 +135,20 @@ export default class DistanceOnEarth extends React.Component {
         });
         feat.setStyle(this.getStyle(selected, SEG_TYPE_LINE));
         feats.push(feat);
-        const connector = new Feature({
-          geometry: new LineString([
-            fromLonLat(evtData[idxPart][evtData[idxPart].length - 1]),
-            fromLonLat(evtData[idxPart + 1][1]),
-          ]),
-          segment: idx + 1,
-          name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
-        });
-        connector.setStyle(this.getStyle(selected, SEG_TYPE_CONNECTOR));
-        feats.push(connector);
+        const lastPt = evtData[idxPart][evtData[idxPart].length - 1];
+        const nextPt = evtData[idxPart + 1][0];
+        if (lastPt[0] !== nextPt[0] || lastPt[1] !== nextPt[1]) {
+          const connector = new Feature({
+            geometry: new LineString([
+              fromLonLat(lastPt),
+              fromLonLat(nextPt),
+            ]),
+            segment: idx + 1,
+            name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
+          });
+          connector.setStyle(this.getStyle(selected, SEG_TYPE_CONNECTOR));
+          feats.push(connector);
+        }
       }
       const lastLine = evtData[evtData.length - 1]
       const feat = new Feature({
@@ -152,7 +156,7 @@ export default class DistanceOnEarth extends React.Component {
         segment: idx + 1,
         name: `Pass ${idx + 1}, del ${evtData.length}`,
       });
-      feat.setStyle(this.getStyle(SEG_TYPE_LINE));
+      feat.setStyle(this.getStyle(selected, SEG_TYPE_LINE));
       feats.push(feat);
       const featPt = new Feature({
         geometry: new Point(fromLonLat(lastLine[lastLine.length - 1])),

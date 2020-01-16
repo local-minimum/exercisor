@@ -168,8 +168,7 @@ export function getLineStringsData(events, waypoints, getRoute) {
         idxWaypointPair += 1;
         startFraction = 0;
         idxStartLeg = 0;
-        // BUG: This should set to null but it wont draw entire event then
-        // legStart = null;
+        legStart = null;
       }
     }
   }
