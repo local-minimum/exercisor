@@ -12,12 +12,15 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Map: Get some highlight info about the segment maybe?
 - [x] DB uses user's name and not ID...
 - [x] API Errors should show in UI
-- [ ] Make nicer error messages
-- [ ] Create new user
-- [ ] Safari error with dates
-- [ ] Fix not drawing entire line for event spanning two routes.
+- [x] Create new user
+- [x] Safari error with dates
+- [x] Fix not drawing entire line for event spanning two routes.
+- [x] Make nicer error messages
 
 ## Wishful ToDo
 
 - [ ] Histogram of Distance and Energy
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
+- [ ] Create own routes per year or total route
+- [ ] Give route to other
+- [ ] Challenges

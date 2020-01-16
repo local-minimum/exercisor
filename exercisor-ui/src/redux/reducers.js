@@ -139,6 +139,11 @@ const routes = (state = {}, action) => {
 const errorMessage = (state = null, action) => {
   switch (action.type) {
     case CLEAR_REG:
+    case SET_NAME:
+    case SET_YEARS:
+    case SET_GOALS:
+    case SET_EVENTS:
+    case SET_EDITKEY:
       return null;
     case SET_ERROR_MESSAGE:
       const msg = typeof(action.message) === 'object' ? Object

@@ -59,9 +59,9 @@ class ListUser(Resource):
     def put(self):
         args = user_parser.parse_args()
         if not args["user"]:
-            abort(HTTPStatus.BAD_REQUEST.value, message="Username is needed")
+            abort(HTTPStatus.BAD_REQUEST.value, message="Användarnamn är ett måster")
         if not args["edit-key"]:
-            abort(HTTPStatus.BAD_REQUEST.value, message="Edit key is needed")
+            abort(HTTPStatus.BAD_REQUEST.value, message="Lösenord är ett måste")
         try:
             transactions.add_user(
                 db(),
@@ -70,7 +70,7 @@ class ListUser(Resource):
                 bool(args["public"]),
             )
         except DatabaseError:
-            abort(HTTPStatus.FORBIDDEN.value, message="Username already taken")
+            abort(HTTPStatus.FORBIDDEN.value, message="Användarnamn redan taget")
         return {}
 
 
@@ -78,7 +78,7 @@ def may_view(uid, edit_key):
     try:
         settings = transactions.get_user_settings(db(), uid)
     except DatabaseError:
-        abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
+        abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
     else:
         if settings['public']:
             return True
@@ -90,7 +90,7 @@ def may_edit(uid, edit_key):
     try:
         settings = transactions.get_user_settings(db(), uid)
     except DatabaseError:
-        abort(HTTPStatus.NOT_FOUND.value, message="User doesn't exist")
+        abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
     else:
         return pwd_hash(edit_key) == settings['edit-key-hash']
     return False
@@ -106,13 +106,13 @@ class UserYearGoals(Resource):
         uid = transactions.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
             return transactions.get_user_goal(db(), uid, year)
-        abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
+        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
 
     def post(self, user: str, year: int):
         uid = transactions.get_user_id(db(), user)
         args = goals_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         transactions.upsert_user_goal(
             db(),
             uid,
@@ -129,13 +129,13 @@ class ListUserEvents(Resource):
         uid = transactions.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
             return transactions.get_all_summaries(db(), uid)
-        abort(HTTPStatus.FORBIDDEN.value, message="You need edit key to view")
+        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
 
     def put(self, user: str):
         uid = transactions.get_user_id(db(), user)
         args = list_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             transactions.add_summary(
                 db(),
@@ -144,7 +144,7 @@ class ListUserEvents(Resource):
                 get_summary(args),
             )
         except DatabaseError:
-            abort(HTTPStatus.FORBIDDEN.value, message="Unknown error")
+            abort(HTTPStatus.FORBIDDEN.value, message="Hoppsan, ett okänt fel inträffade")
         return {}
 
 
@@ -153,7 +153,7 @@ class UserEvent(Resource):
         uid = transactions.get_user_id(db(), user)
         args = list_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             transactions.edit_event(
                 db(),
@@ -163,14 +163,14 @@ class UserEvent(Resource):
                 get_summary(args),
             )
         except DatabaseError:
-            abort(HTTPStatus.NOT_FOUND.value, message="No such event")
+            abort(HTTPStatus.NOT_FOUND.value, message="Hittade inget pass att uppdatera")
         return {}
 
     def delete(self, user: str, doc_id: str):
         uid = transactions.get_user_id(db(), user)
         args = view_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Need edit-key")
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             transactions.delete_event(
                 db(),
@@ -178,5 +178,5 @@ class UserEvent(Resource):
                 uid,
             )
         except DatabaseError:
-            abort(HTTPStatus.NOT_FOUND.value, message="No such event")
+            abort(HTTPStatus.NOT_FOUND.value, message="Hittade inget pass att ta bort")
         return {}
