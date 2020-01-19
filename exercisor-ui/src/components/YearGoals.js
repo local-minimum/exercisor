@@ -121,16 +121,16 @@ export default function YearGoals({ events, goals, year }) {
   const hasGoals = (
     goals != null &&
     (
-      (goals.sums.events !== 0 && goals.sums.events != null)
-      || (goals.weekly.distance !== 0 && goals.weekly.distance != null)
+      (goals.sums != null && goals.sums.events !== 0 && goals.sums.events != null)
+      || (goals.weekly != null && goals.weekly.distance !== 0 && goals.weekly.distance != null)
     )
   );
   if (!hasGoals) return null;
   const Goals = []
-  if (goals.sums.events != null && goals.sums.events > 0) {
+  if (goals.sums != null && goals.sums.events != null && goals.sums.events > 0) {
     Goals.push(EventsGoal(year, events, goals));
   }
-  if (goals.weekly.distance != null && goals.weekly.distance > 0) {
+  if (goals.weekly != null && goals.weekly.distance != null && goals.weekly.distance > 0) {
     Goals.push(WeeklyDistGoal(year, events, goals));
   }
   return (
