@@ -19,7 +19,10 @@ export default class ExerciseViewYear extends React.Component {
   getName = () => this.props.match.params.name;
 
   render() {
-    const { editKey, goals, onSetGoalsEventSum, onSaveGoals, onLoadRoute, routes } = this.props;
+    const {
+      editKey, goals, onSetGoalsEventSum, onSaveGoals, onLoadRoute, routes,
+      onSetGoalsDistanceWeekly,
+    } = this.props;
     const year = this.getYear();
     const events = filterEvents(this.props.events, year != null ? Number(year) : null);
     const series = events2timeSeries(events);
@@ -28,6 +31,7 @@ export default class ExerciseViewYear extends React.Component {
       year={year}
       goals={goals}
       onSetGoalsEventSum={onSetGoalsEventSum}
+      onSetGoalsDistanceWeekly={onSetGoalsDistanceWeekly}
       onSaveGoals={onSaveGoals}
       name={this.getName()}
     /> : <YearGoals year={year} goals={goals} events={events} />;

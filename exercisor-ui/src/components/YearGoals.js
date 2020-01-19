@@ -4,44 +4,35 @@ import GaugeChart from 'react-gauge-chart';
 import { getYearDurationSoFar, getYearDuration } from '../util';
 import './YearGoals.css';
 
-export default function YearGoals({ events, goals, year }) {
-  const noGoals = (goals === null || goals.sums.events === 0);
-  const Intro = noGoals ? <em>Inga mål inlagda...</em> : null;
-  const Goals = []
-  if (!noGoals) {
-    if (goals.sums.events > 0) {
-      const count = events.length;
-      const target = goals.sums.events;
-      const percent = 100 * count / target;
-      const symbol = (
-        <div className="progress-symbol progress-events">
-          <h3>{percent >= 100 ? '✔ ' : ''}Pass</h3>
-          {`${count}/${target}`}
-        </div>
-      );
-      const period = getYearDurationSoFar(year);
-      const yearDuration = getYearDuration(year);
-      const gauge = Math.max(
-        Math.min(
-          (count / period) / (target / yearDuration) - 0.5,
-          1,
-        ),
-        0,
-      );
-      let gaugeText = "Är målet för lätt?";
-      if (gauge > 0.6 && gauge < 0.8) {
-        gaugeText = "Flitigt!";
-      } else if (gauge > 0.4 && gauge <= 0.8) {
-        gaugeText = "På våg mot målet";
-      } else if (gauge > 0.2 && gauge <= 0.4) {
-        gaugeText = "Du måste öka!";
-      } else if (gauge <= 0.2) {
-        gaugeText = "Sätt lättare mål?";
-      }
+function Goal(
+  key,
+  name,
+  percent,
+  value,
+  target,
+  gauge,
+) {
+    const symbol = (
+      <div className={`progress-symbol progress-${name}`}>
+        <h3>{percent >= 100 ? '✔ ' : ''}{name}</h3>
+        {`${value}/${target}`}
+      </div>
+    );
 
-      Goals.push(
+    let gaugeText = "Är målet för lätt?";
+    if (gauge > 0.6 && gauge < 0.8) {
+      gaugeText = "Flitigt!";
+    } else if (gauge > 0.4 && gauge <= 0.8) {
+      gaugeText = "På våg mot målet";
+    } else if (gauge > 0.2 && gauge <= 0.4) {
+      gaugeText = "Du måste öka!";
+    } else if (gauge <= 0.2) {
+      gaugeText = "Sätt lättare mål?";
+    }
+
+    const ShowProgress = percent != null ?
         <Progress
-          key="events-progress"
+          key={`${key}-progress`}
           type="circle"
           percent={percent}
           status="success"
@@ -53,14 +44,14 @@ export default function YearGoals({ events, goals, year }) {
               trailColor: '#71a95a',
             },
           }}
-        />
-      );
-      Goals.push(
-        <div
-          key="events-gauge"
-        >
+        /> : null;
+
+    return (
+      <div key={key} className="goal-group">
+        {ShowProgress}
+        <div>
           <GaugeChart
-            id='events-gauge'
+            id={`${key}-gauge`}
             percent={gauge}
             nrOfLevels={5}
             colors={['#e86a51','#f4a261', '#b5ceab','#5b9e6f', '#317240']}
@@ -71,18 +62,80 @@ export default function YearGoals({ events, goals, year }) {
             hideText
             style={{ width: 140 }}
           />
-          <div className='gauge-caption progress-events'>
-            <h3>Pass</h3>
+          <div className={`gauge-caption progress-${name}`}>
+            <h3>{name}</h3>
             {gaugeText}
           </div>
         </div>
-      );
-    }
+      </div>
+    );
+}
+
+function EventsGoal(year, events, goals) {
+    const count = events.length;
+    const target = goals.sums.events;
+    const percent = 100 * count / target;
+    const period = getYearDurationSoFar(year);
+    const yearDuration = getYearDuration(year);
+    const gauge = Math.max(
+      Math.min(
+        (count / period) / (target / yearDuration) - 0.5,
+        1,
+      ),
+      0,
+    );
+    return Goal(
+      'year-events',
+      "Pass",
+      percent,
+      count,
+      target,
+      gauge,
+    );
+}
+
+function WeeklyDistGoal(year, events, goals) {
+    const totalDistance = events
+      .reduce((acc, evt) => acc + (evt.distance == null ? 0 : evt.distance), 0);
+    const target = goals.weekly.distance;
+    const days = getYearDurationSoFar(year);
+    const weekly = totalDistance / days * 7;
+    const gauge = Math.max(
+      Math.min(
+        (weekly / target) - 0.5,
+        1,
+      ),
+      0,
+    );
+    return Goal(
+      'weekly-distance',
+      `${weekly.toFixed(1)} km / vecka`,
+      null,
+      weekly,
+      target,
+      gauge,
+    );
+}
+
+export default function YearGoals({ events, goals, year }) {
+  const hasGoals = (
+    goals != null &&
+    (
+      (goals.sums.events !== 0 && goals.sums.events != null)
+      || (goals.weekly.distance !== 0 && goals.weekly.distance != null)
+    )
+  );
+  if (!hasGoals) return null;
+  const Goals = []
+  if (goals.sums.events != null && goals.sums.events > 0) {
+    Goals.push(EventsGoal(year, events, goals));
+  }
+  if (goals.weekly.distance != null && goals.weekly.distance > 0) {
+    Goals.push(WeeklyDistGoal(year, events, goals));
   }
   return (
     <div>
       <h2>Mål för {year}</h2>
-      {Intro}
       <div className="goals-meters">
         {Goals}
       </div>

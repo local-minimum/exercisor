@@ -6,6 +6,7 @@ import {
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEditKey, setEntry, settingListAll, setGoalsEventSum, setEntryType,
+  setGoalsWeeklyDist,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -36,6 +37,7 @@ const mapDispatchToProps = dispatch => ({
   onListAll: value => dispatch(settingListAll(value)),
   onLoadGoals: (user, year) => dispatch(loadYearGoals(user, year)),
   onSetGoalsEventSum: events => dispatch(setGoalsEventSum(events)),
+  onSetGoalsDistanceWeekly: dist => dispatch(setGoalsWeeklyDist(dist)),
   onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
 });

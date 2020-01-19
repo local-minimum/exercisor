@@ -1,6 +1,6 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
-  setOSMLocation, setOSMRoute, setErrorMessage, clearReg,
+  setOSMLocation, setOSMRoute, setErrorMessage,
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,

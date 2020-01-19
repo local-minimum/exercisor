@@ -18,7 +18,8 @@ def get_user_goal(db: Database, user_id: ObjectId, year: int):
         return None
     return {
         "year": year,
-        "sums": res["sums"],
+        "sums": res.get("sums", {}),
+        "weekly": res.get("weekly", {}),
     }
 
 
@@ -26,13 +27,15 @@ def upsert_user_goal(
     db: Database,
     user_id: ObjectId,
     year: int,
-    sums: Dict[str, Union[int, float]],
+    sums: Dict[str, Union[int, float, None]],
+    weekly: Dict[str, Union[int, float, None]],
 ):
     return db[USER_GOALS].update_one(
         {"uid": user_id, "year": year},
         {"$set": {
             "year": year,
             "sums": sums,
+            "weekly": weekly,
         }},
         upsert=True,
     )

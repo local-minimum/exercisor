@@ -98,7 +98,8 @@ def may_edit(uid, edit_key):
 
 goals_parser = reqparse.RequestParser()
 goals_parser.add_argument("edit-key", type=str, default=None)
-goals_parser.add_argument("sum-events", type=int, help="Total number of events this year")
+goals_parser.add_argument("sum-events", type=int, default=None, help="Total number of events this year")
+goals_parser.add_argument("weekly-dist", type=float, default=None, help="Genomsnittsavstånd per vecka")
 
 
 class UserYearGoals(Resource):
@@ -119,7 +120,10 @@ class UserYearGoals(Resource):
             year,
             {
                 "events": args['sum-events'],
-            }
+            },
+            {
+                "distance": args['weekly-dist'],
+            },
         )
         return {}
 

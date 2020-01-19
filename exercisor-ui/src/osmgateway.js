@@ -100,6 +100,7 @@ function getCoordFromLeg(leg, toCoords) {
     return getCoordFromStep(leg.steps[0]);
 }
 
+/* Debug code
 function sumRouteFromRawRoute(route) {
   return route.legs
     .reduce(
@@ -113,6 +114,7 @@ function sumRouteFromRawRoute(route) {
 function sumRouteFromCoords(coords) {
   return coords.reduce((acc, { distance }) => acc + distance, 0);
 }
+*/
 
 function extractCoordinates(result, toCoords) {
     const { routes } = result;

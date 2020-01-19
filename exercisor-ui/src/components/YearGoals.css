@@ -8,6 +8,14 @@
   color: #007944;
 }
 
+.goal-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
+}
+
 .react-sweet-progress-symbol-absolute {
   font-size: 22px;
   position: relative;
@@ -16,7 +24,7 @@
 
 .goals-meters {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-content: space-around;

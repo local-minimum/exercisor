@@ -82,10 +82,20 @@ export const getGoals = (user, year, editKey) => {
     );
 }
 
+const extractNullableGoal = (goals, path) => {
+    if (goals == null) return null;
+    let val = goals;
+    path.forEach(key => {
+      val = val[key];
+      if (val == null) return null;
+    });
+    return val === '' ? null : val;
+}
+
 export const upsertGoals = (user, year, goals, editKey) => {
-  const sums = goals && goals.sums;
   const data = {
-    "sum-events": sums && sums.events,
+    "sum-events": extractNullableGoal(goals, ['sums', 'events']),
+    "weekly-dist": extractNullableGoal(goals, ['weekly', 'distance']),
   };
   return jsonRequest(
     `${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`,

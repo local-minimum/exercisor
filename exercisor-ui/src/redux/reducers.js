@@ -4,7 +4,7 @@ import {
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
   SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
-  SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, CLEAR_REG,
+  SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
 } from './actions';
 
 const defaultSettings = {listAll: false};
@@ -98,9 +98,19 @@ const goals = (state = null, action) => {
         {},
         state,
         {sums: Object.assign(
-          {events: 0},
+          {events: ''},
           state && state.sums,
           {events: action.events}
+        )},
+      );
+    case SET_GOALS_WEEKLYDIST:
+      return Object.assign(
+        {},
+        state,
+        {weekly: Object.assign(
+          {distance: ''},
+          state && state.weekly,
+          {distance: action.distance}
         )},
       );
     case SET_GOALS:
@@ -138,7 +148,6 @@ const routes = (state = {}, action) => {
 
 const errorMessage = (state = null, action) => {
   switch (action.type) {
-    case CLEAR_REG:
     case SET_NAME:
     case SET_YEARS:
     case SET_GOALS:
@@ -168,8 +177,6 @@ const register = (state = defaultReg, action) => {
         return Object.assign({}, state, {pwd: action.pwd});
       case SET_REG_PWD2:
         return Object.assign({}, state, {pwd2: action.pwd2});
-      case CLEAR_REG:
-        return defaultReg;
       default:
         return state;
 
