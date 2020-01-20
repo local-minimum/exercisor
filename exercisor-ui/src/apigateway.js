@@ -21,7 +21,7 @@ const jsonRequest = (url, data, type='POST') => {
 
 export const getUserEventList = (user, editKey) => {
   return jsonRequest(
-      `${BASE_URL}/${user}/event?edit-key=${editKey}`,
+      `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
       {},
       'GET',
     );
@@ -44,7 +44,7 @@ export const putEvent = (user, editKey, evt) => {
     type: evt.type,
   };
   return jsonRequest(
-    `${BASE_URL}/${user}/event?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
     data,
     'PUT',
   );
@@ -59,7 +59,7 @@ export const postEvent = (user, id, editKey, evt) => {
     type: evt.type,
   };
   return jsonRequest(
-    `${BASE_URL}/${user}/event/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event/${id}?edit-key=${editKey}`,
     data,
     'POST',
   );
@@ -68,7 +68,7 @@ export const postEvent = (user, id, editKey, evt) => {
 export const deleteEvent = (user, id, editKey) => {
   const data = {};
   return jsonRequest(
-    `${BASE_URL}/${user}/event/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event/${id}?edit-key=${editKey}`,
     data,
     'DELETE',
   );
@@ -76,7 +76,7 @@ export const deleteEvent = (user, id, editKey) => {
 
 export const getGoals = (user, year, editKey) => {
   return jsonRequest(
-      `${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`,
+      `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
       {},
       'GET',
     );
@@ -97,7 +97,7 @@ export const upsertGoals = (user, year, goals, editKey) => {
     "weekly-dist": extractNullableGoal(goals, ['weekly', 'distance']),
   };
   return jsonRequest(
-    `${BASE_URL}/${user}/goal/${year}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
     data,
     'POST',
   );
@@ -109,7 +109,7 @@ export const registerUser = (user, editKey) => {
     'edit-key': editKey,
   };
   return jsonRequest(
-    `${BASE_URL}`,
+    `${BASE_URL}/user`,
     data,
     'PUT',
   );

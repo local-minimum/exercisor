@@ -41,6 +41,11 @@ def get_summary(args):
     }
 
 
+class ListRoutes(Resource):
+    def get(self):
+        return []
+
+
 user_parser = reqparse.RequestParser()
 user_parser.add_argument("user", type=str)
 user_parser.add_argument("edit-key", type=str, default=None)
@@ -53,7 +58,6 @@ def pwd_hash(pwd: Optional[str]) -> Optional[str]:
     m = sha512()
     m.update(pwd.encode())
     return m.hexdigest()
-
 
 class ListUser(Resource):
     def put(self):
