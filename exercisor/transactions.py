@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List, Tuple
 
 from pymongo.database import Database
 from pymongo import DESCENDING
@@ -10,6 +10,49 @@ from .exceptions import DatabaseError
 EVENTS_COLLECTION = 'events'
 USER_SETTINGS = 'users'
 USER_GOALS = 'goals'
+ROUTES = 'routes'
+
+
+def get_public_routes(db: Database):
+    return [
+        {
+            "id": str(doc["_id"]),
+            "name": doc["name"],
+            "public": doc["public"],
+            "waypoints": doc["waypoints"],
+        }
+        for doc in db[ROUTES].find({"public": True})
+    ]
+
+
+def get_user_routes(db: Database, user_id: ObjectId):
+    return [
+        {
+            "id": str(doc["_id"]),
+            "name": doc["name"],
+            "public": doc["public"],
+            "waypoints": doc["waypoints"],
+        }
+        for doc in db[ROUTES].find({"uid": user_id})
+    ]
+
+
+def put_user_route(
+        db: Database,
+        user_id: ObjectId,
+        name: str,
+        waypoints: List[Tuple[str, str]],
+        public: bool,
+):
+    res = db[ROUTES].insert_one({
+        "uid": user_id,
+        "public": public,
+        "name": name,
+        "waypoints": waypoints,
+    })
+    if res is None:
+        raise DatabaseError()
+    return str(res.inserted_id)
 
 
 def get_user_goal(db: Database, user_id: ObjectId, year: int):
@@ -66,7 +109,7 @@ def add_user(db: Database, user: str, edit_hash: Optional[str], public: Optional
         "edit": edit_hash,
         "public": public,
     })
-    return str(res)
+    return str(res.inserted_id)
 
 
 def get_all_summaries(db: Database, user_id: ObjectId):
@@ -95,7 +138,7 @@ def add_summary(
     })
     if res is None:
         raise DatabaseError()
-    return str(res)
+    return str(res.inserted_id)
 
 
 def edit_event(

@@ -43,7 +43,7 @@ def get_summary(args):
 
 class ListRoutes(Resource):
     def get(self):
-        return []
+        return transactions.get_public_routes(db())
 
 
 user_parser = reqparse.RequestParser()
@@ -58,6 +58,7 @@ def pwd_hash(pwd: Optional[str]) -> Optional[str]:
     m = sha512()
     m.update(pwd.encode())
     return m.hexdigest()
+
 
 class ListUser(Resource):
     def put(self):
@@ -188,3 +189,52 @@ class UserEvent(Resource):
         except DatabaseError:
             abort(HTTPStatus.NOT_FOUND.value, message="Hittade inget pass att ta bort")
         return {}
+
+
+route_parser = reqparse.RequestParser()
+route_parser.add_argument("edit-key", type=str, default=None)
+route_parser.add_argument("name", type=str, help="Name of the route you created")
+route_parser.add_argument("waypoints", type=str, action="append", help="Pairs of from and to as searched for")
+
+
+def user_waypoints_parser(waypoints):
+    def parse_waypoint(wpt):
+        wpt_pair = [pt.strip() for pt in wpt.split('|')]
+        wpt_pair = [pt for pt in wpt_pair if pt]
+        if len(wpt_pair) != 2:
+            raise ValueError(f"'{wpt}' definierar inte en del av en rutt")
+        return tuple(wpt_pair)
+
+    if not waypoints:
+        raise ValueError("Tom rutt")
+    return [
+       parse_waypoint(waypoint) for waypoint in waypoints
+    ]
+
+
+class ListUserRoutes(Resource):
+    def get(self, user: str):
+        uid = transactions.get_user_id(db(), user)
+        args = view_parser.parse_args()
+        if not may_edit(uid, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        return transactions.get_user_routes(db(), uid)
+
+    def put(self, user: str):
+        uid = transactions.get_user_id(db(), user)
+        args = route_parser.parse_args()
+        if not may_edit(uid, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        try:
+            waypoints = user_waypoints_parser(args['waypoints'])
+        except ValueError as err:
+            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
+        public = True
+        try:
+            route_id = transactions.put_user_route(db(), uid, args["name"], waypoints, public)
+        except DatabaseError:
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
+        else:
+            return {"route_id": route_id}
+
+
