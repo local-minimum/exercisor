@@ -4,8 +4,7 @@ function getGoal(goals, path) {
   if (goals == null) return 0;
   let val = goals;
   path.forEach(key => {
-    val = val[key];
-    if (val == null) return 0;
+    val = val != null ? val[key] : null;
   });
   return val == null ? 0 : val;
 }

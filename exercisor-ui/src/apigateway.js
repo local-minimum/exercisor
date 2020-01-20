@@ -86,8 +86,7 @@ const extractNullableGoal = (goals, path) => {
     if (goals == null) return null;
     let val = goals;
     path.forEach(key => {
-      val = val[key];
-      if (val == null) return null;
+      val = val != null ? val[key] : null;
     });
     return val === '' ? null : val;
 }
