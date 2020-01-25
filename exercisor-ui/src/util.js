@@ -48,6 +48,15 @@ export const getYearDurationSoFar = (year) => {
   return Math.floor((end - start) / aDay) + 1;
 }
 
+export const minutes2str = (minutes) => {
+    const whole = Math.floor(minutes);
+    if (minutes === whole) {
+        return `${minutes}`;
+    }
+    const seconds = Math.round((minutes - whole) * 60);
+    return `${whole}:${seconds < 10 ? `0${seconds}` : seconds}`;
+}
+
 export const filterEvents = (events, year) => {
   if (year == null) return events;
   return events.filter(evt => date2year(evt.date) === year);

@@ -1,13 +1,5 @@
 import React from 'react';
-
-const minutes2str = (minutes) => {
-    const whole = Math.floor(minutes);
-    if (minutes === whole) {
-        return `${minutes}`;
-    }
-    const seconds = Math.round((minutes - whole) * 60);
-    return `${whole}:${seconds < 10 ? `0${seconds}` : seconds}`;
-}
+import { minutes2str } from '../util';
 
 const EVENT_TYPES = {
   CrossTrainer: 'CrossTrainer',

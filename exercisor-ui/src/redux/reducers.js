@@ -6,6 +6,7 @@ import {
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
 } from './actions';
+import { minutes2str } from '../util';
 
 const defaultSettings = {listAll: false};
 const settings = (state = defaultSettings, action) => {
@@ -33,7 +34,7 @@ const entry = (state = defaultEntry, action) => {
         id: action.entry.id,
         date: action.entry.date == null ? "": action.entry.date,
         distance: action.entry.distance == null ? "" : action.entry.distance.toString(),
-        duration: action.entry.duration == null ? "" : action.entry.duration.toString(),
+        duration: action.entry.duration == null ? "" : minutes2str(action.entry.duration),
         calories: action.entry.calories == null ? "" : action.entry.calories.toString(),
         type: action.entry.type == null ? "CrossTrainer" : action.entry.type,
       };
