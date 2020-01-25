@@ -51,7 +51,7 @@ export const getYearDurationSoFar = (year) => {
 export const minutes2str = (minutes) => {
     const whole = Math.floor(minutes);
     if (minutes === whole) {
-        return `${minutes}`;
+        return `${minutes}:00`;
     }
     const seconds = Math.round((minutes - whole) * 60);
     return `${whole}:${seconds < 10 ? `0${seconds}` : seconds}`;
