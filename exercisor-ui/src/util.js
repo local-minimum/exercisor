@@ -48,13 +48,14 @@ export const getYearDurationSoFar = (year) => {
   return Math.floor((end - start) / aDay) + 1;
 }
 
-export const minutes2str = (minutes) => {
-    const whole = Math.floor(minutes);
-    if (minutes === whole) {
-        return `${minutes}:00`;
-    }
-    const seconds = Math.round((minutes - whole) * 60);
-    return `${whole}:${seconds < 10 ? `0${seconds}` : seconds}`;
+export const minutes2str = (floatMinutes) => {
+    const hours = Math.floor(floatMinutes / 60);
+    const minutes = Math.floor(floatMinutes - 60 * hours);
+    const seconds = Math.round((floatMinutes - (minutes + hours * 60)) * 60);
+    const zeroPadHours = hours < 10 ? `0${hours}` : hours;
+    const zeroPadMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const zeroPadSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    return `${zeroPadHours}:${zeroPadMinutes}:${zeroPadSeconds}`;
 }
 
 export const filterEvents = (events, year) => {

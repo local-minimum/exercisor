@@ -30,7 +30,8 @@ export const getUserEventList = (user, editKey) => {
 const str2minutes = (str) => {
   const arr = str.split(":");
   if (arr.length === 1) return str;
-  return Number(arr[0]) + Number(arr[1]) / 60;
+  if (arr.length === 2) return Number(arr[0]) + Number(arr[1]) / 60;
+  if (arr.length === 3) return Number(arr[0]) * 60 + Number(arr[1]) + Number(arr[2]) / 60;
 }
 
 const safeDate = (str) => new Date(str).toISOString().split("T")[0]

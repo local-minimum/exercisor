@@ -50,9 +50,9 @@ export default function ExerciseTable({
         <thead>
           <tr>
             <th>Datum</th>
-            <th>Distans [km]</th>
-            <th>Tid [min]</th>
-            <th>Energi [kcal]</th>
+            <th>Distans <span className="xx-small">[km]</span></th>
+            <th>Tid <span className="xx-small">[hh:mm:ss]</span></th>
+            <th>Energi <span className="xx-small">[kcal]</span></th>
             <th>Typ</th>
           </tr>
         </thead>

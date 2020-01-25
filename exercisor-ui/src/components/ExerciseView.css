@@ -70,5 +70,9 @@ tr:nth-child(even) {
 
 .map-segment-info-inner h3 {
   display: inline-block;
-  margin: 0px 12px 0px 0px; 
+  margin: 0px 12px 0px 0px;
+}
+
+.xx-small {
+  font-size: 8pt;
 }
