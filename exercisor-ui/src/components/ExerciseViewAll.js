@@ -19,9 +19,9 @@ export default class ExerciseViewAll extends React.Component {
       <div>
         <ExerciseSummary events={events} />
         <ExerciseTable {...this.props} />
-        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
-        <CompensateCalories events={events} />
         {DistanceOnEarth}
+        <CompensateCalories events={events} />
+        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
       </div>
     );
   }

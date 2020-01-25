@@ -105,10 +105,12 @@ export default class MapBox extends React.Component {
   loadRoute() {
     const { focusMode } = this.state;
     const { features, loading } = this.props;
+    const nPrevFeatures = this.vectorSource.getFeatures().length
+    const nCurrentFeatures = features == null ? -1 : features.length;
     this.vectorSource.clear()
-    if (features && features.length > 0) {
+    if (nCurrentFeatures > 0) {
       this.vectorSource.addFeatures(features);
-      if (loading) this.setFocus(focusMode);
+      if (loading || nCurrentFeatures > nPrevFeatures) this.setFocus(focusMode);
     } else {
         this.olmap.getView().setZoom(2);
     }
