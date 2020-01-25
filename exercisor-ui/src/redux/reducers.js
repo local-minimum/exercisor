@@ -48,6 +48,7 @@ const entry = (state = defaultEntry, action) => {
       return Object.assign({}, state, {calories: action.calories});
     case SET_ENTRY_TYPE:
       return Object.assign({}, state, {type: action.eventType});
+    case SET_NAME:
     case CLEAR_ENTRY:
       return defaultEntry;
     default:
@@ -57,6 +58,8 @@ const entry = (state = defaultEntry, action) => {
 
 const editKey = (state = "", action) => {
   switch (action.type) {
+    case SET_NAME:
+      return "";
     case SET_EDITKEY:
       return action.key;
     default:
@@ -76,6 +79,9 @@ const name = (state = null, action) => {
 
 const events = (state = [], action) => {
   switch (action.type) {
+    case SET_NAME:
+    case SET_YEARS:
+      return [];
     case SET_EVENTS:
       return action.events;
     default:
@@ -85,6 +91,8 @@ const events = (state = [], action) => {
 
 const years = (state = {}, action) => {
   switch (action.type) {
+    case SET_NAME:
+      return {};
     case SET_YEARS:
       return action.years;
     default:
@@ -94,6 +102,9 @@ const years = (state = {}, action) => {
 
 const goals = (state = null, action) => {
   switch (action.type) {
+    case SET_NAME:
+    case SET_YEARS:
+      return {};
     case SET_GOALS_EVENTSSUM:
       return Object.assign(
         {},
@@ -172,6 +183,8 @@ const errorMessage = (state = null, action) => {
 const defaultReg = {user: '', pwd: '', pwd2: ''};
 const register = (state = defaultReg, action) => {
     switch (action.type) {
+      case SET_NAME:
+        return defaultReg;
       case SET_REG_USER:
         return Object.assign({}, state, {user: action.user.toLocaleLowerCase()});
       case SET_REG_PWD:
