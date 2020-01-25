@@ -238,3 +238,29 @@ class ListUserRoutes(Resource):
             return {"route_id": route_id}
 
 
+class UserRoute(Resource):
+    def get(self, user: str, route_id: str):
+        uid = transactions.get_user_id(db(), user)
+        args = view_parser.parse_args()
+        if not may_edit(uid, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        route = transactions.get_user_route(db(), uid, route_id)
+        if not route:
+            abort(HTTPStatus.NOT_FOUND.value, message="Rutten finns inte")
+        return route
+
+    def post(self, user: str, route_id: str):
+        uid = transactions.get_user_id(db(), user)
+        args = route_parser.parse_args()
+        if not may_edit(uid, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        try:
+            waypoints = user_waypoints_parser(args['waypoints'])
+        except ValueError as err:
+            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
+        public = True
+        try:
+            transactions.edit_user_route(db(), uid, route_id, args["name"], waypoints, public)
+        except DatabaseError:
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
+        return {}

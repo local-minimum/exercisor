@@ -37,6 +37,38 @@ def get_user_routes(db: Database, user_id: ObjectId):
     ]
 
 
+def get_user_route(db: Database, user_id: ObjectId, route_id: str):
+    doc = db[ROUTES].find_one({"uid": user_id, "_id": ObjectId(route_id)})
+    if doc is None:
+        return None
+    return {
+        "id": str(doc["_id"]),
+        "name": doc["name"],
+        "public": doc["public"],
+        "waypoints": doc["waypoints"],
+    }
+
+
+def edit_user_route(
+        db: Database,
+        user_id: ObjectId,
+        route_id: str,
+        name: str,
+        waypoints: List[Tuple[str, str]],
+        public: bool,
+):
+    res = db[ROUTES].update_one(
+        {"_id": ObjectId(route_id), "uid": user_id},
+        {"$set": {
+            "public": public,
+            "name": name,
+            "waypoints": waypoints,
+        }},
+    )
+    if res is None:
+        raise DatabaseError()
+
+
 def put_user_route(
         db: Database,
         user_id: ObjectId,
