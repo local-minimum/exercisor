@@ -1,14 +1,12 @@
 import React from 'react';
-import {Point, LineString} from 'ol/geom';
-import Map from 'ol/Map';
-import {Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
-import {OSM, Vector as VectorSource} from 'ol/source';
-import View from 'ol/View';
+import { Point, LineString } from 'ol/geom';
 import Feature from 'ol/Feature';
-import {Stroke, Style, Circle as CircleStyle, Fill} from 'ol/style';
-import {fromLonLat} from 'ol/proj';
+import { fromLonLat } from 'ol/proj';
 import 'ol/ol.css';
+
 import { getLineStringsData } from './ol-tools/geom';
+import MapBox from './DistanceOnEarth/MapBox';
+import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './DistanceOnEarth/styles';
 
 const DEFAULT_ROUTE = [
     [
@@ -28,40 +26,6 @@ const DEFAULT_ROUTE = [
       "İzmit, Kocaeli, Marmara Region, Turkiet",
     ]
 ];
-const SEG_TYPE_LINE = 'SEG_TYPE_LINE';
-const SEG_TYPE_CONNECTOR = 'SEG_TYPE_CONNECTOR';
-const SEG_TYPE_PT = 'SEG_TYPE_PT';
-const colDark = '#1c2541';
-const colLight = '#3a506b';
-const colHighDark = '#ff8c42';
-const colHighLight = '#ff3c38';
-
-const lineStyle = new Style({
-  stroke: new Stroke({width: 2, color: colDark})
-});
-const lineStyleHighlight = new Style({
-  stroke: new Stroke({width: 3, color: colHighLight})
-});
-const connectorStyle = new Style({
-  stroke: new Stroke({width: 1, color: colLight})
-});
-const connectorStyleHighlight = new Style({
-  stroke: new Stroke({width: 1, color: colHighDark})
-});
-const legPt = new Style({
-  image: new CircleStyle({
-    fill: new Fill({color: colDark}),
-    radius: 4,
-    stroke: new Stroke({width: 1, color: colLight}),
-  }),
-});
-const legPtHighlight = new Style({
-  image: new CircleStyle({
-    fill: new Fill({color: colHighLight}),
-    radius: 5,
-    stroke: new Stroke({width: 1, color: colHighDark}),
-  }),
-});
 
 export default class DistanceOnEarth extends React.Component {
   constructor(props) {
@@ -70,46 +34,9 @@ export default class DistanceOnEarth extends React.Component {
     this.state = {
       exhausted: false,
       segment: null,
-      focusMode: 'recent',
       viewRouteId: null,
       loadingWpts: [],
     };
-
-    this.vectorSource = new VectorSource();
-
-    const vectorLayer = new VectorLayer({
-      source: this.vectorSource,
-      style: (feature) => {
-        return feature.get('segment') > 0 ? legPt : null;
-      },
-    });
-
-    this.olmap = new Map({
-      target: null,
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-        vectorLayer,
-      ],
-      view: new View({
-        center: [0, 0],
-        zoom: 1,
-      }),
-    });
-  }
-
-  getStyle(selected, segType) {
-    switch (segType) {
-      case SEG_TYPE_PT:
-        return selected ? legPtHighlight : legPt;
-      case SEG_TYPE_LINE:
-        return selected ? lineStyleHighlight : lineStyle;
-      case SEG_TYPE_CONNECTOR:
-        return selected ? connectorStyleHighlight : connectorStyle;
-      default:
-        return null;
-    }
   }
 
   getFeatures(data, segment) {
@@ -124,12 +51,12 @@ export default class DistanceOnEarth extends React.Component {
           segment: idx + 1,
           name: `Pass ${idx + 1}`,
         });
-        featLine.setStyle(this.getStyle(selected, SEG_TYPE_LINE));
+        featLine.setStyle(getStyle(selected, SEG_TYPE_LINE));
         const featPt = new Feature({
           geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
           segment: idx + 1,
         });
-        featPt.setStyle(this.getStyle(selected, SEG_TYPE_PT));
+        featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
         return [featLine, featPt];
       }
       const feats = [];
@@ -139,7 +66,7 @@ export default class DistanceOnEarth extends React.Component {
           segment: idx + 1,
           name: `Pass ${idx + 1}, del ${idxPart + 1}`,
         });
-        feat.setStyle(this.getStyle(selected, SEG_TYPE_LINE));
+        feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
         feats.push(feat);
         const lastPt = evtData[idxPart][evtData[idxPart].length - 1];
         const nextPt = evtData[idxPart + 1][0];
@@ -152,7 +79,7 @@ export default class DistanceOnEarth extends React.Component {
             segment: idx + 1,
             name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
           });
-          connector.setStyle(this.getStyle(selected, SEG_TYPE_CONNECTOR));
+          connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
           feats.push(connector);
         }
       }
@@ -162,13 +89,13 @@ export default class DistanceOnEarth extends React.Component {
         segment: idx + 1,
         name: `Pass ${idx + 1}, del ${evtData.length}`,
       });
-      feat.setStyle(this.getStyle(selected, SEG_TYPE_LINE));
+      feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
       feats.push(feat);
       const featPt = new Feature({
         geometry: new Point(fromLonLat(lastLine[lastLine.length - 1])),
         segment: idx + 1,
       });
-      featPt.setStyle(this.getStyle(selected, SEG_TYPE_PT));
+      featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
       feats.push(featPt);
       return feats;
     }).flat()
@@ -177,57 +104,47 @@ export default class DistanceOnEarth extends React.Component {
   render() {
     const { exhausted, segment } = this.state;
     const { events } = this.props;
-    const mapStyle = { width: "calc(100% - 12)", height: "360px", margin: 6};
     if (events.length === 0) {
       return (
         <div>
           <h2>Tillryggalagd sträcka</h2>
           <em>Du har inga träningspass registrerade än...</em>
-          <div id="map" style={mapStyle} />
+          <MapBox
+            onMapClick={this.handleSelectSegment}
+            loading={false}
+          />
         </div>
       );
     }
+    const features = this.getFeaturesFromEvents();
     const intro = exhausted ? 'Varje segment är ett träningspass' : 'Laddar...';
-    const Segment = segment && (
-      <div className="map-segment-info">
-        <div className="map-segment-info-inner">
-          <h3>Pass {segment}</h3>
-          <span>{events[events.length - segment].date}</span>
-        </div>
-      </div>
-    );
+    const segmentInfo = segment && events[events.length - segment].date;
     return (
       <div>
         <h2>Tillryggalagd sträcka</h2>
         <em>{intro}</em>
-        <div id="map" style={mapStyle} />
-        {Segment}
-        <div>
-          <strong>Fokusera på: </strong>
-          <button onClick={() => this.setFocus('recent')}>Senaste passet</button>
-          <button onClick={() => this.setFocus('all')}>Alla pass</button>
-        </div>
+        <MapBox
+          segment={segment == null ? null : `Pass ${segment}`}
+          segmentInfo={segmentInfo}
+          onMapClick={this.handleSelectSegment}
+          features={features}
+          loading={exhausted}
+        />
       </div>
     );
   }
 
-  handleMapClick = (evt) => {
-    const { coordinate } = evt;
-    const feat = this.vectorSource.getClosestFeatureToCoordinate(coordinate);
-    const seg = feat == null ? null : feat.get('segment');
+  handleSelectSegment = (seg) => {
     this.setState({segment: seg === this.state.segment ? null : seg});
   }
 
   componentDidMount() {
-    this.olmap.setTarget("map");
-    this.olmap.on('click', this.handleMapClick)
     this.loadRoute();
   }
 
   componentDidUpdate() {
     this.loadRoute();
   }
-
 
   getRoute = (waypoints) => {
     if (waypoints == null) return null;
@@ -237,69 +154,34 @@ export default class DistanceOnEarth extends React.Component {
     return froms[waypoints[1]];
   }
 
-  setFocusIfLoading = () => {
-    const { focusMode, exhausted } = this.state;
-    if (!exhausted) this.setFocus(focusMode);
-  }
-
-  setFocus = (focusMode) => {
-    if (focusMode === 'all') {
-      const extent = this.vectorSource.getExtent();
-      this.olmap.getView().fit(extent);
-      this.olmap.getView().adjustZoom(-1);
-      if (this.state.focusMode !== focusMode) this.setState({focusMode});
-    } else if (focusMode === 'recent') {
-      const feat = this.vectorSource.getFeatures()
-        .reduce(
-          (acc, feat) => {
-            if (acc == null) return feat;
-            return acc.get('segment') > feat.get('segment') ? acc : feat;
-          },
-          null,
-        );
-      if (feat != null) {
-          this.olmap.getView().fit(feat.getGeometry().getExtent());
-          this.olmap.getView().setZoom(9);
-      }
-      if (this.state.focusMode !== focusMode) this.setState({focusMode});
-    }
-  }
-
-  refreshVectors() {
+  getFeaturesFromEvents() {
     const { events, route, routeId } = this.props;
     const { segment } = this.state;
     const viewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
     const {lines, exhausted} = getLineStringsData(events, viewRoute, this.getRoute);
-    this.vectorSource.clear()
-    if (lines.length > 0) {
-      const features = this.getFeatures(lines, segment);
-      this.vectorSource.addFeatures(features);
-      this.setFocusIfLoading();
-    }
     if (this.state.exhausted !== exhausted) {
       this.setState({exhausted});
     }
+    return this.getFeatures(lines, segment);
   }
 
   loadRoute = () => {
     const { onLoadRoute, route, routeId } = this.props;
     const { exhausted, viewRouteId, loadingWpts } = this.state;
-    if (routeId != viewRouteId) {
+    if (routeId !== viewRouteId) {
       this.setState({
         viewRouteId: routeId,
         exhausted: false,
         loadingWpts: [],
       });
-      this.refreshVectors();
       return;
     }
     if (exhausted) {
-      this.refreshVectors();
       return;
     };
     const viewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
     const loading = viewRoute.some((wptPair, idx) => {
-        if (wptPair != null && this.getRoute(wptPair) == null && !loadingWpts.some(pair => pair == wptPair)) {
+        if (wptPair != null && this.getRoute(wptPair) == null && !loadingWpts.some(pair => pair === wptPair)) {
           this.setState({ loadingWpts: loadingWpts.concat([wptPair])}, () => {
             onLoadRoute(wptPair[0], wptPair[1]);
           });
@@ -311,6 +193,5 @@ export default class DistanceOnEarth extends React.Component {
     if (loading !== exhausted) {
       this.setState({exhausted: true});
     }
-    this.refreshVectors();
   }
 };
