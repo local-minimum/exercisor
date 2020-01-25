@@ -21,8 +21,8 @@ A tool for manual entry of exercise results without the need of anyone spying an
   - [x] API List User Routes (Non-public)
   - [x] API Add Route 
   - [x] API Edit Route 
-  - [ ] API User Select Route Year / Get / Set
-  - [ ] API User Select Route Total / Get / Set
+  - [x] API User Select Route Year / Get / Set
+  - [x] API User Select Route Total / Get / Set
   - [ ] UI Fetch User Select Route
   - [ ] UI Use route
   - [ ] UI Create route

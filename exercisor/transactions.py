@@ -38,15 +38,17 @@ def get_user_routes(db: Database, user_id: ObjectId):
 
 
 def get_user_route(db: Database, user_id: ObjectId, route_id: str):
-    doc = db[ROUTES].find_one({"uid": user_id, "_id": ObjectId(route_id)})
+    doc = db[ROUTES].find_one({"_id": ObjectId(route_id)})
     if doc is None:
         return None
-    return {
-        "id": str(doc["_id"]),
-        "name": doc["name"],
-        "public": doc["public"],
-        "waypoints": doc["waypoints"],
-    }
+    if doc["uid"] == user_id or doc["public"]:
+        return {
+            "id": str(doc["_id"]),
+            "name": doc["name"],
+            "public": doc["public"],
+            "waypoints": doc["waypoints"],
+        }
+    return None
 
 
 def edit_user_route(
@@ -91,11 +93,40 @@ def get_user_goal(db: Database, user_id: ObjectId, year: int):
     res = db[USER_GOALS].find_one({"uid": user_id, "year": year})
     if res is None:
         return None
+    route = res.get("route")
     return {
         "year": year,
         "sums": res.get("sums", {}),
         "weekly": res.get("weekly", {}),
+        "route": None if route is None else str(route),
     }
+
+
+def get_user_total_goal(db: Database, user_id: ObjectId):
+    res = db[USER_GOALS].find_one({"uid": user_id, "year": "total"})
+    if res is None:
+        return None
+    route = res.get("route")
+    return {
+        "year": "total",
+        "sums": None,
+        "weekly": None,
+        "route": None if route is None else str(route),
+    }
+
+
+def upsert_user_total_goal(
+        db: Database,
+        user_id: ObjectId,
+        route: Optional[str],
+):
+    return db[USER_GOALS].update_one(
+        {"uid": user_id, "year": "total"},
+        {"$set": {
+            "route": None if route is None else ObjectId(route),
+        }},
+        upsert=True,
+    )
 
 
 def upsert_user_goal(
@@ -104,6 +135,7 @@ def upsert_user_goal(
     year: int,
     sums: Dict[str, Union[int, float, None]],
     weekly: Dict[str, Union[int, float, None]],
+    route: Optional[str],
 ):
     return db[USER_GOALS].update_one(
         {"uid": user_id, "year": year},
@@ -111,6 +143,7 @@ def upsert_user_goal(
             "year": year,
             "sums": sums,
             "weekly": weekly,
+            "route": None if route is None else ObjectId(route),
         }},
         upsert=True,
     )

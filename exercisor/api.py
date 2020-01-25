@@ -105,6 +105,27 @@ goals_parser = reqparse.RequestParser()
 goals_parser.add_argument("edit-key", type=str, default=None)
 goals_parser.add_argument("sum-events", type=int, default=None, help="Total number of events this year")
 goals_parser.add_argument("weekly-dist", type=float, default=None, help="Genomsnittsavstånd per vecka")
+goals_parser.add_argument("route", type=str, default=None, help="Rutt id för rutt på kartan")
+
+
+class UserTotalGoals(Resource):
+    def get(self, user: str):
+        uid = transactions.get_user_id(db(), user)
+        if may_view(uid, view_parser.parse_args()['edit-key']):
+            return transactions.get_user_total_goal(db(), uid)
+        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
+
+    def post(self, user: str):
+        uid = transactions.get_user_id(db(), user)
+        args = goals_parser.parse_args()
+        if not may_edit(uid, args['edit-key']):
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        transactions.upsert_user_total_goal(
+            db(),
+            uid,
+            args["route"],
+        )
+        return {}
 
 
 class UserYearGoals(Resource):
@@ -129,6 +150,7 @@ class UserYearGoals(Resource):
             {
                 "distance": args['weekly-dist'],
             },
+            args["route"],
         )
         return {}
 
@@ -238,7 +260,7 @@ class ListUserRoutes(Resource):
             return {"route_id": route_id}
 
 
-class UserRoute(Resource):
+class UserVisibleRoute(Resource):
     def get(self, user: str, route_id: str):
         uid = transactions.get_user_id(db(), user)
         args = view_parser.parse_args()
