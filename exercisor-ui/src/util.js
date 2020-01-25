@@ -68,9 +68,9 @@ export const events2timeSeries = (events) => {
     columns: ["index", "duration", "distance", "calories", "type"],
     points: events.slice().reverse().map(evt => [
       evt.date,
-      evt.duration,
-      evt.distance,
-      evt.calories,
+      Number.isFinite(evt.duration) ? evt.duration : "",
+      Number.isFinite(evt.distance) ? evt.distance : "",
+      Number.isFinite(evt.calories) ? evt.calories : "",
       evt.type == null ? "CrossTrainer" : evt.type,
     ]),
   };

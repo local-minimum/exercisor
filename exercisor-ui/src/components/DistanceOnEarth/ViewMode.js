@@ -95,7 +95,7 @@ export default class DoEViewMode extends AnyModeBase {
           segmentInfo={segmentInfo}
           onMapClick={this.handleSelectSegment}
           features={features}
-          loading={exhausted}
+          loading={!exhausted}
         />
       </div>
     );

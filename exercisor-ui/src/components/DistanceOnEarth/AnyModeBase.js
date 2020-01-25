@@ -41,7 +41,10 @@ export default class DoEEditMode extends React.Component {
   }
 
   handleSelectSegment = (seg) => {
-    this.setState({segment: seg === this.state.segment ? null : seg});
+    this.setState({segment: seg === this.state.segment ? null : seg}, () => {
+      const { features, exhausted } = this.getFeatures();
+      this.setState({ features });
+    });
   }
 
   loadRoute = () => {
@@ -64,7 +67,6 @@ export default class DoEEditMode extends React.Component {
       nextState.exhausted = exhausted;
     } else if (this.state.exhausted) {
       if (Object.keys(nextState).length > 0) {
-        console.log("early", nextState, loadCallback);
         this.setState(nextState, loadCallback);
       }
       return;
@@ -81,12 +83,10 @@ export default class DoEEditMode extends React.Component {
           return false;
       });
       if (!loading) {
-        console.log("No more to load");
         nextState.exhausted = true;
       }
     }
     if (Object.keys(nextState).length > 0) {
-      console.log(nextState, loadCallback);
       this.setState(nextState, loadCallback);
     }
   }
