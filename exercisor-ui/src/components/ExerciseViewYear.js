@@ -42,7 +42,7 @@ export default class ExerciseViewYear extends React.Component {
         <ExerciseTable {...this.props} events={events} />
         <ExerciseOverviewCharts series={series} convSeries={convSeries} />
         <CompensateCalories events={events} />
-        <DistanceOnEarth events={events} onLoadRoute={onLoadRoute} routes={routes} />
+        <DistanceOnEarth events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route}/>
       </div>
     );
   }

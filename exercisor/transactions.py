@@ -105,7 +105,12 @@ def get_user_goal(db: Database, user_id: ObjectId, year: int):
 def get_user_total_goal(db: Database, user_id: ObjectId):
     res = db[USER_GOALS].find_one({"uid": user_id, "year": "total"})
     if res is None:
-        return None
+        return {
+            "year": "total",
+            "sums": None,
+            "weekly": None,
+            "route": None,
+        }
     route = res.get("route")
     return {
         "year": "total",

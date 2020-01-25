@@ -10,7 +10,7 @@ import {fromLonLat} from 'ol/proj';
 import 'ol/ol.css';
 import { getLineStringsData } from './ol-tools/geom';
 
-const waypoints = [
+const DEFAULT_ROUTE = [
     [
       "Västra Bodarnevägen, Alingsås",
       "Lindomemotet, Långås, Mölndals kommun",
@@ -67,7 +67,13 @@ export default class DistanceOnEarth extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { exhausted: false, segment: null, focusMode: 'recent' };
+    this.state = {
+      exhausted: false,
+      segment: null,
+      focusMode: 'recent',
+      viewRouteId: null,
+      loadingWpts: [],
+    };
 
     this.vectorSource = new VectorSource();
 
@@ -215,11 +221,11 @@ export default class DistanceOnEarth extends React.Component {
   componentDidMount() {
     this.olmap.setTarget("map");
     this.olmap.on('click', this.handleMapClick)
-    this.loadNextRoute();
+    this.loadRoute();
   }
 
   componentDidUpdate() {
-    this.refreshVectors();
+    this.loadRoute();
   }
 
 
@@ -260,32 +266,51 @@ export default class DistanceOnEarth extends React.Component {
   }
 
   refreshVectors() {
-    const { events } = this.props;
+    const { events, route, routeId } = this.props;
     const { segment } = this.state;
-    const {lines, exhausted} = getLineStringsData(events, waypoints, this.getRoute);
+    const viewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
+    const {lines, exhausted} = getLineStringsData(events, viewRoute, this.getRoute);
     this.vectorSource.clear()
     if (lines.length > 0) {
       const features = this.getFeatures(lines, segment);
       this.vectorSource.addFeatures(features);
       this.setFocusIfLoading();
     }
-    if (this.state.exhausted !== exhausted) this.setState({exhausted});
+    if (this.state.exhausted !== exhausted) {
+      this.setState({exhausted});
+    }
   }
 
-  loadNextRoute = () => {
-    const {onLoadRoute} = this.props;
-    const {exhausted} = this.state;
+  loadRoute = () => {
+    const { onLoadRoute, route, routeId } = this.props;
+    const { exhausted, viewRouteId, loadingWpts } = this.state;
+    if (routeId != viewRouteId) {
+      this.setState({
+        viewRouteId: routeId,
+        exhausted: false,
+        loadingWpts: [],
+      });
+      this.refreshVectors();
+      return;
+    }
     if (exhausted) {
+      this.refreshVectors();
       return;
     };
-    const loading = waypoints.some((wptPair, idx) => {
-        if (wptPair != null && this.getRoute(wptPair) == null) {
-          onLoadRoute(wptPair[0], wptPair[1]);
-          setTimeout(this.loadNextRoute, 2000);
+    const viewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
+    const loading = viewRoute.some((wptPair, idx) => {
+        if (wptPair != null && this.getRoute(wptPair) == null && !loadingWpts.some(pair => pair == wptPair)) {
+          this.setState({ loadingWpts: loadingWpts.concat([wptPair])}, () => {
+            onLoadRoute(wptPair[0], wptPair[1]);
+          });
           return true;
         }
         return false;
     });
-    if (!loading) this.setState({exhausted: true});
+
+    if (loading !== exhausted) {
+      this.setState({exhausted: true});
+    }
+    this.refreshVectors();
   }
 };
