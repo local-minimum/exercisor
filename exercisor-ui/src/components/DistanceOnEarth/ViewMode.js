@@ -5,8 +5,8 @@ import { fromLonLat } from 'ol/proj';
 import 'ol/ol.css';
 
 import { getLineStringsData } from './ol-tools/geom';
-import MapBox from './DistanceOnEarth/MapBox';
-import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './DistanceOnEarth/styles';
+import MapBox from './MapBox';
+import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
 
 const DEFAULT_ROUTE = [
     [
@@ -27,7 +27,7 @@ const DEFAULT_ROUTE = [
     ]
 ];
 
-export default class DistanceOnEarth extends React.Component {
+export default class DoEViewMode extends React.Component {
   constructor(props) {
     super(props);
 

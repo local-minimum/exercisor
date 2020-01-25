@@ -6,7 +6,7 @@ import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import YearGoalsEdit from './YearGoalsEdit';
 import YearGoals from './YearGoals';
 import CompensateCalories from './CompensateCalories';
-import DistanceOnEarth from './DistanceOnEarth';
+import DoEViewMode from './DistanceOnEarth/ViewMode';
 import { events2timeSeries, events2convTimeSeries } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
@@ -35,6 +35,8 @@ export default class ExerciseViewYear extends React.Component {
       onSaveGoals={onSaveGoals}
       name={this.getName()}
     /> : <YearGoals year={year} goals={goals} events={events} />;
+    const DistanceOnEarth = editKey.length > 0 ? null :
+        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} />
     return (
       <div>
         <ExerciseSummary events={events} year={year} />
@@ -42,7 +44,7 @@ export default class ExerciseViewYear extends React.Component {
         <ExerciseTable {...this.props} events={events} />
         <ExerciseOverviewCharts series={series} convSeries={convSeries} />
         <CompensateCalories events={events} />
-        <DistanceOnEarth events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route}/>
+        {DistanceOnEarth}
       </div>
     );
   }
