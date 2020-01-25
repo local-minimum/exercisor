@@ -175,13 +175,13 @@ def add_summary(
 
 def edit_event(
     db: Database,
-    doc_id: str,
+    event_id: str,
     user_id: ObjectId,
     date: str,
     summary: Dict[str, float],
 ):
     res = db[EVENTS_COLLECTION].update_one(
-        {'_id': ObjectId(doc_id), "uid": user_id},
+        {'_id': ObjectId(event_id), "uid": user_id},
         {'$set': {
             "date": dt.datetime.strptime(date[:10], "%Y-%m-%d"),
             "summary": summary,
@@ -192,8 +192,8 @@ def edit_event(
     return str(res)
 
 
-def delete_event(db: Database, doc_id: str, user_id: ObjectId):
-    res = db[EVENTS_COLLECTION].delete_one({'_id': ObjectId(doc_id), "uid": user_id})
+def delete_event(db: Database, event_id: str, user_id: ObjectId):
+    res = db[EVENTS_COLLECTION].delete_one({'_id': ObjectId(event_id), "uid": user_id})
     if res is None:
         raise DatabaseError()
     return str(res)

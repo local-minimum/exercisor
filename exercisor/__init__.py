@@ -19,6 +19,6 @@ USERURL = f"{BASEURL}/user/<string:user>"
 api.add_resource(ListUser, f"{BASEURL}/user")
 api.add_resource(UserYearGoals, f"{USERURL}/goal/<int:year>")
 api.add_resource(ListUserEvents, f"{USERURL}/event")
-api.add_resource(UserEvent, f"{USERURL}/event/<string:doc_id>")
+api.add_resource(UserEvent, f"{USERURL}/event/<string:event_id>")
 api.add_resource(ListUserRoutes, f"{USERURL}/route")
 api.add_resource(UserRoute, f"{USERURL}/route/<string:route_id>")

@@ -158,7 +158,7 @@ class ListUserEvents(Resource):
 
 
 class UserEvent(Resource):
-    def post(self, user: str, doc_id: str):
+    def post(self, user: str, event_id: str):
         uid = transactions.get_user_id(db(), user)
         args = list_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
@@ -166,7 +166,7 @@ class UserEvent(Resource):
         try:
             transactions.edit_event(
                 db(),
-                doc_id,
+                event_id,
                 uid,
                 args['date'],
                 get_summary(args),
@@ -175,7 +175,7 @@ class UserEvent(Resource):
             abort(HTTPStatus.NOT_FOUND.value, message="Hittade inget pass att uppdatera")
         return {}
 
-    def delete(self, user: str, doc_id: str):
+    def delete(self, user: str, event_id: str):
         uid = transactions.get_user_id(db(), user)
         args = view_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
@@ -183,7 +183,7 @@ class UserEvent(Resource):
         try:
             transactions.delete_event(
                 db(),
-                doc_id,
+                event_id,
                 uid,
             )
         except DatabaseError:
