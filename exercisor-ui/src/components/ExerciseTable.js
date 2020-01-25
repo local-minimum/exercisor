@@ -6,7 +6,7 @@ const minutes2str = (minutes) => {
         return `${minutes}`;
     }
     const seconds = Math.round((minutes - whole) * 60);
-    return `${whole}:${seconds}`;
+    return `${whole}:${seconds < 10 ? `0${seconds}` : seconds}`;
 }
 
 const EVENT_TYPES = {
