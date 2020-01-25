@@ -80,7 +80,6 @@ const name = (state = null, action) => {
 const events = (state = [], action) => {
   switch (action.type) {
     case SET_NAME:
-    case SET_YEARS:
       return [];
     case SET_EVENTS:
       return action.events;

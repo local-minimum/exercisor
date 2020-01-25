@@ -39,6 +39,7 @@ export default class MapBox extends React.Component {
   }
 
   setFocus = (focusMode) => {
+    if (this.vectorSource.getFeatures().length === 0) return;
     if (focusMode === 'all') {
       const extent = this.vectorSource.getExtent();
       this.olmap.getView().fit(extent);
@@ -110,7 +111,7 @@ export default class MapBox extends React.Component {
     this.vectorSource.clear()
     if (nCurrentFeatures > 0) {
       this.vectorSource.addFeatures(features);
-      if (loading || nCurrentFeatures > nPrevFeatures) this.setFocus(focusMode);
+      if (loading || (nCurrentFeatures !== nPrevFeatures && nCurrentFeatures > 0)) this.setFocus(focusMode);
     } else {
         this.olmap.getView().setZoom(2);
     }

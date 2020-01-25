@@ -102,9 +102,13 @@ export default class DoEViewMode extends AnyModeBase {
   }
 
   getFeatures() {
-    const { events } = this.props;
+    const { events, year } = this.props;
     const { segment, viewRoute } = this.state;
     const { lines, exhausted } = getLineStringsData(events, viewRoute, this.getRoute);
-    return { features: this.getFeaturesFromEvents(lines, segment), exhausted };
+    return {
+      features: this.getFeaturesFromEvents(lines, segment),
+      exhausted,
+      featuresId: year,
+    };
   }
 };

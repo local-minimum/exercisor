@@ -3,6 +3,6 @@ import AnyModeBase from './AnyModeBase';
 
 export default class DoEEditMode extends AnyModeBase {
   getFeatures() {
-    return { features: [], exhausted: true };
+    return { features: [], exhausted: true, featuresId: 1 };
   }
 }

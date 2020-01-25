@@ -27,6 +27,7 @@ export default class DoEEditMode extends React.Component {
       exhausted: true,
       segment: null,
       viewRouteId: undefined,
+      featuresId: null,
       viewRoute: [],
       features: [],
     };
@@ -42,7 +43,7 @@ export default class DoEEditMode extends React.Component {
 
   handleSelectSegment = (seg) => {
     this.setState({segment: seg === this.state.segment ? null : seg}, () => {
-      const { features, exhausted } = this.getFeatures();
+      const { features } = this.getFeatures();
       this.setState({ features });
     });
   }
@@ -53,18 +54,20 @@ export default class DoEEditMode extends React.Component {
     if (routeId !== viewRouteId) {
       this.setState({
         viewRouteId: routeId,
+        featuresId: null,
         exhausted: false,
         viewRoute: [],
         features: [],
       });
       return;
     }
-    const { features, exhausted } = this.getFeatures();
+    const { features, exhausted, featuresId } = this.getFeatures();
     const nextState = {};
     let loadCallback = () => {};
-    if (features.length > this.state.features.length) {
+    if (features.length > this.state.features.length || featuresId !== this.state.featuresId) {
       nextState.features = features;
-      nextState.exhausted = exhausted;
+      nextState.exhausted = features.length > 0 ? exhausted : false;
+      nextState.featuresId = featuresId;
     } else if (this.state.exhausted) {
       if (Object.keys(nextState).length > 0) {
         this.setState(nextState, loadCallback);
@@ -74,11 +77,17 @@ export default class DoEEditMode extends React.Component {
     if (!exhausted) {
       const fullViewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
       const loading = fullViewRoute.some((wptPair, idx) => {
-          if (wptPair != null && this.getRoute(wptPair) == null) {
-            if (viewRoute.some(pair => pair === wptPair)) return true;
-            nextState.viewRoute = viewRoute.concat([wptPair]);
+          if (wptPair == null) return false;
+          const hasLoadedRoute = this.getRoute(wptPair) != null
+          const isInViewRoute = viewRoute.some(pair => pair === wptPair)
+          if (!hasLoadedRoute) {
+            if (isInViewRoute) return true;
+            nextState.viewRoute = nextState.viewRoute == null ? viewRoute.concat([wptPair]) : nextState.viewRoute.concat([wptPair]);
             loadCallback = () => onLoadRoute(wptPair[0], wptPair[1]);
             return true;
+          }
+          if (!isInViewRoute) {
+            nextState.viewRoute = nextState.viewRoute == null ? viewRoute.concat([wptPair]) : nextState.viewRoute.concat([wptPair]);
           }
           return false;
       });

@@ -14,7 +14,7 @@ export default class ExerciseViewAll extends React.Component {
     const series = events2timeSeries(events);
     const convSeries = events2convTimeSeries(events);
     const DistanceOnEarth = editKey.length > 0 ? null :
-        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} />
+        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} year="total"/>
     return (
       <div>
         <ExerciseSummary events={events} />

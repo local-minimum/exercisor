@@ -36,15 +36,15 @@ export default class ExerciseViewYear extends React.Component {
       name={this.getName()}
     /> : <YearGoals year={year} goals={goals} events={events} />;
     const DistanceOnEarth = editKey.length > 0 ? null :
-        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} />
+        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} year={year} />
     return (
       <div>
         <ExerciseSummary events={events} year={year} />
         {Goals}
         <ExerciseTable {...this.props} events={events} />
-        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
-        <CompensateCalories events={events} />
         {DistanceOnEarth}
+        <CompensateCalories events={events} />
+        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
       </div>
     );
   }
