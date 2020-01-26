@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
   loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
+  makeRoute,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
@@ -40,6 +41,7 @@ const mapDispatchToProps = dispatch => ({
   onSetGoalsDistanceWeekly: dist => dispatch(setGoalsWeeklyDist(dist)),
   onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
+  onMakeRoute: (routeName, waypoints) => dispatch(makeRoute(routeName, waypoints)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

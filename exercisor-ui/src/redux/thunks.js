@@ -4,7 +4,7 @@ import {
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
-  registerUser,
+  registerUser, createRoute,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -98,6 +98,13 @@ export function removeEvent(evtId) {
         dispatch(loadEvents(name));
       })
       .catch(message => dispatch(setErrorMessage(message)));
+  }
+}
+
+export function makeRoute(routeName, waypoints) {
+  return (dispatch, getState) => {
+    const { name, editKey } = getState();
+    return createRoute(name, routeName, waypoints, editKey);
   }
 }
 

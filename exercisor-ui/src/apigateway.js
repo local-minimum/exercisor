@@ -115,3 +115,12 @@ export const registerUser = (user, editKey) => {
     'PUT',
   );
 }
+
+export const createRoute = (user, name, waypoints, editKey) => {
+  const data = { name, waypoints: waypoints.map(([from, to]) => `${from}|${to}`) };
+  return jsonRequest(
+    `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
+    data,
+    'PUT',
+  );
+}

@@ -11,7 +11,10 @@ export default class ExerciseViewAll extends React.Component {
   getName = () => this.props.match.params.name;
 
   render() {
-    const { editKey, events, onLoadRoute, routes, goals, locations } = this.props;
+    const {
+      editKey, events, onLoadRoute, routes, goals, locations,
+      onMakeRoute,
+    } = this.props;
     const series = events2timeSeries(events);
     const convSeries = events2convTimeSeries(events);
     const DistanceOnEarth = editKey.length > 0 ?
@@ -23,6 +26,7 @@ export default class ExerciseViewAll extends React.Component {
         ownRouteDesigns={[]}
         allRouteDesigns={[]}
         onLoadRoute={onLoadRoute}
+        onMakeRoute={onMakeRoute}
       />
       : <DoEViewMode events={events} onLoadRoute={onLoadRoute} routesData={routes} routeId={goals && goals.route} year="total"/>
     return (

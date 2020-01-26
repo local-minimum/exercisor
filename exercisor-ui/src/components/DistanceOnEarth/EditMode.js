@@ -59,6 +59,12 @@ export default class DoEEditMode extends AnyModeBase {
     });
   }
 
+  handleChangeDesignName = (evt) => {
+    this.setState({
+      designRouteName: evt.target.value,
+    });
+  }
+
   renderDesignRow = (data, idx) => {
     const dist = this.getWptDistance(data);
     return (
@@ -94,12 +100,24 @@ export default class DoEEditMode extends AnyModeBase {
     });
   }
 
+  handleSaveClick = () => {
+      const { onMakeRoute } = this.props;
+      const { designRoute, designRouteName } = this.state;
+      const waypoints = designRoute
+        .filter(wptPair => wptPair[0] !== '' || wptPair[1] !== '');
+      if (waypoints.length > 0) {
+        onMakeRoute(designRouteName, waypoints);
+        this.handleSetEditModeSelect();
+      }
+  }
+
   renderCreate() {
-    const { designRoute } = this.state;
+    const { designRoute, designRouteName } = this.state;
     const dists = designRoute
       .filter(wptPair => wptPair[0] !== '' || wptPair[1] !== '')
       .map(this.getWptDistance);
     const total = dists.some(d => d == null) ? '???' : dists.reduce((acc, d) => acc + d, 0).toFixed(0);
+    const canSave = total !== '???' && total !== '0' && designRouteName != null && designRouteName.length > 0;
     return (
       <div>
         <table>
@@ -118,8 +136,13 @@ export default class DoEEditMode extends AnyModeBase {
             </tr>
           </tbody>
         </table>
-        <input type="text" placeholder="Namnge rutten" />
-        <button disabled>Spara</button>
+        <input
+          type="text"
+          placeholder="Namnge rutten"
+          onChange={this.handleChangeDesignName}
+          value={designRouteName == null ? '' : designRouteName}
+        />
+        <button disabled={!canSave} onClick={this.handleSaveClick}>Spara</button>
       </div>
     )
   }
