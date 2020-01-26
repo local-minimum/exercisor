@@ -121,7 +121,7 @@ export function loadRoute(from, to) {
     if (route != null) return Promise.resolve(route);
     const locationPromises = [];
     const knownFrom = getOSMLocationCoords(getState(), from);
-    if (knownFrom == null) {
+    if (knownFrom == null && from != null) {
       locationPromises.push(
         getLocation(from)
           .then(coords => dispatch(setOSMLocation(from, coords)))
@@ -129,7 +129,7 @@ export function loadRoute(from, to) {
       );
     }
     const knownTo = getOSMLocationCoords(getState(), to);
-    if (knownTo == null) {
+    if (knownTo == null && to != null) {
       locationPromises.push(
         getLocation(to)
           .then(coords => dispatch(setOSMLocation(to, coords)))
@@ -140,6 +140,7 @@ export function loadRoute(from, to) {
       .then(() => {
           const fromLoc = getOSMLocationCoords(getState(), from);
           const toLoc = getOSMLocationCoords(getState(), to);
+          if (fromLoc == null || toLoc == null) return Promise.resolve();
           getRouteCoordinates(fromLoc, toLoc)
             .then(route => {
               dispatch(setOSMRoute(from, to, route));

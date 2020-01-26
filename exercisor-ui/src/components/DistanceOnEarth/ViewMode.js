@@ -22,11 +22,13 @@ export default class DoEViewMode extends AnyModeBase {
           geometry: new LineString(evtData[0].map(lonLat => fromLonLat(lonLat))),
           segment: idx + 1,
           name: `Pass ${idx + 1}`,
+          lastIdx: idx + 1,
         });
         featLine.setStyle(getStyle(selected, SEG_TYPE_LINE));
         const featPt = new Feature({
           geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
           segment: idx + 1,
+          lastIdx: idx,
         });
         featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
         return [featLine, featPt];
@@ -37,6 +39,7 @@ export default class DoEViewMode extends AnyModeBase {
           geometry: new LineString(evtData[idxPart].map(lonLat => fromLonLat(lonLat))),
           segment: idx + 1,
           name: `Pass ${idx + 1}, del ${idxPart + 1}`,
+          lastIdx: idx + idxPart + 1,
         });
         feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
         feats.push(feat);
@@ -50,6 +53,7 @@ export default class DoEViewMode extends AnyModeBase {
             ]),
             segment: idx + 1,
             name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
+            lastIdx: idx + idxPart,
           });
           connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
           feats.push(connector);
@@ -60,12 +64,14 @@ export default class DoEViewMode extends AnyModeBase {
         geometry: new LineString(lastLine.map(lonLat => fromLonLat(lonLat))),
         segment: idx + 1,
         name: `Pass ${idx + 1}, del ${evtData.length}`,
+        lastIdx: idx + evtData.length + 1,
       });
       feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
       feats.push(feat);
       const featPt = new Feature({
         geometry: new Point(fromLonLat(lastLine[lastLine.length - 1])),
         segment: idx + 1,
+        lastIdx: idx + evtData.length,
       });
       featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
       feats.push(featPt);

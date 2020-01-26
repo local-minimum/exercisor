@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DEFAULT_ROUTE = [
+export const DEFAULT_ROUTE = [
     [
       "Västra Bodarnevägen, Alingsås",
       "Lindomemotet, Långås, Mölndals kommun",
@@ -35,8 +35,8 @@ export default class DoEEditMode extends React.Component {
 
   getRoute = (waypoints) => {
     if (waypoints == null) return null;
-    const { routes } = this.props;
-    const froms = routes[waypoints[0]];
+    const { routesData } = this.props;
+    const froms = routesData[waypoints[0]];
     if (froms == null) return null;
     return froms[waypoints[1]];
   }

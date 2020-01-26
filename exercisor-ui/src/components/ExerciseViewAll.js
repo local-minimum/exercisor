@@ -4,17 +4,27 @@ import ExerciseTable from './ExerciseTable';
 import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import CompensateCalories from './CompensateCalories';
 import DoEViewMode from './DistanceOnEarth/ViewMode';
+import DoEEditMode from './DistanceOnEarth/EditMode';
 import { events2timeSeries, events2convTimeSeries } from '../util';
 
 export default class ExerciseViewAll extends React.Component {
   getName = () => this.props.match.params.name;
 
   render() {
-    const { editKey, events, onLoadRoute, routes, goals } = this.props;
+    const { editKey, events, onLoadRoute, routes, goals, locations } = this.props;
     const series = events2timeSeries(events);
     const convSeries = events2convTimeSeries(events);
-    const DistanceOnEarth = editKey.length > 0 ? null :
-        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} year="total"/>
+    const DistanceOnEarth = editKey.length > 0 ?
+      <DoEEditMode
+        routesData={routes}
+        locations={locations}
+        routeId={goals && goals.route}
+        year="total"
+        ownRouteDesigns={[]}
+        allRouteDesigns={[]}
+        onLoadRoute={onLoadRoute}
+      />
+      : <DoEViewMode events={events} onLoadRoute={onLoadRoute} routesData={routes} routeId={goals && goals.route} year="total"/>
     return (
       <div>
         <ExerciseSummary events={events} />

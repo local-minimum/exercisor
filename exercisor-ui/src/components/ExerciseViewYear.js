@@ -35,8 +35,9 @@ export default class ExerciseViewYear extends React.Component {
       onSaveGoals={onSaveGoals}
       name={this.getName()}
     /> : <YearGoals year={year} goals={goals} events={events} />;
-    const DistanceOnEarth = editKey.length > 0 ? null :
-        <DoEViewMode events={events} onLoadRoute={onLoadRoute} routes={routes} routeId={goals && goals.route} year={year} />
+    const DistanceOnEarth = editKey.length > 0 ?
+      null
+      : <DoEViewMode events={events} onLoadRoute={onLoadRoute} routesData={routes} routeId={goals && goals.route} year={year} />
     return (
       <div>
         <ExerciseSummary events={events} year={year} />

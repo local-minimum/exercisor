@@ -11,7 +11,7 @@ export default class MapBox extends React.Component {
     super(props);
 
     this.state = {
-      focusMode: 'recent',
+      focusMode: null,
     };
 
     this.vectorSource = new VectorSource();
@@ -49,7 +49,7 @@ export default class MapBox extends React.Component {
         .reduce(
           (acc, feat) => {
             if (acc == null) return feat;
-            return acc.get('segment') > feat.get('segment') ? acc : feat;
+            return acc.get('lastIdx') > feat.get('lastIdx') ? acc : feat;
           },
           null,
         );
@@ -78,8 +78,8 @@ export default class MapBox extends React.Component {
         {Segment}
         <div>
           <strong>Fokusera på: </strong>
-          <button onClick={() => this.setFocus('recent')}>Senaste passet</button>
-          <button onClick={() => this.setFocus('all')}>Alla pass</button>
+          <button onClick={() => this.setFocus('recent')}>Senaste</button>
+          <button onClick={() => this.setFocus('all')}>Alla</button>
         </div>
       </div>
     );
@@ -105,15 +105,17 @@ export default class MapBox extends React.Component {
 
   loadRoute() {
     const { focusMode } = this.state;
-    const { features, loading } = this.props;
+    const { features, loading, defaultFocus } = this.props;
     const nPrevFeatures = this.vectorSource.getFeatures().length
     const nCurrentFeatures = features == null ? -1 : features.length;
     this.vectorSource.clear()
     if (nCurrentFeatures > 0) {
       this.vectorSource.addFeatures(features);
-      if (loading || (nCurrentFeatures !== nPrevFeatures && nCurrentFeatures > 0)) this.setFocus(focusMode);
+      if (loading || (nCurrentFeatures !== nPrevFeatures && nCurrentFeatures > 0)) {
+        this.setFocus(focusMode == null ? (defaultFocus == null ? 'recent' : defaultFocus) : focusMode);
+      }
     } else {
-        this.olmap.getView().setZoom(2);
+      this.olmap.getView().setZoom(2);
     }
   }
 }
