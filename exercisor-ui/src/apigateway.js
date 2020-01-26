@@ -96,6 +96,7 @@ export const upsertGoals = (user, year, goals, editKey) => {
   const data = {
     "sum-events": extractNullableGoal(goals, ['sums', 'events']),
     "weekly-dist": extractNullableGoal(goals, ['weekly', 'distance']),
+    "route": goals.route,
   };
   return jsonRequest(
     `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
@@ -116,11 +117,27 @@ export const registerUser = (user, editKey) => {
   );
 }
 
-export const createRoute = (user, name, waypoints, editKey) => {
+export const putRoute = (user, name, waypoints, editKey) => {
   const data = { name, waypoints: waypoints.map(([from, to]) => `${from}|${to}`) };
   return jsonRequest(
     `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
     data,
     'PUT',
+  );
+}
+
+export const getUserRouteDesigns = (user, editKey) => {
+  return jsonRequest(
+    `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
+    {},
+    'GET',
+  );
+}
+
+export const getPublicRouteDesigns = () => {
+  return jsonRequest(
+    `${BASE_URL}/route`,
+    {},
+    'GET',
   );
 }

@@ -5,6 +5,7 @@ import {
   SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
+  SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
 } from './actions';
 import { minutes2str } from '../util';
 
@@ -196,7 +197,40 @@ const register = (state = defaultReg, action) => {
     }
 }
 
+const userRouteDesigns = (state = [], action) => {
+  switch (action.type) {
+    case SET_NAME:
+      return [];
+    case SET_ROUTE_DESIGNS_USER:
+      return action.designs;
+    default:
+      return state;
+  }
+}
+
+const publicRouteDesigns = (state = [], action) => {
+  switch (action.type) {
+    case SET_ROUTE_DESIGNS_PUBLIC:
+      return action.designs;
+    default:
+      return state;
+  }
+}
+
+const consideredRouteDesign = (state = null, action) => {
+  switch (action.type) {
+    case SET_NAME:
+    case SET_EDITKEY:
+    case SET_GOALS:
+      return null;
+    case SET_ROUTE_DESIGN_CONSIDERED:
+      return action.routeId;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
-  errorMessage, register,
+  errorMessage, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
 });

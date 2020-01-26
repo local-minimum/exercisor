@@ -29,6 +29,9 @@ export const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 export const SET_REG_USER = 'SET_REG_USER';
 export const SET_REG_PWD = 'SET_REG_PWD';
 export const SET_REG_PWD2 = 'SET_REG_PWD2';
+export const SET_ROUTE_DESIGNS_USER = 'SET_ROUTE_DESIGNS_USER';
+export const SET_ROUTE_DESIGNS_PUBLIC = 'SET_ROUTE_DESIGNS_PUBLIC';
+export const SET_ROUTE_DESIGN_CONSIDERED = 'SET_ROUTE_DESIGN_CONSIDERED';
 
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
 export const setName = makeActionCreator(SET_NAME, 'name');
@@ -51,3 +54,6 @@ export const setErrorMessage = makeActionCreator(SET_ERROR_MESSAGE, 'message');
 export const setRegUser = makeActionCreator(SET_REG_USER, 'user');
 export const setRegPwd = makeActionCreator(SET_REG_PWD, 'pwd');
 export const setRegPwd2 = makeActionCreator(SET_REG_PWD2, 'pwd2');
+export const setUserRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_USER, 'designs');
+export const setPublicRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_PUBLIC, 'designs');
+export const setRouteDesignConsidered = makeActionCreator(SET_ROUTE_DESIGN_CONSIDERED, 'routeId');

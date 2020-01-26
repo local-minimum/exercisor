@@ -1,10 +1,11 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
-  setOSMLocation, setOSMRoute, setErrorMessage,
+  setOSMLocation, setOSMRoute, setErrorMessage, setUserRouteDesigns,
+  setPublicRouteDesigns,
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
-  registerUser, createRoute,
+  registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -101,10 +102,40 @@ export function removeEvent(evtId) {
   }
 }
 
+export function loadRouteDesigns() {
+  return (dispatch, getState) => {
+    const { name, editKey } = getState();
+      const promises = [];
+      promises.push(
+        getUserRouteDesigns(name, editKey)
+          .then(designs => dispatch(setUserRouteDesigns(designs)))
+          .catch(console.log)
+      );
+      promises.push(
+        getPublicRouteDesigns()
+          .then(designs => dispatch(setPublicRouteDesigns(designs)))
+          .catch(message => dispatch(setErrorMessage(message)))
+      );
+      return Promise.all(promises);
+  }
+}
+
 export function makeRoute(routeName, waypoints) {
   return (dispatch, getState) => {
     const { name, editKey } = getState();
-    return createRoute(name, routeName, waypoints, editKey);
+    return putRoute(name, routeName, waypoints, editKey)
+      .then(_ => dispatch(loadRouteDesigns()))
+      .catch(message => dispatch(setErrorMessage(message)));
+  }
+}
+
+export function saveSelectedRoute(routeId, year) {
+  return (dispatch, getState) => {
+    const { name, goals, editKey } = getState();
+    const nextGoals = Object.assign({}, goals, { route: routeId });
+    upsertGoals(name, year, nextGoals, editKey)
+      .then(_ => dispatch(loadYearGoals(name, year)))
+      .catch(message => dispatch(setErrorMessage(message)));
   }
 }
 

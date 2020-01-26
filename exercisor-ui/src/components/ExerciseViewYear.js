@@ -7,6 +7,7 @@ import YearGoalsEdit from './YearGoalsEdit';
 import YearGoals from './YearGoals';
 import CompensateCalories from './CompensateCalories';
 import DoEViewMode from './DistanceOnEarth/ViewMode';
+import DoEEditMode from './DistanceOnEarth/EditMode';
 import { events2timeSeries, events2convTimeSeries } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
@@ -21,7 +22,9 @@ export default class ExerciseViewYear extends React.Component {
   render() {
     const {
       editKey, goals, onSetGoalsEventSum, onSaveGoals, onLoadRoute, routes,
-      onSetGoalsDistanceWeekly,
+      onSetGoalsDistanceWeekly, locations, consideredRouteDesign,
+      userRouteDesigns, publicRouteDesigns, onLoadRouteDesigns,
+      onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute,
     } = this.props;
     const year = this.getYear();
     const events = filterEvents(this.props.events, year != null ? Number(year) : null);
@@ -36,8 +39,31 @@ export default class ExerciseViewYear extends React.Component {
       name={this.getName()}
     /> : <YearGoals year={year} goals={goals} events={events} />;
     const DistanceOnEarth = editKey.length > 0 ?
-      null
-      : <DoEViewMode events={events} onLoadRoute={onLoadRoute} routesData={routes} routeId={goals && goals.route} year={year} />
+      <DoEEditMode
+        routesData={routes}
+        locations={locations}
+        routeId={consideredRouteDesign == null ? goals && goals.route : consideredRouteDesign}
+        year={year}
+        ownRouteDesigns={userRouteDesigns}
+        allRouteDesigns={publicRouteDesigns}
+        onLoadRoute={onLoadRoute}
+        onMakeRoute={onMakeRoute}
+        onLoadRouteDesigns={onLoadRouteDesigns}
+        onSetRouteDesignConsidered={onSetRouteDesignConsidered}
+        onSetSelectedRoute={onSetSelectedRoute}
+        editKey={editKey}
+
+      /> :
+      <DoEViewMode
+        events={events}
+        onLoadRoute={onLoadRoute}
+        routesData={routes}
+        routeId={goals && goals.route}
+        year={year}
+        ownRouteDesigns={userRouteDesigns}
+        allRouteDesigns={publicRouteDesigns}
+        onLoadRouteDesigns={onLoadRouteDesigns}
+      />
     return (
       <div>
         <ExerciseSummary events={events} year={year} />

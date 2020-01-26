@@ -128,7 +128,7 @@ def upsert_user_total_goal(
     return db[USER_GOALS].update_one(
         {"uid": user_id, "year": "total"},
         {"$set": {
-            "route": None if route is None else ObjectId(route),
+            "route": None if not route else ObjectId(route),
         }},
         upsert=True,
     )
@@ -148,7 +148,7 @@ def upsert_user_goal(
             "year": year,
             "sums": sums,
             "weekly": weekly,
-            "route": None if route is None else ObjectId(route),
+            "route": None if not route else ObjectId(route),
         }},
         upsert=True,
     )

@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
   loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
-  makeRoute,
+  makeRoute, loadRouteDesigns, saveSelectedRoute,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEditKey, setEntry, settingListAll, setGoalsEventSum, setEntryType,
-  setGoalsWeeklyDist,
+  setGoalsWeeklyDist, setRouteDesignConsidered,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -22,6 +22,9 @@ const mapStateToProps = (state, ownProps) => ({
   locations: state.locations,
   routes: state.routes,
   errorMessage: state.errorMessage,
+  userRouteDesigns: state.userRouteDesigns,
+  publicRouteDesigns: state.publicRouteDesigns,
+  consideredRouteDesign: state.consideredRouteDesign,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -42,6 +45,9 @@ const mapDispatchToProps = dispatch => ({
   onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
   onMakeRoute: (routeName, waypoints) => dispatch(makeRoute(routeName, waypoints)),
+  onLoadRouteDesigns: () => dispatch(loadRouteDesigns()),
+  onSetRouteDesignConsidered: (routeId) => dispatch(setRouteDesignConsidered(routeId)),
+  onSetSelectedRoute: (routeId, year) => dispatch(saveSelectedRoute(routeId, year)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

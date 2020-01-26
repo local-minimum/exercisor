@@ -9,12 +9,19 @@ import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styl
 
 export default class DoEEditMode extends AnyModeBase {
 
-  handleChangeRouteDesign = () => {
-    this.setState({ showOnMap: false, editModeSelect: true });
+  handleChangeRouteDesign = (evt) => {
+    const { onSetRouteDesignConsidered } = this.props;
+    const { value } = evt.target;
+    this.setState({ showOnMap: false, editModeSelect: true }, () => onSetRouteDesignConsidered(value));
   }
 
   handleClickShow = () => {
     this.setState({ showOnMap: !this.state.showOnMap });
+  }
+
+  handleSaveSelected = () => {
+    const { routeId, year, onSetSelectedRoute } = this.props;
+    onSetSelectedRoute(routeId, year);
   }
 
   renderSelect() {
@@ -26,7 +33,7 @@ export default class DoEEditMode extends AnyModeBase {
       .filter(design => !ownRouteDesigns.some(own => own.id === design.id))
       .map(design => <option key={design.id} value={design.id}>{design.name}</option>);
     const ViewOnMap = <button onClick={this.handleClickShow}>{showOnMap ? 'Dölj rutt' : 'Visa på kartan'}</button>
-    const Save = <button disabled>Spara vald rutt</button>
+    const Save = <button onClick={this.handleSaveSelected}>Spara vald rutt</button>
     return (
       <div>
         <select value={routeId == null ? "" : routeId} onChange={this.handleChangeRouteDesign}>
@@ -45,7 +52,6 @@ export default class DoEEditMode extends AnyModeBase {
     const { designRoute } = this.state;
     const [fromPt, toPt] = designRoute[idx];
     onLoadRoute(fromPt.length > 0 ? fromPt : null, toPt.length > 0 ? toPt : null);
-    this.setState({ designHash: `${fromPt}:${toPt}` });
   }
 
   handleChangeDesign = (idx, value) => {
@@ -293,7 +299,7 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   getFeatures() {
-    const { showOnMap, renderMakeNew, designHash } = this.state;
+    const { showOnMap, renderMakeNew } = this.state;
     const { routeId } = this.props;
     const { features, exhausted, featuresId } = showOnMap ? this.routeToFeatures(renderMakeNew ? null : routeId) : { features: [], exhausted: true };
     return { features, exhausted, featuresId: `${featuresId}-${renderMakeNew}` };

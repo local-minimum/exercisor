@@ -5,41 +5,44 @@ import { fromLonLat } from 'ol/proj';
 import 'ol/ol.css';
 
 import { getLineStringsData } from './ol-tools/geom';
-import AnyModeBase from './AnyModeBase';
+import AnyModeBase, { DEFAULT_ROUTE } from './AnyModeBase';
 import MapBox from './MapBox';
 import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
 
 export default class DoEViewMode extends AnyModeBase {
 
   getFeaturesFromEvents(data, segment) {
+    let lastIdx = 0;
     return data.map((evtData, idx) => {
       const selected = segment === idx + 1;
       if (evtData.length === 0) {
         return [];
       }
       if (evtData.length === 1) {
+        lastIdx += 2;
         const featLine = new Feature({
           geometry: new LineString(evtData[0].map(lonLat => fromLonLat(lonLat))),
           segment: idx + 1,
           name: `Pass ${idx + 1}`,
-          lastIdx: idx + 1,
+          lastIdx,
         });
         featLine.setStyle(getStyle(selected, SEG_TYPE_LINE));
         const featPt = new Feature({
           geometry: new Point(fromLonLat(evtData[0][evtData[0].length - 1])),
           segment: idx + 1,
-          lastIdx: idx,
+          lastIdx: lastIdx - 1,
         });
         featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
         return [featLine, featPt];
       }
       const feats = [];
       for (let idxPart=0; idxPart<evtData.length - 1; idxPart++) {
+        lastIdx += 2;
         const feat = new Feature({
           geometry: new LineString(evtData[idxPart].map(lonLat => fromLonLat(lonLat))),
           segment: idx + 1,
           name: `Pass ${idx + 1}, del ${idxPart + 1}`,
-          lastIdx: idx + idxPart + 1,
+          lastIdx,
         });
         feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
         feats.push(feat);
@@ -53,25 +56,26 @@ export default class DoEViewMode extends AnyModeBase {
             ]),
             segment: idx + 1,
             name: `Pass ${idx + 1}, teleportering ${idxPart + 1}`,
-            lastIdx: idx + idxPart,
+            lastIdx: lastIdx - 1,
           });
           connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
           feats.push(connector);
         }
       }
+      lastIdx += 2;
       const lastLine = evtData[evtData.length - 1]
       const feat = new Feature({
         geometry: new LineString(lastLine.map(lonLat => fromLonLat(lonLat))),
         segment: idx + 1,
         name: `Pass ${idx + 1}, del ${evtData.length}`,
-        lastIdx: idx + evtData.length + 1,
+        lastIdx,
       });
       feat.setStyle(getStyle(selected, SEG_TYPE_LINE));
       feats.push(feat);
       const featPt = new Feature({
         geometry: new Point(fromLonLat(lastLine[lastLine.length - 1])),
         segment: idx + 1,
-        lastIdx: idx + evtData.length,
+        lastIdx: lastIdx - 1,
       });
       featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
       feats.push(featPt);
@@ -116,5 +120,20 @@ export default class DoEViewMode extends AnyModeBase {
       exhausted,
       featuresId: year,
     };
+  }
+
+  getWaypointsFromId = (routeId) => {
+    if (routeId == null) {
+      return DEFAULT_ROUTE;
+    }
+    const { ownRouteDesigns, allRouteDesigns } = this.props;
+
+    const routes = ownRouteDesigns.filter(design => design.id === routeId);
+    if (routes.length > 0) return routes[0].waypoints;
+
+    const routes2 = allRouteDesigns.filter(design => design.id === routeId);
+    if (routes2.length > 0) return routes2[0].waypoints;
+
+    return []
   }
 };

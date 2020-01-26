@@ -13,7 +13,8 @@ export default class ExerciseViewAll extends React.Component {
   render() {
     const {
       editKey, events, onLoadRoute, routes, goals, locations,
-      onMakeRoute,
+      onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
+      consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
     } = this.props;
     const series = events2timeSeries(events);
     const convSeries = events2convTimeSeries(events);
@@ -21,14 +22,27 @@ export default class ExerciseViewAll extends React.Component {
       <DoEEditMode
         routesData={routes}
         locations={locations}
-        routeId={goals && goals.route}
+        routeId={consideredRouteDesign == null ? goals && goals.route : consideredRouteDesign}
         year="total"
-        ownRouteDesigns={[]}
-        allRouteDesigns={[]}
+        ownRouteDesigns={userRouteDesigns}
+        allRouteDesigns={publicRouteDesigns}
         onLoadRoute={onLoadRoute}
         onMakeRoute={onMakeRoute}
+        onLoadRouteDesigns={onLoadRouteDesigns}
+        onSetRouteDesignConsidered={onSetRouteDesignConsidered}
+        onSetSelectedRoute={onSetSelectedRoute}
+        editKey={editKey}
+
+      /> :
+      <DoEViewMode
+        events={events}
+        onLoadRoute={onLoadRoute}
+        routesData={routes}
+        routeId={goals && goals.route} year="total"
+        ownRouteDesigns={userRouteDesigns}
+        allRouteDesigns={publicRouteDesigns}
+        onLoadRouteDesigns={onLoadRouteDesigns}
       />
-      : <DoEViewMode events={events} onLoadRoute={onLoadRoute} routesData={routes} routeId={goals && goals.route} year="total"/>
     return (
       <div>
         <ExerciseSummary events={events} />

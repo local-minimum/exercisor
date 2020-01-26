@@ -49,7 +49,7 @@ export default class DoEEditMode extends React.Component {
   }
 
   loadRoute = () => {
-    const { onLoadRoute, route, routeId } = this.props;
+    const { onLoadRoute, routeId } = this.props;
     const { viewRouteId, viewRoute } = this.state;
     if (routeId !== viewRouteId) {
       this.setState({
@@ -75,7 +75,7 @@ export default class DoEEditMode extends React.Component {
       return;
     }
     if (!exhausted) {
-      const fullViewRoute = routeId == null ? DEFAULT_ROUTE : (route == null ? [] : route);
+      const fullViewRoute = this.getWaypointsFromId(routeId);
       const loading = fullViewRoute.some((wptPair, idx) => {
           if (wptPair == null) return false;
           const hasLoadedRoute = this.getRoute(wptPair) != null
@@ -101,6 +101,8 @@ export default class DoEEditMode extends React.Component {
   }
 
   componentDidMount() {
+    const { onLoadRouteDesigns } = this.props;
+    if (onLoadRouteDesigns != null) onLoadRouteDesigns();
     this.loadRoute();
     if (this.state.exhausted) {
       this.setState({exhausted: false});
