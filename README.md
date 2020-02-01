@@ -25,6 +25,5 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [ ] Real login!!
 - [ ] Errors where they belong (next to relevant part)
 - [ ] Draw route on map
-- [ ] Histogram of Distance and Energy
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
 - [ ] Challenges

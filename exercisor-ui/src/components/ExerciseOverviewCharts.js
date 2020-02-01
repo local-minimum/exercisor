@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  ChartContainer, ChartRow, Resizable, Charts, LineChart, Baseline,
+  ChartContainer, ChartRow, Resizable, Charts, Baseline,
   LabelAxis, ValueAxis, ScatterChart, YAxis, BarChart,
   styler,
 } from 'react-timeseries-charts';
