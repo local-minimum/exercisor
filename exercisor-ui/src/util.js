@@ -18,6 +18,8 @@ export const jsonRequest = (url, data={}, type='GET') => {
     .catch(ajaxErrorHandler);
 }
 
+export const emptyOrNull = (val) => val == null || val === '';
+
 export const aDay = 1000 * 60 * 60 * 24;
 
 export const date2year = (date) => Number(date.split("-")[0])

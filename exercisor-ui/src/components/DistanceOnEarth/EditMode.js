@@ -6,6 +6,7 @@ import { fromLonLat } from 'ol/proj';
 import AnyModeBase, { DEFAULT_ROUTE }  from './AnyModeBase';
 import MapBox from './MapBox';
 import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
+import { emptyOrNull } from '../../util';
 
 export default class DoEEditMode extends AnyModeBase {
 
@@ -26,7 +27,7 @@ export default class DoEEditMode extends AnyModeBase {
 
   handleEditSelected = () => {
     const { ownRouteDesigns, routeId } = this.props;
-    const designRoute = ownRouteDesigns.filter(own => own.id === routeId)[0];
+    const designRoute = this.getRouteFromId(routeId);
     if (designRoute == null) return;
 
     this.setState({
@@ -48,10 +49,10 @@ export default class DoEEditMode extends AnyModeBase {
       .map(design => <option key={design.id} value={design.id}>{design.name}</option>);
     const ViewOnMap = <button onClick={this.handleClickShow}>{showOnMap ? 'Dölj rutt' : 'Visa på kartan'}</button>
     const Save = <button onClick={this.handleSaveSelected}>Välj</button>
-    const Edit = <button disabled={!ownRouteDesigns.some(own => own.id === routeId)} onClick={this.handleEditSelected}>Editera</button>
+    const Edit = <button onClick={this.handleEditSelected}>Editera</button>
     return (
       <div>
-        <select value={routeId == null ? "" : routeId} onChange={this.handleChangeRouteDesign}>
+        <select value={emptyOrNull(routeId) ? "" : routeId} onChange={this.handleChangeRouteDesign}>
           <option value="">-- Inget valt --</option>
           {OwnRoutes}
           {OthersRoutes}
@@ -141,7 +142,7 @@ export default class DoEEditMode extends AnyModeBase {
       const waypoints = designRoute
         .filter(wptPair => wptPair[0] !== '' || wptPair[1] !== '');
       if (waypoints.length > 0) {
-        if (designRouteId == null) {
+        if (emptyOrNull(designRouteId)) {
           onMakeRoute(designRouteName, waypoints);
         } else {
           onUpdateRoute(designRouteId, designRouteName, waypoints)
@@ -151,12 +152,13 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   renderCreate() {
-    const { designRoute, designRouteName } = this.state;
+    const { designRoute, designRouteName, designRouteId } = this.state;
     const dists = designRoute
       .filter(wptPair => wptPair[0] !== '' || wptPair[1] !== '')
       .map(this.getWptDistance);
     const total = dists.some(d => d == null) ? '???' : dists.reduce((acc, d) => acc + d, 0).toFixed(0);
     const canSave = total !== '???' && total !== '0' && designRouteName != null && designRouteName.length > 0;
+    const info = emptyOrNull(designRouteId) ? "Sparas som ny rutt" : "Uppdaterar tidigare rutt";
     return (
       <div>
         <table>
@@ -175,11 +177,12 @@ export default class DoEEditMode extends AnyModeBase {
             </tr>
           </tbody>
         </table>
+        <em>{info}: </em>
         <input
           type="text"
           placeholder="Namnge rutten"
           onChange={this.handleChangeDesignName}
-          value={designRouteName == null ? '' : designRouteName}
+          value={emptyOrNull(designRouteName) ? '' : designRouteName}
         />
         <button disabled={!canSave} onClick={this.handleSaveClick}>Spara</button>
       </div>
@@ -197,7 +200,7 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   handleSetEditModeSelect = () => {
-    this.setState({ renderMakeNew: false, showOnMap: false, designRouteId: null });
+    this.setState({ renderMakeNew: false, showOnMap: false, designRouteId: '' });
   }
 
   render() {
@@ -233,6 +236,7 @@ export default class DoEEditMode extends AnyModeBase {
     const { segment } = this.state;
     const { locations } = this.props;
     const waypoints = this.getWaypointsFromId(routeId);
+    if (waypoints == null) return [];
     let exhausted = true;
     const features = []
     const hash = []
@@ -337,19 +341,28 @@ export default class DoEEditMode extends AnyModeBase {
     return leg.reduce((acc, seg) => acc + seg.distance / 1000, 0);
   }
 
-  getWaypointsFromId = (routeId) => {
-    const { renderMakeNew, designRoute } = this.state;
+  getRouteFromId = (routeId) => {
+    const { renderMakeNew, designRoute, designRouteName, designRouteId } = this.state;
     const { ownRouteDesigns, allRouteDesigns } = this.props;
-    if (routeId == null) return DEFAULT_ROUTE;
-    if (renderMakeNew) return designRoute;
+    if (emptyOrNull(routeId)) return {
+      waypoints: DEFAULT_ROUTE, id: '', name: '',
+    };
+
+    if (renderMakeNew) return {
+      waypoints: designRoute, name: designRouteName, id: designRouteId,
+    };
 
     const routes = ownRouteDesigns.filter(design => design.id === routeId);
-    if (routes.length > 0) return routes[0].waypoints;
+    if (routes.length > 0) return routes[0];
 
     const routes2 = allRouteDesigns.filter(design => design.id === routeId);
-    if (routes2.length > 0) return routes2[0].waypoints;
+    if (routes2.length > 0) return routes2[0];
 
-    return []
+    return { waypoints: [], id: '', name: '' };
+  }
+
+  getWaypointsFromId = (routeId) => {
+    return this.getRouteFromId(routeId).waypoints;
   }
 
   getFeatures() {
