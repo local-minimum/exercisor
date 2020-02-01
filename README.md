@@ -17,11 +17,11 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Fix not drawing entire line for event spanning two routes.
 - [x] Make nicer error messages
 - [x] Create own routes per year or total route
+- [x] Weekly rollup instead of stupid line
 
 ## Wishful ToDo
 
 - [ ] Get all location matches for name search and choose from drop-down
-- [ ] Weekly rollup instead of stupid line
 - [ ] Real login!!
 - [ ] Errors where they belong (next to relevant part)
 - [ ] Draw route on map

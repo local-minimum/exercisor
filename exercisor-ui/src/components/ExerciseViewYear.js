@@ -8,7 +8,7 @@ import YearGoals from './YearGoals';
 import CompensateCalories from './CompensateCalories';
 import DoEViewMode from './DistanceOnEarth/ViewMode';
 import DoEEditMode from './DistanceOnEarth/EditMode';
-import { events2timeSeries, events2convTimeSeries } from '../util';
+import { events2timeSeries, events2weeklySum } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
   getYear = () => {
@@ -29,7 +29,7 @@ export default class ExerciseViewYear extends React.Component {
     const year = this.getYear();
     const events = filterEvents(this.props.events, year != null ? Number(year) : null);
     const series = events2timeSeries(events);
-    const convSeries = events2convTimeSeries(events);
+    const weeklySeries = events2weeklySum(events);
     const Goals = editKey.length > 0 ? <YearGoalsEdit
       year={year}
       goals={goals}
@@ -71,7 +71,7 @@ export default class ExerciseViewYear extends React.Component {
         <ExerciseTable {...this.props} events={events} />
         {DistanceOnEarth}
         <CompensateCalories events={events} />
-        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
+        <ExerciseOverviewCharts series={series} weeklySeries={weeklySeries} />
       </div>
     );
   }
