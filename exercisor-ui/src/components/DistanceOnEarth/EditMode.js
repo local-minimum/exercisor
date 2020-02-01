@@ -87,6 +87,16 @@ export default class DoEEditMode extends AnyModeBase {
     });
   }
 
+  handleRemoveDesignStep = (idx) => {
+    const { designRoute } = this.state;
+
+    this.setState({
+      designRoute: designRoute
+        .slice(0, idx)
+        .concat(designRoute.slice(idx + 1, designRoute.length))
+    });
+  }
+
   renderDesignRow = (data, idx) => {
     const dist = this.getWptDistance(data);
     return (
@@ -106,7 +116,10 @@ export default class DoEEditMode extends AnyModeBase {
           />
         </td>
         <td>{dist == null ? '???' : dist.toFixed(0)} km</td>
-        <td><button onClick={() => this.handleShowDesign(idx)}>Uppdatera</button></td>
+        <td>
+          <button onClick={() => this.handleShowDesign(idx)}>Uppdatera</button>
+          <button onClick={() => this.handleRemoveDesignStep(idx)}>Ta bort</button>
+        </td>
       </tr>
     );
   }
@@ -223,11 +236,28 @@ export default class DoEEditMode extends AnyModeBase {
     let exhausted = true;
     const features = []
     const hash = []
+    let prevWptEnd = null
     waypoints.forEach((wptPair, idx) => {
       const selected = segment === idx + 1;
+      const [from, to] = wptPair;
+      if (prevWptEnd != null && prevWptEnd !== from) {
+        const prevEndPt = locations[prevWptEnd];
+        const fromPt = from === '' ? null : locations[from];
+        const connector = new Feature({
+          geometry: new LineString([
+            fromLonLat([prevEndPt.lon, prevEndPt.lat]),
+            fromLonLat([fromPt.lon, fromPt.lat]),
+          ]),
+          segment: -1,
+          name: `Hopp`,
+          lastIdx: -1,
+        });
+        connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
+        features.push(connector);
+      }
+      prevWptEnd = to;
       const data = this.getRoute(wptPair);
       if (data == null) {
-        const [from, to] = wptPair;
         hash.push(`${from}-${to}`)
         const fromPt = from === '' ? null : locations[from];
         const toPt = to === '' ? null : locations[to];

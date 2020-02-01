@@ -64,7 +64,7 @@ export default class DoEEditMode extends React.Component {
     const { features, exhausted, featuresId } = this.getFeatures();
     const nextState = {};
     let loadCallback = () => {};
-    if (features.length > this.state.features.length || featuresId !== this.state.featuresId) {
+    if (features.length !== this.state.features.length || featuresId !== this.state.featuresId) {
       nextState.features = features;
       nextState.exhausted = features.length > 0 ? exhausted : false;
       nextState.featuresId = featuresId;
