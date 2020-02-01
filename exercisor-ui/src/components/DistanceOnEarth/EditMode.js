@@ -26,7 +26,7 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   handleEditSelected = () => {
-    const { ownRouteDesigns, routeId } = this.props;
+    const { routeId } = this.props;
     const designRoute = this.getRouteFromId(routeId);
     if (designRoute == null) return;
 
