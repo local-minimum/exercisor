@@ -66,7 +66,16 @@ const editKey = (state = "", action) => {
     default:
       return state;
   }
+}
 
+const editKeyDidChange = (state = true, action) => {
+  switch (action.type) {
+    case SET_NAME:
+    case SET_EDITKEY:
+      return true;
+    default:
+      return false;
+  }
 }
 
 const name = (state = null, action) => {
@@ -233,4 +242,5 @@ const consideredRouteDesign = (state = null, action) => {
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
   errorMessage, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
+  editKeyDidChange,
 });

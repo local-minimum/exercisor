@@ -5,7 +5,7 @@ import {
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
-  registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns,
+  registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns, postRoute,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -124,6 +124,15 @@ export function makeRoute(routeName, waypoints) {
   return (dispatch, getState) => {
     const { name, editKey } = getState();
     return putRoute(name, routeName, waypoints, editKey)
+      .then(_ => dispatch(loadRouteDesigns()))
+      .catch(message => dispatch(setErrorMessage(message)));
+  }
+}
+
+export function updateRoute(routeId, routeName, waypoints) {
+  return (dispatch, getState) => {
+    const { name, editKey } = getState();
+    return postRoute(name, routeId, routeName, waypoints, editKey)
       .then(_ => dispatch(loadRouteDesigns()))
       .catch(message => dispatch(setErrorMessage(message)));
   }

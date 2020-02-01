@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import { jsonRequest } from './util';
 
 function scoreLocation(loc, ref) {
   const refArr = ref.split(',').map(item => item.trim());
@@ -22,8 +22,9 @@ function getBestLocationMatch(results, place) {
 }
 
 export function getLocation(place) {
-  return $
-    .getJSON(`https://nominatim.openstreetmap.org/search?q=${encodeURI(place)}&format=json`)
+  return jsonRequest(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURI(place)}&format=json`
+    )
     .then(res => getBestLocationMatch(res, place));
 }
 
@@ -131,7 +132,8 @@ function extractCoordinates(result, toCoords) {
 }
 
 export function getRouteCoordinates(fromCoords, toCoords) {
-    return $
-      .getJSON(`https://routing.openstreetmap.de/routed-car/route/v1/driving/${fromCoords.lon},${fromCoords.lat};${toCoords.lon},${toCoords.lat}?overview=false&geometries=polyline&steps=true`)
+    return jsonRequest(
+        `https://routing.openstreetmap.de/routed-car/route/v1/driving/${fromCoords.lon},${fromCoords.lat};${toCoords.lon},${toCoords.lat}?overview=false&geometries=polyline&steps=true`
+      )
       .then(result => extractCoordinates(result, toCoords))
 }

@@ -1,29 +1,10 @@
-import $ from 'jquery';
+import { jsonRequest } from './util';
 
 const BASE_URL = '/exercisor/api';
-
-const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
-  const message = responseJSON.message || statusText;
-  return Promise.reject(message);
-}
-
-const jsonRequest = (url, data, type='POST') => {
-  return $.ajax(Object.assign({
-    type,
-    url,
-  }, type === 'GET' ? null : {
-    contentType: 'application/json',
-    data: JSON.stringify(data),
-    dataType: 'json',
-  }))
-    .catch(ajaxErrorHandler);
-}
 
 export const getUserEventList = (user, editKey) => {
   return jsonRequest(
       `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
-      {},
-      'GET',
     );
 }
 
@@ -78,8 +59,6 @@ export const deleteEvent = (user, id, editKey) => {
 export const getGoals = (user, year, editKey) => {
   return jsonRequest(
       `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
-      {},
-      'GET',
     );
 }
 
@@ -126,18 +105,21 @@ export const putRoute = (user, name, waypoints, editKey) => {
   );
 }
 
+export const postRoute = (user, routeId, name, waypoints, editKey) => {
+  const data = { name, waypoints: waypoints.map(([from, to]) => `${from}|${to}`) };
+  return jsonRequest(
+    `${BASE_URL}/user/${user}/route/${routeId}?edit-key=${editKey}`,
+    data,
+    'POST',
+  );
+}
+
 export const getUserRouteDesigns = (user, editKey) => {
   return jsonRequest(
     `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
-    {},
-    'GET',
   );
 }
 
 export const getPublicRouteDesigns = () => {
-  return jsonRequest(
-    `${BASE_URL}/route`,
-    {},
-    'GET',
-  );
+  return jsonRequest(`${BASE_URL}/route`);
 }

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
   loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
-  makeRoute, loadRouteDesigns, saveSelectedRoute,
+  makeRoute, loadRouteDesigns, saveSelectedRoute, updateRoute,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => ({
   goals: state.goals,
   settings: state.settings,
   editKey: state.editKey,
+  editKeyDidChange: state.editKeyDidChange,
   entry: state.entry,
   events: state.events,
   name: ownProps.match.params.name,
@@ -45,6 +46,7 @@ const mapDispatchToProps = dispatch => ({
   onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
   onMakeRoute: (routeName, waypoints) => dispatch(makeRoute(routeName, waypoints)),
+  onUpdateRoute: (routeId, routeName, waypoints) => dispatch(updateRoute(routeId, routeName, waypoints)),
   onLoadRouteDesigns: () => dispatch(loadRouteDesigns()),
   onSetRouteDesignConsidered: (routeId) => dispatch(setRouteDesignConsidered(routeId)),
   onSetSelectedRoute: (routeId, year) => dispatch(saveSelectedRoute(routeId, year)),

@@ -24,6 +24,20 @@ export default class DoEEditMode extends AnyModeBase {
     onSetSelectedRoute(routeId, year);
   }
 
+  handleEditSelected = () => {
+    const { ownRouteDesigns, routeId } = this.props;
+    const designRoute = ownRouteDesigns.filter(own => own.id === routeId)[0];
+    if (designRoute == null) return;
+
+    this.setState({
+      renderMakeNew: true,
+      showOnMap: true,
+      designRoute: designRoute.waypoints,
+      designRouteName: designRoute.name,
+      designRouteId: designRoute.id,
+    });
+  }
+
   renderSelect() {
     const { routeId, ownRouteDesigns, allRouteDesigns } = this.props;
     const { showOnMap } = this.state;
@@ -33,7 +47,8 @@ export default class DoEEditMode extends AnyModeBase {
       .filter(design => !ownRouteDesigns.some(own => own.id === design.id))
       .map(design => <option key={design.id} value={design.id}>{design.name}</option>);
     const ViewOnMap = <button onClick={this.handleClickShow}>{showOnMap ? 'Dölj rutt' : 'Visa på kartan'}</button>
-    const Save = <button onClick={this.handleSaveSelected}>Spara vald rutt</button>
+    const Save = <button onClick={this.handleSaveSelected}>Välj</button>
+    const Edit = <button disabled={!ownRouteDesigns.some(own => own.id === routeId)} onClick={this.handleEditSelected}>Editera</button>
     return (
       <div>
         <select value={routeId == null ? "" : routeId} onChange={this.handleChangeRouteDesign}>
@@ -42,6 +57,7 @@ export default class DoEEditMode extends AnyModeBase {
           {OthersRoutes}
         </select>
         {Save}
+        {Edit}
         {ViewOnMap}
       </div>
     );
@@ -107,12 +123,16 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   handleSaveClick = () => {
-      const { onMakeRoute } = this.props;
-      const { designRoute, designRouteName } = this.state;
+      const { onMakeRoute, onUpdateRoute } = this.props;
+      const { designRoute, designRouteName, designRouteId } = this.state;
       const waypoints = designRoute
         .filter(wptPair => wptPair[0] !== '' || wptPair[1] !== '');
       if (waypoints.length > 0) {
-        onMakeRoute(designRouteName, waypoints);
+        if (designRouteId == null) {
+          onMakeRoute(designRouteName, waypoints);
+        } else {
+          onUpdateRoute(designRouteId, designRouteName, waypoints)
+        }
         this.handleSetEditModeSelect();
       }
   }
@@ -155,11 +175,16 @@ export default class DoEEditMode extends AnyModeBase {
 
   handleSetEditModeCreate = () => {
     const { designRoute } = this.state;
-    this.setState({ renderMakeNew: true, showOnMap: true, designRoute: designRoute == null ? [["", ""]] : designRoute });
+    this.setState({
+      renderMakeNew: true,
+      showOnMap: true,
+      designRoute: designRoute == null ? [["", ""]] : designRoute,
+      designRouteName: null,
+    });
   }
 
   handleSetEditModeSelect = () => {
-    this.setState({ renderMakeNew: false, showOnMap: false });
+    this.setState({ renderMakeNew: false, showOnMap: false, designRouteId: null });
   }
 
   render() {

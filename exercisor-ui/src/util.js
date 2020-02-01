@@ -1,4 +1,22 @@
+import $ from 'jquery';
 import { TimeSeries } from "pondjs";
+
+const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
+  const message = responseJSON.message || statusText;
+  return Promise.reject(message);
+}
+
+export const jsonRequest = (url, data={}, type='GET') => {
+  return $.ajax(Object.assign({
+    type,
+    url,
+  }, type === 'GET' ? null : {
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    dataType: 'json',
+  }))
+    .catch(ajaxErrorHandler);
+}
 
 export const aDay = 1000 * 60 * 60 * 24;
 

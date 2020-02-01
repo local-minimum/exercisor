@@ -12,9 +12,10 @@ export default class ExerciseViewAll extends React.Component {
 
   render() {
     const {
-      editKey, events, onLoadRoute, routes, goals, locations,
+      editKey, events, onLoadRoute, routes, goals, locations, editKeyDidChange,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
+      onUpdateRoute,
     } = this.props;
     const series = events2timeSeries(events);
     const convSeries = events2convTimeSeries(events);
@@ -28,11 +29,12 @@ export default class ExerciseViewAll extends React.Component {
         allRouteDesigns={publicRouteDesigns}
         onLoadRoute={onLoadRoute}
         onMakeRoute={onMakeRoute}
+        onUpdateRoute={onUpdateRoute}
         onLoadRouteDesigns={onLoadRouteDesigns}
         onSetRouteDesignConsidered={onSetRouteDesignConsidered}
         onSetSelectedRoute={onSetSelectedRoute}
         editKey={editKey}
-
+        editKeyDidChange={editKeyDidChange}
       /> :
       <DoEViewMode
         events={events}
