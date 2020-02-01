@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { TimeSeries } from "pondjs";
+import { TimeSeries, sum, filter } from "pondjs";
 
 const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
   const message = responseJSON.message || statusText;
@@ -121,6 +121,18 @@ const calcLoad = (arr, lb, ub, rest) => {
     distance: distance * factor,
     calories: calories * factor,
   }
+}
+
+export const events2weeklySum = (events) => {
+  const ts = events2timeSeries(events);
+  return ts.fixedWindowRollup({
+    windowSize: '7d',
+    aggregation: {
+      duration: {duration: sum(filter.ignoreMissing)},
+      distance: {distance: sum(filter.ignoreMissing)},
+      calories: {calories: sum(filter.ignoreMissing)},
+    }
+  });
 }
 
 export const events2convTimeSeries = (events) => {

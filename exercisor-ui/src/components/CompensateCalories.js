@@ -79,7 +79,7 @@ export default function CompensateCalories({ events }) {
   return (
     <div>
       <h2>Kalorikompensation</h2>
-      <em>Så mycket måste du stoppa i dig {calories.toFixed(0)} kcal!</em>
+      <em>Så mycket måste du stoppa i dig: {calories.toFixed(0)} kcal!</em>
       <div className="pill-box">
         {goodLI}
         {badLI}

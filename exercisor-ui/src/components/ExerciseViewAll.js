@@ -5,7 +5,7 @@ import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import CompensateCalories from './CompensateCalories';
 import DoEViewMode from './DistanceOnEarth/ViewMode';
 import DoEEditMode from './DistanceOnEarth/EditMode';
-import { events2timeSeries, events2convTimeSeries } from '../util';
+import { events2timeSeries, events2weeklySum } from '../util';
 
 export default class ExerciseViewAll extends React.Component {
   getName = () => this.props.match.params.name;
@@ -18,7 +18,7 @@ export default class ExerciseViewAll extends React.Component {
       onUpdateRoute,
     } = this.props;
     const series = events2timeSeries(events);
-    const convSeries = events2convTimeSeries(events);
+    const weeklySeries = events2weeklySum(events);
     const DistanceOnEarth = editKey.length > 0 ?
       <DoEEditMode
         routesData={routes}
@@ -51,7 +51,7 @@ export default class ExerciseViewAll extends React.Component {
         <ExerciseTable {...this.props} />
         {DistanceOnEarth}
         <CompensateCalories events={events} />
-        <ExerciseOverviewCharts series={series} convSeries={convSeries} />
+        <ExerciseOverviewCharts series={series} weeklySeries={weeklySeries} />
       </div>
     );
   }

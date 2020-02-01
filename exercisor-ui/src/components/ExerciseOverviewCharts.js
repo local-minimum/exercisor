@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ChartContainer, ChartRow, Resizable, Charts, LineChart, Baseline,
-  LabelAxis, ValueAxis, ScatterChart,
+  LabelAxis, ValueAxis, ScatterChart, YAxis, BarChart,
   styler,
 } from 'react-timeseries-charts';
 
@@ -11,23 +11,11 @@ const style = styler([
     { key: "duration", color: "#bb4747" },
 ]);
 
-const baselineStyles = {
-  distance: {
-    stroke: "steelblue",
-    opacity: 0.5,
-    width: 0.25
-  },
-  calories: {
-    stroke: "steelblue",
-    opacity: 0.5,
-    width: 0.25
-  },
-  duration: {
-    stroke: "steelblue",
-    opacity: 0.5,
-    width: 0.25
-  }
-};
+const weeklyStyle = styler([
+    { key: "distance", color: "#47bbbb99" },
+    { key: "calories", color: "#bb47bb99" },
+    { key: "duration", color: "#bb474799" },
+]);
 
 const settings = {
     distance: {
@@ -56,7 +44,7 @@ export default class ExerciseOverviewCharts extends React.Component {
   handleTrackerChanged = t => this.setState({ tracker: t })
 
   renderChartRow = channelName => {
-    const { series, convSeries } = this.props;
+    const { series, weeklySeries } = this.props;
     const { tracker } = this.state;
     const { decimals, label, unit } = settings[channelName];
     const summary = [
@@ -84,20 +72,19 @@ export default class ExerciseOverviewCharts extends React.Component {
           id={`${channelName}_axis`}
           label={label}
           values={summary}
-          min={Math.min(series.min(channelName))}
-          max={Math.max(series.max(channelName))}
+          min={series.min(channelName)}
+          max={series.max(channelName)}
           width={140}
           type="linear"
           format=",.1f"
         />
         <Charts>
-          <LineChart
+          <BarChart
               key={`line-${channelName}`}
-              axis={`${channelName}_axis`}
-              series={convSeries}
+              axis={`${channelName}_weeklyaxis`}
+              series={weeklySeries}
               columns={[channelName]}
-              style={style}
-              breakLine
+              style={weeklyStyle}
           />
           <ScatterChart
               key={`line-${channelName}`}
@@ -110,11 +97,18 @@ export default class ExerciseOverviewCharts extends React.Component {
           <Baseline
             key={`baseline-${channelName}`}
             axis={`${channelName}_axis`}
-            style={baselineStyles[channelName]}
             value={series.avg(channelName)}
             label="snitt"
           />
         </Charts>
+        <YAxis
+          id={`${channelName}_weeklyaxis`}
+          min={weeklySeries.min(channelName)}
+          max={weeklySeries.max(channelName)}
+          format=".0f"
+          width="30"
+          type="linear"
+        />
         <ValueAxis
           id={`${channelName}_valueaxis`}
           value={value}
@@ -142,6 +136,7 @@ export default class ExerciseOverviewCharts extends React.Component {
     return (
       <div>
         <h2>Analys</h2>
+        <em>Staplar visar 7-dagars intervall, inte nödvändigtvis från en måndag</em>
         <div className="charts-box">
           <Resizable>
             <ChartContainer
