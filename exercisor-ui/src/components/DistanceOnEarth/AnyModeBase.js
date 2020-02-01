@@ -1,22 +1,13 @@
 import React from 'react';
 
 export const DEFAULT_ROUTE = [
-    [
-      "Västra Bodarnevägen, Alingsås",
-      "Lindomemotet, Långås, Mölndals kommun",
-    ],
-    [
-      "Lindomemotet, Långås, Mölndals kommun",
-      "Tårnby, Tårnbytunnelen/Øresundsmotorvejen",
-    ],
-    [
-      "Tårnby, Tårnbytunnelen/Øresundsmotorvejen",
-      "Sønderjyske Motorvej, Seest Østerskov",
-    ],
-    [
-      "Sønderjyske Motorvej, Seest Østerskov",
-      "İzmit, Kocaeli, Marmara Region, Turkiet",
-    ]
+    ["Beaune", "Epernay"],
+    ["Epernay", "Aigle"],
+    ["Aigle", "Stresa"],
+    ["Stresa", "Lenzerheide"],
+    ["Lenzerheide", "Innsbruck"],
+    ["Innsbruck", "Klagenfurt"],
+    ["Klagenfurt", "Trieste"]
 ];
 
 export default class DoEEditMode extends React.Component {

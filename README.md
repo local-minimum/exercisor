@@ -16,20 +16,15 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Safari error with dates
 - [x] Fix not drawing entire line for event spanning two routes.
 - [x] Make nicer error messages
-- [ ] Create own routes per year or total route
-  - [x] API List Public Routes
-  - [x] API List User Routes (Non-public)
-  - [x] API Add Route 
-  - [x] API Edit Route 
-  - [x] API User Select Route Year / Get / Set
-  - [x] API User Select Route Total / Get / Set
-  - [ ] UI Fetch User Select Route
-  - [ ] UI Use route
-  - [ ] UI Create route
+- [x] Create own routes per year or total route
 
 ## Wishful ToDo
 
+- [ ] Get all location matches for name search and choose from drop-down
+- [ ] Weekly rollup instead of stupid line
+- [ ] Real login!!
+- [ ] Errors where they belong (next to relevant part)
+- [ ] Draw route on map
 - [ ] Histogram of Distance and Energy
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
-- [ ] Give route to other
 - [ ] Challenges

@@ -346,13 +346,8 @@ export default class DoEEditMode extends AnyModeBase {
   getRouteFromId = (routeId) => {
     const { renderMakeNew, designRoute, designRouteName, designRouteId } = this.state;
     const { ownRouteDesigns, allRouteDesigns } = this.props;
-    if (emptyOrNull(routeId)) return {
-      waypoints: DEFAULT_ROUTE, id: '', name: '',
-    };
-
-    if (renderMakeNew) return {
-      waypoints: designRoute, name: designRouteName, id: designRouteId,
-    };
+    if (renderMakeNew) return { waypoints: designRoute, name: designRouteName, id: designRouteId };
+    if (emptyOrNull(routeId)) return { waypoints: DEFAULT_ROUTE, id: '', name: '' };
 
     const routes = ownRouteDesigns.filter(design => design.id === routeId);
     if (routes.length > 0) return routes[0];
