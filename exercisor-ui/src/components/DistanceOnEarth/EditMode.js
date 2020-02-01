@@ -247,17 +247,19 @@ export default class DoEEditMode extends AnyModeBase {
       if (prevWptEnd != null && prevWptEnd !== from) {
         const prevEndPt = locations[prevWptEnd];
         const fromPt = from === '' ? null : locations[from];
-        const connector = new Feature({
-          geometry: new LineString([
-            fromLonLat([prevEndPt.lon, prevEndPt.lat]),
-            fromLonLat([fromPt.lon, fromPt.lat]),
-          ]),
-          segment: -1,
-          name: `Hopp`,
-          lastIdx: -1,
-        });
-        connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
-        features.push(connector);
+        if (prevEndPt != null && fromPt != null) {
+          const connector = new Feature({
+            geometry: new LineString([
+              fromLonLat([prevEndPt.lon, prevEndPt.lat]),
+              fromLonLat([fromPt.lon, fromPt.lat]),
+            ]),
+            segment: -1,
+            name: `Hopp`,
+            lastIdx: -1,
+          });
+          connector.setStyle(getStyle(selected, SEG_TYPE_CONNECTOR));
+          features.push(connector);
+        }
       }
       prevWptEnd = to;
       const data = this.getRoute(wptPair);
