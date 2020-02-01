@@ -188,10 +188,10 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   render() {
-    const { year } = this.props;
+    const { year, routeId } = this.props;
     const { renderMakeNew, features, exhausted, segment } = this.state;
     const Main = renderMakeNew ? this.renderCreate() : this.renderSelect();
-    const segmentInfo = this.getSegmentInfo();
+    const segmentInfo = this.getSegmentInfo(routeId);
     return (
       <div>
         <h2>Tillryggalagd sträcka</h2>
@@ -205,7 +205,7 @@ export default class DoEEditMode extends AnyModeBase {
         </div>
         {Main}
         <MapBox
-          segment={segment == null ? null : `Del ${segment}`}
+          segment={segment == null || segmentInfo == null ? null : `Del ${segment}`}
           segmentInfo={segmentInfo}
           onMapClick={this.handleSelectSegment}
           features={features}
@@ -308,11 +308,10 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   getWaypointsFromId = (routeId) => {
-    if (routeId == null) {
-      const { renderMakeNew, designRoute } = this.state;
-      return renderMakeNew ? designRoute : DEFAULT_ROUTE;
-    }
+    const { renderMakeNew, designRoute } = this.state;
     const { ownRouteDesigns, allRouteDesigns } = this.props;
+    if (routeId == null) return DEFAULT_ROUTE;
+    if (renderMakeNew) return designRoute;
 
     const routes = ownRouteDesigns.filter(design => design.id === routeId);
     if (routes.length > 0) return routes[0].waypoints;
@@ -324,9 +323,9 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   getFeatures() {
-    const { showOnMap, renderMakeNew } = this.state;
+    const { showOnMap, renderMakeNew, designRouteId } = this.state;
     const { routeId } = this.props;
-    const { features, exhausted, featuresId } = showOnMap ? this.routeToFeatures(renderMakeNew ? null : routeId) : { features: [], exhausted: true };
+    const { features, exhausted, featuresId } = showOnMap ? this.routeToFeatures(renderMakeNew ? designRouteId : routeId) : { features: [], exhausted: true };
     return { features, exhausted, featuresId: `${featuresId}-${renderMakeNew}` };
   }
 }
