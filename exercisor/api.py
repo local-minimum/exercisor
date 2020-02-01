@@ -8,7 +8,7 @@ from flask_restful import Resource, abort, reqparse
 from pymongo import MongoClient
 
 from . import transactions
-from .exceptions import DatabaseError
+from .exceptions import DatabaseError, IllegalEventType
 
 
 @lru_cache(1)
@@ -31,8 +31,13 @@ list_parser.add_argument("type", type=str, default="CrossTrainer")
 view_parser = reqparse.RequestParser()
 view_parser.add_argument("edit-key", type=str, default=None)
 
+ACCEPTED_EVENT_TYPES = ["CrossTrainer", "Running", "Walking", "Hiking", "Golfing", "Biking"]
+
 
 def get_summary(args):
+    if args['type'] not in ACCEPTED_EVENT_TYPES:
+        raise IllegalEventType(f"{args['type']} inte tillåtet som motionstyp.")
+
     return {
         "calories": args['calories'],
         "duration": args['duration'],
@@ -176,6 +181,8 @@ class ListUserEvents(Resource):
             )
         except DatabaseError:
             abort(HTTPStatus.FORBIDDEN.value, message="Hoppsan, ett okänt fel inträffade")
+        except IllegalEventType as err:
+            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         return {}
 
 
@@ -195,6 +202,8 @@ class UserEvent(Resource):
             )
         except DatabaseError:
             abort(HTTPStatus.NOT_FOUND.value, message="Hittade inget pass att uppdatera")
+        except IllegalEventType as err:
+            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         return {}
 
     def delete(self, user: str, event_id: str):

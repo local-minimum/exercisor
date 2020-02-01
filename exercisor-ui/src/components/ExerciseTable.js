@@ -5,6 +5,9 @@ const EVENT_TYPES = {
   CrossTrainer: 'CrossTrainer',
   Running: 'Löpning',
   Biking: 'Cykling',
+  Walking: 'Prommenad',
+  Hiking: 'Vandra',
+  Golfing: 'Golf',
 };
 
 function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
