@@ -1,4 +1,6 @@
 import React from 'react';
+import Error from './Error';
+import { REGISTER_ERROR } from '../errors';
 
 export default function Register({ user, pwd, pwd2, onRegister, onSetUser, onSetPwd, onSetPwd2, error }) {
   const samePwd = pwd === pwd2;
@@ -12,7 +14,7 @@ export default function Register({ user, pwd, pwd2, onRegister, onSetUser, onSet
   );
   return (
     <div>
-      {error != null && <div className="error">{error}</div>}
+      <Error error={error} targetFilter={REGISTER_ERROR} />
       <table>
         <tbody>
           <tr>

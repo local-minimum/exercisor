@@ -1,4 +1,6 @@
 import React from 'react';
+import Error from './Error';
+import { EXERCISE_GOALS_ERROR } from '../errors';
 
 function getGoal(goals, path) {
   if (goals == null) return 0;
@@ -11,6 +13,7 @@ function getGoal(goals, path) {
 
 export default function YearGoalsEdit({
   goals, year, onSetGoalsEventSum, onSaveGoals, name, onSetGoalsDistanceWeekly,
+  error,
 }) {
   const intro = goals === null || goals.fake ? "Det är mer kul med mål!" : "Uppdatera dina mål";
   const eventsSum = getGoal(goals, ['sums', 'events']);
@@ -18,6 +21,7 @@ export default function YearGoalsEdit({
   return (
     <div>
       <h2>Mål för {year}</h2>
+      <Error error={error} targetFilter={EXERCISE_GOALS_ERROR} />
       <em>{intro}</em>
       <div>
         <span>Träningspass: </span>

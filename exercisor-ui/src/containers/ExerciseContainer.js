@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => ({
   userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
   locations: state.locations,
   routes: state.routes,
-  errorMessage: state.errorMessage,
+  error: state.error,
   userRouteDesigns: state.userRouteDesigns,
   publicRouteDesigns: state.publicRouteDesigns,
   consideredRouteDesign: state.consideredRouteDesign,

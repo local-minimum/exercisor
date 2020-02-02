@@ -1,5 +1,7 @@
 import React from 'react';
 import { minutes2str } from '../util';
+import Error from './Error';
+import { EXERCISE_TABLE_ERROR } from '../errors';
 
 const EVENT_TYPES = {
   CrossTrainer: 'CrossTrainer',
@@ -28,7 +30,7 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
 }
 
 export default function ExerciseTable({
-    events,
+    events, error,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
     entry, onSave, onSetEditKey, editKey, onSetEntry, onRemoveEntry,
     settings, onListAll, onEntryType,
@@ -49,6 +51,7 @@ export default function ExerciseTable({
   return (
     <div>
       <h2>Motionspass</h2>
+      <Error error={error} targetFilter={EXERCISE_TABLE_ERROR} />
       <table>
         <thead>
           <tr>

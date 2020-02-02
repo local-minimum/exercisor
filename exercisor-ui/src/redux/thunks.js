@@ -11,6 +11,10 @@ import {
   getLocation, getRouteCoordinates,
 } from '../osmgateway';
 import { aDay } from '../util';
+import {
+  REGISTER_ERROR, EXERCISE_VIEW_ERROR, EXERCISE_TABLE_ERROR,
+  EXERCISE_MAP_ERROR, EXERCISE_GOALS_ERROR,
+} from '../errors';
 
 function yearCount(events) {
     const now = new Date()
@@ -42,7 +46,7 @@ export function loadYearGoals(name, year) {
             dispatch(setGoals(goals));
           }
         })
-        .catch(message => dispatch(setErrorMessage(message)));
+        .catch(message => dispatch(setErrorMessage(message, EXERCISE_VIEW_ERROR)));
     }
   }
 }
@@ -53,7 +57,7 @@ export function saveGoals(name, year) {
     if (goals != null) {
       upsertGoals(name, year, goals, editKey)
         .then(_ => dispatch(loadYearGoals(name, year)))
-        .catch(message => dispatch(setErrorMessage(message)));
+        .catch(message => dispatch(setErrorMessage(message, EXERCISE_GOALS_ERROR)));
     }
   }
 }
@@ -67,7 +71,7 @@ export function loadEvents(name) {
         dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))
       })
-      .catch(message => dispatch(setErrorMessage(message)));
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
   }
 }
 
@@ -80,14 +84,14 @@ export function saveEvent() {
         .then(res => {
             dispatch(loadEvents(name));
         })
-        .catch(message => dispatch(setErrorMessage(message)));
+        .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
 
     }
     return postEvent(name, entry.id, editKey, entry)
         .then(res => {
             dispatch(loadEvents(name));
         })
-        .catch(message => dispatch(setErrorMessage(message)));
+        .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
   }
 }
 
@@ -98,7 +102,7 @@ export function removeEvent(evtId) {
       .then(res => {
         dispatch(loadEvents(name));
       })
-      .catch(message => dispatch(setErrorMessage(message)));
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
   }
 }
 
@@ -114,7 +118,7 @@ export function loadRouteDesigns() {
       promises.push(
         getPublicRouteDesigns()
           .then(designs => dispatch(setPublicRouteDesigns(designs)))
-          .catch(message => dispatch(setErrorMessage(message)))
+          .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)))
       );
       return Promise.all(promises);
   }
@@ -125,7 +129,7 @@ export function makeRoute(routeName, waypoints) {
     const { name, editKey } = getState();
     return putRoute(name, routeName, waypoints, editKey)
       .then(_ => dispatch(loadRouteDesigns()))
-      .catch(message => dispatch(setErrorMessage(message)));
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }
 }
 
@@ -134,7 +138,7 @@ export function updateRoute(routeId, routeName, waypoints) {
     const { name, editKey } = getState();
     return postRoute(name, routeId, routeName, waypoints, editKey)
       .then(_ => dispatch(loadRouteDesigns()))
-      .catch(message => dispatch(setErrorMessage(message)));
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }
 }
 
@@ -144,7 +148,7 @@ export function saveSelectedRoute(routeId, year) {
     const nextGoals = Object.assign({}, goals, { route: routeId });
     upsertGoals(name, year, nextGoals, editKey)
       .then(_ => dispatch(loadYearGoals(name, year)))
-      .catch(message => dispatch(setErrorMessage(message)));
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }
 }
 
@@ -172,7 +176,7 @@ export function loadRoute(from, to) {
       locationPromises.push(
         getLocation(from)
           .then(coords => dispatch(setOSMLocation(from, coords)))
-          .catch(message => dispatch(setErrorMessage(message)))
+          .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)))
       );
     }
     const knownTo = getOSMLocationCoords(getState(), to);
@@ -180,7 +184,7 @@ export function loadRoute(from, to) {
       locationPromises.push(
         getLocation(to)
           .then(coords => dispatch(setOSMLocation(to, coords)))
-          .catch(message => dispatch(setErrorMessage(message)))
+          .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)))
       );
     }
     return Promise.all(locationPromises)
@@ -192,7 +196,7 @@ export function loadRoute(from, to) {
             .then(route => {
               dispatch(setOSMRoute(from, to, route));
             })
-            .catch(message => dispatch(setErrorMessage(message)));
+            .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
       });
   };
 }
@@ -208,7 +212,7 @@ export function register({history, match}) {
         history.push(`${root}${root.length > 0 ? '/' : ''}${user}`);
       })
       .catch(message => {
-        dispatch(setErrorMessage(message));
+        dispatch(setErrorMessage(message, REGISTER_ERROR));
       });
   }
 }

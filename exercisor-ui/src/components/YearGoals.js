@@ -3,6 +3,9 @@ import { Progress } from 'react-sweet-progress';
 import GaugeChart from 'react-gauge-chart';
 import { getYearDurationSoFar, getYearDuration } from '../util';
 import './YearGoals.css';
+import Error from './Error';
+import { EXERCISE_GOALS_ERROR } from '../errors';
+
 
 function Goal(
   key,
@@ -11,6 +14,7 @@ function Goal(
   value,
   target,
   gauge,
+  error,
 ) {
     const symbol = (
       <div className={`progress-symbol progress-${name}`}>
@@ -47,24 +51,27 @@ function Goal(
         /> : null;
 
     return (
-      <div key={key} className="goal-group">
-        {ShowProgress}
-        <div>
-          <GaugeChart
-            id={`${key}-gauge`}
-            percent={gauge}
-            nrOfLevels={5}
-            colors={['#e86a51','#f4a261', '#b5ceab','#5b9e6f', '#317240']}
-            marginInPercent={.01}
-            arcPadding={.01}
-            arcWidth={.18}
-            cornerRadius={2}
-            hideText
-            style={{ width: 140 }}
-          />
-          <div className={`gauge-caption progress-${name}`}>
-            <h3>{name}</h3>
-            {gaugeText}
+      <div>
+        <Error error={error} targetFilter={EXERCISE_GOALS_ERROR} />
+        <div key={key} className="goal-group">
+          {ShowProgress}
+          <div>
+            <GaugeChart
+              id={`${key}-gauge`}
+              percent={gauge}
+              nrOfLevels={5}
+              colors={['#e86a51','#f4a261', '#b5ceab','#5b9e6f', '#317240']}
+              marginInPercent={.01}
+              arcPadding={.01}
+              arcWidth={.18}
+              cornerRadius={2}
+              hideText
+              style={{ width: 140 }}
+            />
+            <div className={`gauge-caption progress-${name}`}>
+              <h3>{name}</h3>
+              {gaugeText}
+            </div>
           </div>
         </div>
       </div>

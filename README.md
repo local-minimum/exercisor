@@ -18,12 +18,12 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Make nicer error messages
 - [x] Create own routes per year or total route
 - [x] Weekly rollup instead of stupid line
+- [x] Errors where they belong (next to relevant part)
 
 ## Wishful ToDo
 
 - [ ] Get all location matches for name search and choose from drop-down
 - [ ] Real login!!
-- [ ] Errors where they belong (next to relevant part)
 - [ ] Draw route on map
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
 - [ ] Challenges

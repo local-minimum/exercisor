@@ -4,7 +4,9 @@ import ExerciseYears from './ExerciseYears';
 import ExerciseViewYear from './ExerciseViewYear';
 import ExerciseViewAll from './ExerciseViewAll';
 import EditKey from './EditKey';
+import Error from './Error';
 import './ExerciseView.css'
+import { EXERCISE_VIEW_ERROR } from '../errors';
 
 class ExerciseView extends React.Component {
   componentDidMount() {
@@ -18,11 +20,11 @@ class ExerciseView extends React.Component {
   }
 
   render() {
-    const { years, match, editKey, onSetEditKey, errorMessage } = this.props;
+    const { years, match, editKey, onSetEditKey, error } = this.props;
     return <div className="App-main-item">
       <EditKey editKey={editKey} onSetEditKey={onSetEditKey} />
       <ExerciseYears years={years} match={match} />
-      {errorMessage && <div className="error">{errorMessage}</div>}
+      <Error error={error} targetFilter={EXERCISE_VIEW_ERROR} />
       <Switch>
         <Route path={`${match.path}/:year`}><ExerciseViewYear {...this.props} /></Route>
         <Route path={`${match.path}`}><ExerciseViewAll {...this.props} /></Route>

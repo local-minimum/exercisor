@@ -7,6 +7,8 @@ import AnyModeBase, { DEFAULT_ROUTE }  from './AnyModeBase';
 import MapBox from './MapBox';
 import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
 import { emptyOrNull } from '../../util';
+import { EXERCISE_MAP_ERROR } from '../../errors';
+import Error from '../Error';
 
 export default class DoEEditMode extends AnyModeBase {
 
@@ -204,13 +206,14 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   render() {
-    const { year, routeId } = this.props;
+    const { year, routeId, error } = this.props;
     const { renderMakeNew, features, exhausted, segment } = this.state;
     const Main = renderMakeNew ? this.renderCreate() : this.renderSelect();
     const segmentInfo = this.getSegmentInfo(routeId);
     return (
       <div>
         <h2>Tillryggalagd sträcka</h2>
+        <Error error={error} targetFilter={EXERCISE_MAP_ERROR} />
         <em>
           Välj vilken rutt som ska gälla för {year === 'total' ? 'all tid' : year},
           eller skapa en ny rutt.

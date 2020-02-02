@@ -15,7 +15,7 @@ export default class ExerciseViewAll extends React.Component {
       editKey, events, onLoadRoute, routes, goals, locations, editKeyDidChange,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute,
+      onUpdateRoute, error
     } = this.props;
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
@@ -35,6 +35,7 @@ export default class ExerciseViewAll extends React.Component {
         onSetSelectedRoute={onSetSelectedRoute}
         editKey={editKey}
         editKeyDidChange={editKeyDidChange}
+        error={error}
       /> :
       <DoEViewMode
         events={events}
@@ -44,6 +45,7 @@ export default class ExerciseViewAll extends React.Component {
         ownRouteDesigns={userRouteDesigns}
         allRouteDesigns={publicRouteDesigns}
         onLoadRouteDesigns={onLoadRouteDesigns}
+        error={error}
       />
     return (
       <div>

@@ -8,7 +8,7 @@ import {
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
-  error: state.errorMessage,
+  error: state.error,
   ...state.register,
 });
 

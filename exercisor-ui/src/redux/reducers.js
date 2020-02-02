@@ -167,7 +167,7 @@ const routes = (state = {}, action) => {
   }
 }
 
-const errorMessage = (state = null, action) => {
+const error = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
     case SET_YEARS:
@@ -183,7 +183,7 @@ const errorMessage = (state = null, action) => {
             acc == null ? `${key}: ${val}` : `${acc}, ${key}: ${val}`,
           null
         ) : action.message;
-      return msg;
+      return { message: msg, target: action.target };
     default:
       return state;
   }
@@ -241,6 +241,6 @@ const consideredRouteDesign = (state = null, action) => {
 
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
-  errorMessage, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
+  error, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
   editKeyDidChange,
 });

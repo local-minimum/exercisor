@@ -8,6 +8,8 @@ import { getLineStringsData } from './ol-tools/geom';
 import AnyModeBase, { DEFAULT_ROUTE } from './AnyModeBase';
 import MapBox from './MapBox';
 import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
+import { EXERCISE_MAP_ERROR } from '../../errors';
+import Error from '../Error';
 
 export default class DoEViewMode extends AnyModeBase {
 
@@ -84,7 +86,7 @@ export default class DoEViewMode extends AnyModeBase {
   }
 
   render() {
-    const { exhausted, segment, features } = this.state;
+    const { exhausted, segment, features, error } = this.state;
     const { events } = this.props;
     if (events.length === 0) {
       return (
@@ -99,6 +101,7 @@ export default class DoEViewMode extends AnyModeBase {
     return (
       <div>
         <h2>Tillryggalagd sträcka</h2>
+        <Error error={error} targetFilter={EXERCISE_MAP_ERROR} />
         <em>{intro}</em>
         <MapBox
           segment={segment == null ? null : `Pass ${segment}`}
