@@ -1,4 +1,4 @@
-import { jsonRequest } from './util';
+import { jsonRequest, emptyOrNull } from './util';
 
 const BASE_URL = '/exercisor/api';
 
@@ -20,11 +20,12 @@ const safeDate = (str) => new Date(str).toISOString().split("T")[0]
 export const putEvent = (user, editKey, evt) => {
   const data = {
     date: safeDate(evt.date),
-    duration: str2minutes(evt.duration),
-    distance: Number(evt.distance),
-    calories: Number(evt.calories),
+    duration: emptyOrNull(evt.duration) ? null : str2minutes(evt.duration),
+    distance: emptyOrNull(evt.distance) ? null : Number(evt.distance),
+    calories: emptyOrNull(evt.calories) ? null : Number(evt.calories),
     type: evt.type,
   };
+  Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
   return jsonRequest(
     `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
     data,
@@ -35,11 +36,12 @@ export const putEvent = (user, editKey, evt) => {
 export const postEvent = (user, id, editKey, evt) => {
   const data = {
     date: safeDate(evt.date),
-    duration: str2minutes(evt.duration),
-    distance: Number(evt.distance),
-    calories: Number(evt.calories),
+    duration: emptyOrNull(evt.duration) ? null : str2minutes(evt.duration),
+    distance: emptyOrNull(evt.distance) ? null : Number(evt.distance),
+    calories: emptyOrNull(evt.calories) ? null : Number(evt.calories),
     type: evt.type,
   };
+  Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
   return jsonRequest(
     `${BASE_URL}/user/${user}/event/${id}?edit-key=${editKey}`,
     data,

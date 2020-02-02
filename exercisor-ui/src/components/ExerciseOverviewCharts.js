@@ -4,6 +4,7 @@ import {
   LabelAxis, ValueAxis, ScatterChart, YAxis, BarChart,
   styler,
 } from 'react-timeseries-charts';
+import { filter } from "pondjs";
 
 const style = styler([
     { key: "distance", color: "#47bbbb" },
@@ -48,9 +49,9 @@ export default class ExerciseOverviewCharts extends React.Component {
     const { tracker } = this.state;
     const { decimals, label, unit } = settings[channelName];
     const summary = [
-        { label: "Min", value: series.min(channelName).toFixed(decimals) },
-        { label: "Max", value: series.max(channelName).toFixed(decimals) },
-        { label: "Snitt", value: series.avg(channelName).toFixed(decimals) }
+        { label: "Min", value: series.min(channelName, filter.ignoreMissing).toFixed(decimals) },
+        { label: "Max", value: series.max(channelName, filter.ignoreMissing).toFixed(decimals) },
+        { label: "Snitt", value: series.avg(channelName, filter.ignoreMissing).toFixed(decimals) }
     ];
     let value = "--";
     if (tracker) {
@@ -72,8 +73,8 @@ export default class ExerciseOverviewCharts extends React.Component {
           id={`${channelName}_axis`}
           label={label}
           values={summary}
-          min={series.min(channelName)}
-          max={series.max(channelName)}
+          min={series.min(channelName, filter.ignoreMissing)}
+          max={series.max(channelName, filter.ignoreMissing)}
           width={140}
           type="linear"
           format=",.1f"
@@ -97,14 +98,14 @@ export default class ExerciseOverviewCharts extends React.Component {
           <Baseline
             key={`baseline-${channelName}`}
             axis={`${channelName}_axis`}
-            value={series.avg(channelName)}
+            value={series.avg(channelName, filter.ignoreMissing)}
             label="snitt"
           />
         </Charts>
         <YAxis
           id={`${channelName}_weeklyaxis`}
-          min={weeklySeries.min(channelName)}
-          max={weeklySeries.max(channelName)}
+          min={weeklySeries.min(channelName, filter.ignoreMissing)}
+          max={weeklySeries.max(channelName, filter.ignoreMissing)}
           format=".0f"
           width="30"
           type="linear"

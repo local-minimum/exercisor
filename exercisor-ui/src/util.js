@@ -69,6 +69,7 @@ export const getYearDurationSoFar = (year) => {
 }
 
 export const minutes2str = (floatMinutes) => {
+    if (floatMinutes == null) return '';
     const hours = Math.floor(floatMinutes / 60);
     const minutes = Math.floor(floatMinutes - 60 * hours);
     const seconds = Math.round((floatMinutes - (minutes + hours * 60)) * 60);
@@ -88,9 +89,9 @@ export const events2timeSeries = (events) => {
     columns: ["index", "duration", "distance", "calories", "type"],
     points: events.slice().reverse().map(evt => [
       evt.date,
-      Number.isFinite(evt.duration) ? evt.duration : "",
-      Number.isFinite(evt.distance) ? evt.distance : "",
-      Number.isFinite(evt.calories) ? evt.calories : "",
+      Number.isFinite(evt.duration) ? evt.duration : null,
+      Number.isFinite(evt.distance) ? evt.distance : null,
+      Number.isFinite(evt.calories) ? evt.calories : null,
       evt.type == null ? "CrossTrainer" : evt.type,
     ]),
   };

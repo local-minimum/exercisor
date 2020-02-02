@@ -19,9 +19,9 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Create own routes per year or total route
 - [x] Weekly rollup instead of stupid line
 - [x] Errors where they belong (next to relevant part)
-
-## Wishful ToDo
-
+- [x] Allow event without all columns
+- [ ] Add filter on exercise types
+- [ ] Add zoom track for analysis
 - [ ] Get all location matches for name search and choose from drop-down
 - [ ] Real login!!
 - [ ] Draw route on map
