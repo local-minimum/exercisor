@@ -5,7 +5,7 @@ import { fromLonLat } from 'ol/proj';
 
 import AnyModeBase, { DEFAULT_ROUTE }  from './AnyModeBase';
 import MapBox from './MapBox';
-import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
+import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR, legNoPt } from './styles';
 import { emptyOrNull } from '../../util';
 import { EXERCISE_MAP_ERROR } from '../../errors';
 import Error from '../Error';
@@ -229,6 +229,7 @@ export default class DoEEditMode extends AnyModeBase {
           onMapClick={this.handleSelectSegment}
           features={features}
           loading={!exhausted}
+          onZoomChange={this.handleZoomChange}
           defaultFocus="all"
         />
       </div>
@@ -236,7 +237,7 @@ export default class DoEEditMode extends AnyModeBase {
   }
 
   routeToFeatures = (routeId) => {
-    const { segment } = this.state;
+    const { segment, zoom } = this.state;
     const { locations } = this.props;
     const waypoints = this.getWaypointsFromId(routeId);
     if (waypoints == null) return [];
@@ -276,7 +277,11 @@ export default class DoEEditMode extends AnyModeBase {
             lastIdx: idx,
             segment: idx + 1,
           });
-          featStartPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+          if (zoom == null || zoom > 6) {
+            featStartPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+          } else {
+            featStartPt.setStyle(legNoPt);
+          }
           features.push(featStartPt);
         }
         if (fromPt != null && toPt != null) {
@@ -299,7 +304,11 @@ export default class DoEEditMode extends AnyModeBase {
             lastIdx: idx,
             segment: idx + 1,
           });
-          featEndPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+          if (zoom == null || zoom > 6) {
+            featEndPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+          } else {
+            featEndPt.setStyle(legNoPt);
+          }
           features.push(featEndPt);
         }
         exhausted = false;
@@ -310,7 +319,11 @@ export default class DoEEditMode extends AnyModeBase {
         lastIdx: idx,
         segment: idx + 1,
       });
-      featStartPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      if (zoom == null || zoom > 6) {
+        featStartPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      } else {
+        featStartPt.setStyle(legNoPt);
+      }
       const featLine = new Feature({
         geometry: new LineString(data.map(seg => fromLonLat([seg.lon, seg.lat]))),
         segment: idx + 1,
@@ -323,7 +336,11 @@ export default class DoEEditMode extends AnyModeBase {
         lastIdx: idx,
         segment: idx + 1,
       });
-      featEndPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      if (zoom == null || zoom > 6) {
+        featEndPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      } else {
+        featEndPt.setStyle(legNoPt);
+      }
       features.push(featStartPt);
       features.push(featLine);
       features.push(featEndPt);

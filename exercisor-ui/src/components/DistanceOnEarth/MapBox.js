@@ -4,23 +4,19 @@ import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import View from 'ol/View';
 
-import { legPt } from './styles';
-
 export default class MapBox extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       focusMode: null,
+      prevZoom: null,
     };
 
     this.vectorSource = new VectorSource();
 
     const vectorLayer = new VectorLayer({
       source: this.vectorSource,
-      style: (feature) => {
-        return feature.get('segment') > 0 ? legPt : null;
-      },
     });
 
     this.olmap = new Map({
@@ -93,9 +89,19 @@ export default class MapBox extends React.Component {
     onMapClick(seg);
   }
 
+  handleMapMoveEnd = () => {
+    const { prevZoom } = this.state;
+    const zoom = this.olmap.getView().getZoom();
+    if (prevZoom !== zoom) {
+        const { onZoomChange } = this.props;
+        this.setState({ prevZoom: zoom }, () => onZoomChange ? onZoomChange(zoom) : null);
+    }
+  }
+
   componentDidMount() {
     this.olmap.setTarget("map");
     this.olmap.on('click', this.handleMapClick)
+    this.olmap.on('moveend', this.handleMapMoveEnd);
     this.loadRoute();
   }
 

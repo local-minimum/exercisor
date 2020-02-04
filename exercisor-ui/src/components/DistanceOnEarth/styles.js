@@ -28,6 +28,12 @@ export const legPt = new Style({
     stroke: new Stroke({width: 1, color: colLight}),
   }),
 });
+export const legNoPt = new Style({
+  image: new CircleStyle({
+    radius: 0,
+  }),
+});
+
 const legPtHighlight = new Style({
   image: new CircleStyle({
     fill: new Fill({color: colHighLight}),

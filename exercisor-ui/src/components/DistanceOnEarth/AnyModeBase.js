@@ -39,6 +39,13 @@ export default class DoEEditMode extends React.Component {
     });
   }
 
+  handleZoomChange = (zoom) => {
+      this.setState({ zoom }, () => {
+        const { features } = this.getFeatures();
+        this.setState({ features });
+      });
+  };
+
   loadRoute = () => {
     const { onLoadRoute, routeId } = this.props;
     const { viewRouteId, viewRoute } = this.state;

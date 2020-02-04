@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ChartContainer, ChartRow, Resizable, Charts, Baseline,
-  LabelAxis, ValueAxis, ScatterChart, YAxis, BarChart,
+  LabelAxis, ScatterChart, YAxis, BarChart,
   styler,
 } from 'react-timeseries-charts';
 import { filter } from "pondjs";
@@ -21,17 +21,14 @@ const weeklyStyle = styler([
 const settings = {
     distance: {
       label: 'Distans [km]',
-      unit: 'km',
       decimals: 2,
     },
     calories: {
       label: 'Kalorier [kcal]',
-      unit: 'kcal',
       decimals: 0,
     },
     duration: {
       label: 'Tid [min]',
-      unit: 'min',
       decimals: 1,
     }
 };
@@ -47,12 +44,7 @@ export default class ExerciseOverviewCharts extends React.Component {
   renderChartRow = channelName => {
     const { series, weeklySeries } = this.props;
     const { tracker } = this.state;
-    const { decimals, label, unit } = settings[channelName];
-    const summary = [
-        { label: "Min", value: series.min(channelName, filter.ignoreMissing).toFixed(decimals) },
-        { label: "Max", value: series.max(channelName, filter.ignoreMissing).toFixed(decimals) },
-        { label: "Snitt", value: series.avg(channelName, filter.ignoreMissing).toFixed(decimals) }
-    ];
+    const { decimals, label } = settings[channelName];
     let value = "--";
     if (tracker) {
       const timerange = series.range();
@@ -66,6 +58,12 @@ export default class ExerciseOverviewCharts extends React.Component {
         value = v.toFixed(decimals);
       }
     }
+    const summary = [
+        { label: "Min", value: series.min(channelName, filter.ignoreMissing).toFixed(decimals) },
+        { label: "Max", value: series.max(channelName, filter.ignoreMissing).toFixed(decimals) },
+        { label: "Snitt", value: series.avg(channelName, filter.ignoreMissing).toFixed(decimals) },
+        { label: "Fokus", value: value },
+    ];
 
     return (
       <ChartRow key={channelName}>
@@ -109,14 +107,6 @@ export default class ExerciseOverviewCharts extends React.Component {
           format=".0f"
           width="30"
           type="linear"
-        />
-        <ValueAxis
-          id={`${channelName}_valueaxis`}
-          value={value}
-          detail={unit}
-          width={60}
-          min={0}
-          max={35}
         />
       </ChartRow>
     )

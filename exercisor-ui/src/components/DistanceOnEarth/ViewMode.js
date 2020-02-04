@@ -7,13 +7,13 @@ import 'ol/ol.css';
 import { getLineStringsData } from './ol-tools/geom';
 import AnyModeBase, { DEFAULT_ROUTE } from './AnyModeBase';
 import MapBox from './MapBox';
-import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR } from './styles';
+import { getStyle, SEG_TYPE_PT, SEG_TYPE_LINE, SEG_TYPE_CONNECTOR, legNoPt } from './styles';
 import { EXERCISE_MAP_ERROR } from '../../errors';
 import Error from '../Error';
 
 export default class DoEViewMode extends AnyModeBase {
 
-  getFeaturesFromEvents(data, segment) {
+  getFeaturesFromEvents(data, segment, zoom) {
     let lastIdx = 0;
     return data.map((evtData, idx) => {
       const selected = segment === idx + 1;
@@ -34,7 +34,11 @@ export default class DoEViewMode extends AnyModeBase {
           segment: idx + 1,
           lastIdx: lastIdx - 1,
         });
-        featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+        if (zoom == null || zoom > 7) {
+          featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+        } else {
+          featPt.setStyle(legNoPt);
+        }
         return [featLine, featPt];
       }
       const feats = [];
@@ -79,7 +83,11 @@ export default class DoEViewMode extends AnyModeBase {
         segment: idx + 1,
         lastIdx: lastIdx - 1,
       });
-      featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      if (zoom == null || zoom > 7) {
+        featPt.setStyle(getStyle(selected, SEG_TYPE_PT));
+      } else {
+        featPt.setStyle(legNoPt);
+      }
       feats.push(featPt);
       return feats;
     }).flat();
@@ -109,6 +117,7 @@ export default class DoEViewMode extends AnyModeBase {
           onMapClick={this.handleSelectSegment}
           features={features}
           loading={!exhausted}
+          onZoomChange={this.handleZoomChange}
         />
       </div>
     );
@@ -116,10 +125,10 @@ export default class DoEViewMode extends AnyModeBase {
 
   getFeatures() {
     const { events, year } = this.props;
-    const { segment, viewRoute } = this.state;
+    const { segment, viewRoute, zoom } = this.state;
     const { lines, exhausted } = getLineStringsData(events, viewRoute, this.getRoute);
     return {
-      features: this.getFeaturesFromEvents(lines, segment),
+      features: this.getFeaturesFromEvents(lines, segment, zoom),
       exhausted,
       featuresId: year,
     };
