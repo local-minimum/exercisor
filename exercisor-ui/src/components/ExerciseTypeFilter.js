@@ -12,7 +12,7 @@ export default function ExerciseTypeFilter({
   events, onToggleFilter, eventTypeFilters = [],
 }) {
   const types = getEventTypes(events);
-  if (types.size === 0) return null;
+  if (types.size < 2) return null;
   const options = [];
   types
     .forEach(t => options
