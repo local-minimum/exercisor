@@ -1,6 +1,15 @@
 import $ from 'jquery';
 import { TimeSeries, sum, filter } from "pondjs";
 
+export const EVENT_TYPES = {
+  CrossTrainer: 'CrossTrainer',
+  Running: 'Löpning',
+  Biking: 'Cykling',
+  Walking: 'Prommenad',
+  Hiking: 'Vandra',
+  Golfing: 'Golf',
+};
+
 const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
   const message = responseJSON.message || statusText;
   return Promise.reject(message);
@@ -79,21 +88,25 @@ export const minutes2str = (floatMinutes) => {
     return `${zeroPadHours}:${zeroPadMinutes}:${zeroPadSeconds}`;
 }
 
-export const filterEvents = (events, year) => {
-  if (year == null) return events;
-  return events.filter(evt => date2year(evt.date) === year);
+export const filterEvents = (events, year, evtFilter) => {
+  return events
+    .filter(evt => year == null || date2year(evt.date) === year)
+    .filter(evt => !evtFilter.some(f => f === (evt.type == null ? 'CrossTrainer' : evt.type)))
 }
 
 export const events2timeSeries = (events) => {
   const data = {
     columns: ["index", "duration", "distance", "calories", "type"],
-    points: events.slice().reverse().map(evt => [
-      evt.date,
-      Number.isFinite(evt.duration) ? evt.duration : null,
-      Number.isFinite(evt.distance) ? evt.distance : null,
-      Number.isFinite(evt.calories) ? evt.calories : null,
-      evt.type == null ? "CrossTrainer" : evt.type,
-    ]),
+    points: events
+      .slice()
+      .reverse()
+      .map(evt => [
+        evt.date,
+        Number.isFinite(evt.duration) ? evt.duration : null,
+        Number.isFinite(evt.distance) ? evt.distance : null,
+        Number.isFinite(evt.calories) ? evt.calories : null,
+        evt.type == null ? "CrossTrainer" : evt.type,
+      ]),
   };
   return new TimeSeries(data);
 }
@@ -124,7 +137,7 @@ const calcLoad = (arr, lb, ub, rest) => {
   }
 }
 
-export const events2weeklySum = (events) => {
+export const events2weeklySum = (events, evtFilter) => {
   const ts = events2timeSeries(events);
   return ts.fixedWindowRollup({
     windowSize: '7d',

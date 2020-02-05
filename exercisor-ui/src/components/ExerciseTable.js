@@ -1,16 +1,7 @@
 import React from 'react';
-import { minutes2str } from '../util';
+import { minutes2str, EVENT_TYPES } from '../util';
 import Error from './Error';
 import { EXERCISE_TABLE_ERROR } from '../errors';
-
-const EVENT_TYPES = {
-  CrossTrainer: 'CrossTrainer',
-  Running: 'Löpning',
-  Biking: 'Cykling',
-  Walking: 'Prommenad',
-  Hiking: 'Vandra',
-  Golfing: 'Golf',
-};
 
 function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
   const btns = canEdit &&

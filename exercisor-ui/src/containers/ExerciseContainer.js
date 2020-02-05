@@ -7,7 +7,7 @@ import {
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEditKey, setEntry, settingListAll, setGoalsEventSum, setEntryType,
-  setGoalsWeeklyDist, setRouteDesignConsidered,
+  setGoalsWeeklyDist, setRouteDesignConsidered, setEventTypeFilter,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -26,6 +26,7 @@ const mapStateToProps = (state, ownProps) => ({
   userRouteDesigns: state.userRouteDesigns,
   publicRouteDesigns: state.publicRouteDesigns,
   consideredRouteDesign: state.consideredRouteDesign,
+  eventTypeFilters: state.eventTypeFilters,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -50,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
   onLoadRouteDesigns: () => dispatch(loadRouteDesigns()),
   onSetRouteDesignConsidered: (routeId) => dispatch(setRouteDesignConsidered(routeId)),
   onSetSelectedRoute: (routeId, year) => dispatch(saveSelectedRoute(routeId, year)),
+  onSetEventTypeFilter: (status, name) => dispatch(setEventTypeFilter(name, status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

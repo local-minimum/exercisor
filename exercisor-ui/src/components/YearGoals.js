@@ -51,9 +51,9 @@ function Goal(
         /> : null;
 
     return (
-      <div>
+      <div key={key}>
         <Error error={error} targetFilter={EXERCISE_GOALS_ERROR} />
-        <div key={key} className="goal-group">
+        <div className="goal-group">
           {ShowProgress}
           <div>
             <GaugeChart

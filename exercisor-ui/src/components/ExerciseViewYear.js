@@ -24,10 +24,14 @@ export default class ExerciseViewYear extends React.Component {
       editKey, goals, onSetGoalsEventSum, onSaveGoals, onLoadRoute, routes,
       onSetGoalsDistanceWeekly, locations, consideredRouteDesign,
       userRouteDesigns, publicRouteDesigns, onLoadRouteDesigns,
-      onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute, error
+      onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute, error,
+      eventTypeFilters,
     } = this.props;
     const year = this.getYear();
-    const events = filterEvents(this.props.events, year != null ? Number(year) : null);
+    const events = filterEvents(
+      this.props.events, year != null ? Number(year) : null,
+      eventTypeFilters,
+    );
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
     const Goals = editKey.length > 0 ? <YearGoalsEdit

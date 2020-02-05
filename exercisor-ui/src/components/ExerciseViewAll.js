@@ -5,18 +5,19 @@ import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import CompensateCalories from './CompensateCalories';
 import DoEViewMode from './DistanceOnEarth/ViewMode';
 import DoEEditMode from './DistanceOnEarth/EditMode';
-import { events2timeSeries, events2weeklySum } from '../util';
+import { events2timeSeries, events2weeklySum, filterEvents } from '../util';
 
 export default class ExerciseViewAll extends React.Component {
   getName = () => this.props.match.params.name;
 
   render() {
     const {
-      editKey, events, onLoadRoute, routes, goals, locations, editKeyDidChange,
+      editKey, onLoadRoute, routes, goals, locations, editKeyDidChange,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute, error
+      onUpdateRoute, error, eventTypeFilters,
     } = this.props;
+    const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
     const DistanceOnEarth = editKey.length > 0 ?
@@ -50,7 +51,7 @@ export default class ExerciseViewAll extends React.Component {
     return (
       <div>
         <ExerciseSummary events={events} />
-        <ExerciseTable {...this.props} />
+        <ExerciseTable {...this.props} events={events} />
         {DistanceOnEarth}
         <CompensateCalories events={events} />
         <ExerciseOverviewCharts series={series} weeklySeries={weeklySeries} />

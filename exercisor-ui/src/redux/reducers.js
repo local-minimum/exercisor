@@ -6,6 +6,7 @@ import {
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
   SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
+  SET_EVENT_TYPE_FILTER,
 } from './actions';
 import { minutes2str } from '../util';
 
@@ -52,6 +53,22 @@ const entry = (state = defaultEntry, action) => {
     case SET_NAME:
     case CLEAR_ENTRY:
       return defaultEntry;
+    default:
+      return state;
+  }
+}
+
+const eventTypeFilters = (state = [], action) => {
+  switch (action.type) {
+    case SET_NAME:
+      return [];
+    case SET_EVENT_TYPE_FILTER:
+      if (action.status) {
+        if (state.some(f => f === action.eventType)) return state;
+        return state.concat([action.eventType]);
+      } else {
+        return state.filter(f => f !== action.eventType);
+      }
     default:
       return state;
   }
@@ -242,5 +259,5 @@ const consideredRouteDesign = (state = null, action) => {
 export default combineReducers({
   name, events, years, entry, editKey, settings, goals, locations, routes,
   error, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
-  editKeyDidChange,
+  editKeyDidChange, eventTypeFilters,
 });

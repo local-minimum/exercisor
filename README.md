@@ -20,10 +20,10 @@ A tool for manual entry of exercise results without the need of anyone spying an
 - [x] Weekly rollup instead of stupid line
 - [x] Errors where they belong (next to relevant part)
 - [x] Allow event without all columns
-- [ ] Add filter on exercise types
+- [x] Add filter on exercise types
+- [ ] Real login!!
 - [ ] Add zoom track for analysis
 - [ ] Get all location matches for name search and choose from drop-down
-- [ ] Real login!!
 - [ ] Draw route on map
 - [ ] Ask if sick, hurt or lazy if seems to dropping in frequency
 - [ ] Challenges

@@ -8,6 +8,7 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
+export const SET_EVENT_TYPE_FILTER = 'SET_EVENT_TYPE_FILTER';
 export const SET_NAME = 'SET_NAME';
 export const SET_EVENTS = 'SET_EVENTS';
 export const SET_YEARS = 'SET_YEARS';
@@ -36,6 +37,7 @@ export const SET_ROUTE_DESIGN_CONSIDERED = 'SET_ROUTE_DESIGN_CONSIDERED';
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
 export const setName = makeActionCreator(SET_NAME, 'name');
 export const setEvents = makeActionCreator(SET_EVENTS, 'events');
+export const setEventTypeFilter = makeActionCreator(SET_EVENT_TYPE_FILTER, 'eventType', 'status');
 export const setYears = makeActionCreator(SET_YEARS, 'years');
 export const setEntryDate = makeActionCreator(SET_ENTRY_DATE , 'date');
 export const setEntryDuration = makeActionCreator(SET_ENTRY_DURATION, 'duration');

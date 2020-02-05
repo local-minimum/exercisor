@@ -76,3 +76,20 @@ tr:nth-child(even) {
 .xx-small {
   font-size: 8pt;
 }
+
+.buttonized {
+  cursor: pointer;
+  background-color: rgba(100, 270, 100, 0.3);
+}
+
+.buttonized-disabled {
+  cursor: not-allowed;
+  color: #444;
+  background-color: rgba(100, 100, 100, 0.3);
+}
+
+.buttonized-pressed {
+  cursor: pointer;
+  color: #ddd;
+  background-color: rgba(180, 60, 60, 0.8);
+}
