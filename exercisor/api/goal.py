@@ -1,10 +1,9 @@
-from http import HTTPStatus
-
-from flask_restful import Resource, abort, reqparse
+from flask_restful import Resource, reqparse
+from bson.objectid import ObjectId
 
 from ..database import db
-from ..transactions import User, Goal
-from .user import may_view, may_edit, view_parser
+from ..transactions import Goal
+from .user import may_view, may_edit
 
 
 goals_parser = reqparse.RequestParser()
@@ -15,17 +14,13 @@ goals_parser.add_argument("route", type=str, default=None, help="Rutt id för ru
 
 
 class UserTotalGoals(Resource):
-    def get(self, user: str):
-        uid = User.get_user_id(db(), user)
-        if may_view(uid, view_parser.parse_args()['edit-key']):
-            return Goal.get_user_total_goal(db(), uid)
-        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
+    @may_view
+    def get(self, uid: ObjectId):
+        return Goal.get_user_total_goal(db(), uid)
 
-    def post(self, user: str):
-        uid = User.get_user_id(db(), user)
+    @may_edit
+    def post(self, uid: ObjectId):
         args = goals_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         Goal.upsert_user_total_goal(
             db(),
             uid,
@@ -35,17 +30,13 @@ class UserTotalGoals(Resource):
 
 
 class UserYearGoals(Resource):
-    def get(self, user: str, year: int):
-        uid = User.get_user_id(db(), user)
-        if may_view(uid, view_parser.parse_args()['edit-key']):
-            return Goal.get_user_goal(db(), uid, year)
-        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
+    @may_view
+    def get(self, uid: ObjectId, year: int):
+        return Goal.get_user_goal(db(), uid, year)
 
-    def post(self, user: str, year: int):
-        uid = User.get_user_id(db(), user)
+    @may_edit
+    def post(self, uid: ObjectId, year: int):
         args = goals_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         Goal.upsert_user_goal(
             db(),
             uid,

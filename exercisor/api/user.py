@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from hashlib import sha512
-from typing import Optional
+from typing import Optional, Callable
 
 from flask_restful import abort, reqparse, Resource
 
@@ -20,26 +20,34 @@ def pwd_hash(pwd: Optional[str]) -> Optional[str]:
     return m.hexdigest()
 
 
-def may_view(uid, edit_key):
-    try:
-        settings = User.get_user_settings(db(), uid)
-    except DatabaseError:
-        abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
-    else:
+def may_view(endpoint: Callable):
+    def authorize(self, user: str, *args, **kwargs):
+        uid = User.get_user_id(db(), user)
+        req_args = view_parser.parse_args()
+        try:
+            settings = User.get_user_settings(db(), uid)
+        except DatabaseError:
+            return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
         if settings['public']:
-            return True
-        return pwd_hash(edit_key) == settings['edit-key-hash']
-    return False
+            return endpoint(self, uid, *args, **kwargs)
+        if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
+            return endpoint(self, uid, *args, **kwargs)
+        abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+    return authorize
 
 
-def may_edit(uid, edit_key):
-    try:
-        settings = User.get_user_settings(db(), uid)
-    except DatabaseError:
-        abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
-    else:
-        return pwd_hash(edit_key) == settings['edit-key-hash']
-    return False
+def may_edit(endpoint: Callable):
+    def authorize(self, user: str, *args, **kwargs):
+        uid = User.get_user_id(db(), user)
+        req_args = view_parser.parse_args()
+        try:
+            settings = User.get_user_settings(db(), uid)
+        except DatabaseError:
+            return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
+        if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
+            return endpoint(self, uid, *args, **kwargs)
+        abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+    return authorize
 
 
 user_parser = reqparse.RequestParser()

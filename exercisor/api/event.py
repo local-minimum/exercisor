@@ -1,11 +1,12 @@
 from http import HTTPStatus
 
 from flask_restful import Resource, abort, reqparse
+from bson.objectid import ObjectId
 
 from ..database import db
 from ..exceptions import DatabaseError, IllegalEventType
-from ..transactions import User, Event
-from .user import may_view, may_edit, view_parser
+from ..transactions import Event
+from .user import may_view, may_edit
 
 ACCEPTED_EVENT_TYPES = ["CrossTrainer", "Running", "Walking", "Hiking", "Golfing", "Biking"]
 
@@ -31,17 +32,13 @@ def get_summary(args):
 
 
 class ListUserEvents(Resource):
-    def get(self, user: str):
-        uid = User.get_user_id(db(), user)
-        if may_view(uid, view_parser.parse_args()['edit-key']):
-            return Event.get_all_summaries(db(), uid)
-        abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
+    @may_view
+    def get(self, uid: ObjectId):
+        return Event.get_all_summaries(db(), uid)
 
-    def put(self, user: str):
-        uid = User.get_user_id(db(), user)
+    @may_edit
+    def put(self, uid: ObjectId):
         args = list_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             Event.add_summary(
                 db(),
@@ -57,11 +54,10 @@ class ListUserEvents(Resource):
 
 
 class UserEvent(Resource):
-    def post(self, user: str, event_id: str):
-        uid = User.get_user_id(db(), user)
+
+    @may_edit
+    def post(self, uid: ObjectId, event_id: str):
         args = list_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             Event.edit_event(
                 db(),
@@ -76,11 +72,8 @@ class UserEvent(Resource):
             abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         return {}
 
-    def delete(self, user: str, event_id: str):
-        uid = User.get_user_id(db(), user)
-        args = view_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+    @may_edit
+    def delete(self, uid: ObjectId, event_id: str):
         try:
             Event.delete_event(
                 db(),

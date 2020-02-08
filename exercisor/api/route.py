@@ -1,11 +1,13 @@
 from typing import Tuple, cast
 from http import HTTPStatus
+
 from flask_restful import Resource, abort, reqparse
+from bson.objectid import ObjectId
 
 from ..database import db
 from ..exceptions import DatabaseError
-from ..transactions import Route, User
-from .user import may_edit, view_parser
+from ..transactions import Route
+from .user import may_edit, may_view
 
 route_parser = reqparse.RequestParser()
 route_parser.add_argument("edit-key", type=str, default=None)
@@ -34,26 +36,20 @@ class ListRoutes(Resource):
 
 
 class UserVisibleRoute(Resource):
-    def get(self, user: str, route_id: str):
-        uid = User.get_user_id(db(), user)
-        args = view_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+    @may_view
+    def get(self, uid: ObjectId, route_id: str):
         route = Route.get_user_route(db(), uid, route_id)
         if not route:
             abort(HTTPStatus.NOT_FOUND.value, message="Rutten finns inte")
         return route
 
-    def post(self, user: str, route_id: str):
-        uid = User.get_user_id(db(), user)
+    @may_edit
+    def post(self, uid: ObjectId, route_id: str):
         args = route_parser.parse_args()
-        waypoints = None
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             waypoints = user_waypoints_parser(args['waypoints'])
         except ValueError as err:
-            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
+            return abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         public = True
         try:
             Route.edit_user_route(db(), uid, route_id, args["name"], waypoints, public)
@@ -63,27 +59,21 @@ class UserVisibleRoute(Resource):
 
 
 class ListUserRoutes(Resource):
-    def get(self, user: str):
-        uid = User.get_user_id(db(), user)
-        args = view_parser.parse_args()
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+    @may_view
+    def get(self, uid: ObjectId):
         return Route.get_user_routes(db(), uid)
 
-    def put(self, user: str):
-        uid = User.get_user_id(db(), user)
+    @may_edit
+    def put(self, uid: ObjectId):
         args = route_parser.parse_args()
-        waypoints = None
-        if not may_edit(uid, args['edit-key']):
-            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
             waypoints = user_waypoints_parser(args['waypoints'])
         except ValueError as err:
-            abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
+            return abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         public = True
         try:
             route_id = Route.put_user_route(db(), uid, args["name"], waypoints, public)
         except DatabaseError:
-            abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
+            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
         else:
             return {"route_id": route_id}
