@@ -10,6 +10,8 @@ mypy = "*"
 flask = "*"
 flask_restful = "*"
 pymongo = "*"
+bcrypt = "*"
+flask-login = "*"
 
 [requires]
 python_version = "3.8"

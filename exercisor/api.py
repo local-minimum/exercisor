@@ -7,7 +7,7 @@ from typing import Optional
 from flask_restful import Resource, abort, reqparse
 from pymongo import MongoClient
 
-from . import transactions
+from .transactions import User, Route, Goal, Event
 from .exceptions import DatabaseError, IllegalEventType
 
 
@@ -48,7 +48,7 @@ def get_summary(args):
 
 class ListRoutes(Resource):
     def get(self):
-        return transactions.get_public_routes(db())
+        return Route.get_public_routes(db())
 
 
 user_parser = reqparse.RequestParser()
@@ -73,7 +73,7 @@ class ListUser(Resource):
         if not args["edit-key"]:
             abort(HTTPStatus.BAD_REQUEST.value, message="Lösenord är ett måste")
         try:
-            transactions.add_user(
+            User.add_user(
                 db(),
                 args["user"],
                 pwd_hash(args["edit-key"]),
@@ -86,7 +86,7 @@ class ListUser(Resource):
 
 def may_view(uid, edit_key):
     try:
-        settings = transactions.get_user_settings(db(), uid)
+        settings = User.get_user_settings(db(), uid)
     except DatabaseError:
         abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
     else:
@@ -98,7 +98,7 @@ def may_view(uid, edit_key):
 
 def may_edit(uid, edit_key):
     try:
-        settings = transactions.get_user_settings(db(), uid)
+        settings = User.get_user_settings(db(), uid)
     except DatabaseError:
         abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
     else:
@@ -115,17 +115,17 @@ goals_parser.add_argument("route", type=str, default=None, help="Rutt id för ru
 
 class UserTotalGoals(Resource):
     def get(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
-            return transactions.get_user_total_goal(db(), uid)
+            return Goal.get_user_total_goal(db(), uid)
         abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
 
     def post(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = goals_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-        transactions.upsert_user_total_goal(
+        Goal.upsert_user_total_goal(
             db(),
             uid,
             args["route"],
@@ -135,17 +135,17 @@ class UserTotalGoals(Resource):
 
 class UserYearGoals(Resource):
     def get(self, user: str, year: int):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
-            return transactions.get_user_goal(db(), uid, year)
+            return Goal.get_user_goal(db(), uid, year)
         abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
 
     def post(self, user: str, year: int):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = goals_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-        transactions.upsert_user_goal(
+        Goal.upsert_user_goal(
             db(),
             uid,
             year,
@@ -162,18 +162,18 @@ class UserYearGoals(Resource):
 
 class ListUserEvents(Resource):
     def get(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         if may_view(uid, view_parser.parse_args()['edit-key']):
-            return transactions.get_all_summaries(db(), uid)
+            return Event.get_all_summaries(db(), uid)
         abort(HTTPStatus.FORBIDDEN.value, message="Denna användare är privat")
 
     def put(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = list_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
-            transactions.add_summary(
+            Event.add_summary(
                 db(),
                 uid,
                 args['date'],
@@ -188,12 +188,12 @@ class ListUserEvents(Resource):
 
 class UserEvent(Resource):
     def post(self, user: str, event_id: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = list_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
-            transactions.edit_event(
+            Event.edit_event(
                 db(),
                 event_id,
                 uid,
@@ -207,12 +207,12 @@ class UserEvent(Resource):
         return {}
 
     def delete(self, user: str, event_id: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = view_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
         try:
-            transactions.delete_event(
+            Event.delete_event(
                 db(),
                 event_id,
                 uid,
@@ -245,14 +245,14 @@ def user_waypoints_parser(waypoints):
 
 class ListUserRoutes(Resource):
     def get(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = view_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-        return transactions.get_user_routes(db(), uid)
+        return Route.get_user_routes(db(), uid)
 
     def put(self, user: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = route_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
@@ -262,7 +262,7 @@ class ListUserRoutes(Resource):
             abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         public = True
         try:
-            route_id = transactions.put_user_route(db(), uid, args["name"], waypoints, public)
+            route_id = Route.put_user_route(db(), uid, args["name"], waypoints, public)
         except DatabaseError:
             abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
         else:
@@ -271,17 +271,17 @@ class ListUserRoutes(Resource):
 
 class UserVisibleRoute(Resource):
     def get(self, user: str, route_id: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = view_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-        route = transactions.get_user_route(db(), uid, route_id)
+        route = Route.get_user_route(db(), uid, route_id)
         if not route:
             abort(HTTPStatus.NOT_FOUND.value, message="Rutten finns inte")
         return route
 
     def post(self, user: str, route_id: str):
-        uid = transactions.get_user_id(db(), user)
+        uid = User.get_user_id(db(), user)
         args = route_parser.parse_args()
         if not may_edit(uid, args['edit-key']):
             abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
@@ -291,7 +291,7 @@ class UserVisibleRoute(Resource):
             abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         public = True
         try:
-            transactions.edit_user_route(db(), uid, route_id, args["name"], waypoints, public)
+            Route.edit_user_route(db(), uid, route_id, args["name"], waypoints, public)
         except DatabaseError:
             abort(HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Oväntat fel vid insättning")
         return {}
