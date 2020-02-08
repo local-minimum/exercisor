@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 from ..database import db
 from ..exceptions import DatabaseError, IllegalEventType
 from ..transactions import Event
-from .user import may_view, may_edit
+from .user import Authorization, AccessRole
 
 ACCEPTED_EVENT_TYPES = ["CrossTrainer", "Running", "Walking", "Hiking", "Golfing", "Biking"]
 
@@ -32,11 +32,11 @@ def get_summary(args):
 
 
 class ListUserEvents(Resource):
-    @may_view
+    @Authorization(AccessRole.LOGGED_IN)
     def get(self, uid: ObjectId):
         return Event.get_all_summaries(db(), uid)
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def put(self, uid: ObjectId):
         args = list_parser.parse_args()
         try:
@@ -54,8 +54,7 @@ class ListUserEvents(Resource):
 
 
 class UserEvent(Resource):
-
-    @may_edit
+    @Authorization(AccessRole.USER)
     def post(self, uid: ObjectId, event_id: str):
         args = list_parser.parse_args()
         try:
@@ -72,7 +71,7 @@ class UserEvent(Resource):
             abort(HTTPStatus.BAD_REQUEST.value, message=str(err))
         return {}
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def delete(self, uid: ObjectId, event_id: str):
         try:
             Event.delete_event(

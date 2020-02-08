@@ -1,3 +1,4 @@
+from enum import Enum
 from http import HTTPStatus
 from hashlib import sha512
 from typing import Optional, Callable
@@ -12,6 +13,12 @@ view_parser = reqparse.RequestParser()
 view_parser.add_argument("edit-key", type=str, default=None)
 
 
+class AccessRole(Enum):
+    PUBLIC = 0
+    LOGGED_IN = 1
+    USER = 2
+
+
 def pwd_hash(pwd: Optional[str]) -> Optional[str]:
     if pwd is None:
         return None
@@ -20,34 +27,47 @@ def pwd_hash(pwd: Optional[str]) -> Optional[str]:
     return m.hexdigest()
 
 
-def may_view(endpoint: Callable):
-    def authorize(self, user: str, *args, **kwargs):
-        uid = User.get_user_id(db(), user)
-        req_args = view_parser.parse_args()
-        try:
-            settings = User.get_user_settings(db(), uid)
-        except DatabaseError:
-            return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
-        if settings['public']:
-            return endpoint(self, uid, *args, **kwargs)
-        if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
-            return endpoint(self, uid, *args, **kwargs)
-        abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-    return authorize
+class Authorization:
+    def __init__(self, role: AccessRole):
+        self._role = role
 
+    def __call__(self, endpoint: Callable):
+        if self._role is AccessRole.PUBLIC:
+            return endpoint
+        elif self._role is AccessRole.LOGGED_IN:
+            return self.may_view(endpoint)
+        elif self._role is AccessRole.USER:
+            return self.may_edit(endpoint)
+        else:
+            abort(HTTPStatus.FORBIDDEN.value, message="Åtkomst nekad")
 
-def may_edit(endpoint: Callable):
-    def authorize(self, user: str, *args, **kwargs):
-        uid = User.get_user_id(db(), user)
-        req_args = view_parser.parse_args()
-        try:
-            settings = User.get_user_settings(db(), uid)
-        except DatabaseError:
-            return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
-        if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
-            return endpoint(self, uid, *args, **kwargs)
-        abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
-    return authorize
+    def may_view(self, endpoint: Callable):
+        def authorize(other, user: str, *args, **kwargs):
+            uid = User.get_user_id(db(), user)
+            req_args = view_parser.parse_args()
+            try:
+                settings = User.get_user_settings(db(), uid)
+            except DatabaseError:
+                return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
+            if settings['public']:
+                return endpoint(other, uid, *args, **kwargs)
+            if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
+                return endpoint(other, uid, *args, **kwargs)
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        return authorize
+
+    def may_edit(self, endpoint: Callable):
+        def authorize(other, user: str, *args, **kwargs):
+            uid = User.get_user_id(db(), user)
+            req_args = view_parser.parse_args()
+            try:
+                settings = User.get_user_settings(db(), uid)
+            except DatabaseError:
+                return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
+            if pwd_hash(req_args['edit-key']) == settings['edit-key-hash']:
+                return endpoint(other, uid, *args, **kwargs)
+            abort(HTTPStatus.FORBIDDEN.value, message="Felaktigt lösenord")
+        return authorize
 
 
 user_parser = reqparse.RequestParser()

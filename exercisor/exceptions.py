@@ -4,3 +4,5 @@ class DatabaseError(Exception):
 
 class IllegalEventType(ValueError):
     pass
+
+

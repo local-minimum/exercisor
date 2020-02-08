@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 
 from ..database import db
 from ..transactions import Goal
-from .user import may_view, may_edit
+from .user import Authorization, AccessRole
 
 
 goals_parser = reqparse.RequestParser()
@@ -14,11 +14,11 @@ goals_parser.add_argument("route", type=str, default=None, help="Rutt id för ru
 
 
 class UserTotalGoals(Resource):
-    @may_view
+    @Authorization(AccessRole.LOGGED_IN)
     def get(self, uid: ObjectId):
         return Goal.get_user_total_goal(db(), uid)
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def post(self, uid: ObjectId):
         args = goals_parser.parse_args()
         Goal.upsert_user_total_goal(
@@ -30,11 +30,11 @@ class UserTotalGoals(Resource):
 
 
 class UserYearGoals(Resource):
-    @may_view
+    @Authorization(AccessRole.LOGGED_IN)
     def get(self, uid: ObjectId, year: int):
         return Goal.get_user_goal(db(), uid, year)
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def post(self, uid: ObjectId, year: int):
         args = goals_parser.parse_args()
         Goal.upsert_user_goal(

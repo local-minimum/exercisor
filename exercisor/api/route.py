@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 from ..database import db
 from ..exceptions import DatabaseError
 from ..transactions import Route
-from .user import may_edit, may_view
+from .user import Authorization, AccessRole
 
 route_parser = reqparse.RequestParser()
 route_parser.add_argument("edit-key", type=str, default=None)
@@ -36,14 +36,14 @@ class ListRoutes(Resource):
 
 
 class UserVisibleRoute(Resource):
-    @may_view
+    @Authorization(AccessRole.LOGGED_IN)
     def get(self, uid: ObjectId, route_id: str):
         route = Route.get_user_route(db(), uid, route_id)
         if not route:
             abort(HTTPStatus.NOT_FOUND.value, message="Rutten finns inte")
         return route
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def post(self, uid: ObjectId, route_id: str):
         args = route_parser.parse_args()
         try:
@@ -59,11 +59,11 @@ class UserVisibleRoute(Resource):
 
 
 class ListUserRoutes(Resource):
-    @may_view
+    @Authorization(AccessRole.USER)
     def get(self, uid: ObjectId):
         return Route.get_user_routes(db(), uid)
 
-    @may_edit
+    @Authorization(AccessRole.USER)
     def put(self, uid: ObjectId):
         args = route_parser.parse_args()
         try:
