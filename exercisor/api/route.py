@@ -2,6 +2,7 @@ from typing import Tuple, cast
 from http import HTTPStatus
 
 from flask_restful import Resource, abort, reqparse
+from flask_login import current_user
 from bson.objectid import ObjectId
 
 from ..database import db
@@ -31,14 +32,15 @@ def user_waypoints_parser(waypoints):
 
 
 class ListRoutes(Resource):
+    @Authorization(AccessRole.PUBLIC)
     def get(self):
         return Route.get_public_routes(db())
 
 
 class UserVisibleRoute(Resource):
-    @Authorization(AccessRole.LOGGED_IN)
-    def get(self, uid: ObjectId, route_id: str):
-        route = Route.get_user_route(db(), uid, route_id)
+    @Authorization(AccessRole.PUBLIC)
+    def get(self, _: ObjectId, route_id: str):
+        route = Route.get_user_route(db(), current_user.uid, route_id)
         if not route:
             abort(HTTPStatus.NOT_FOUND.value, message="Rutten finns inte")
         return route

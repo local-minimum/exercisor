@@ -6,3 +6,5 @@ class IllegalEventType(ValueError):
     pass
 
 
+class BadAppInitialization(Exception):
+    pass

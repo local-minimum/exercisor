@@ -32,7 +32,7 @@ def get_summary(args):
 
 
 class ListUserEvents(Resource):
-    @Authorization(AccessRole.LOGGED_IN)
+    @Authorization(AccessRole.LOGGED_IN_READ)
     def get(self, uid: ObjectId):
         return Event.get_all_summaries(db(), uid)
 

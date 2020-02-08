@@ -14,7 +14,7 @@ goals_parser.add_argument("route", type=str, default=None, help="Rutt id för ru
 
 
 class UserTotalGoals(Resource):
-    @Authorization(AccessRole.LOGGED_IN)
+    @Authorization(AccessRole.LOGGED_IN_READ)
     def get(self, uid: ObjectId):
         return Goal.get_user_total_goal(db(), uid)
 
@@ -30,7 +30,7 @@ class UserTotalGoals(Resource):
 
 
 class UserYearGoals(Resource):
-    @Authorization(AccessRole.LOGGED_IN)
+    @Authorization(AccessRole.LOGGED_IN_READ)
     def get(self, uid: ObjectId, year: int):
         return Goal.get_user_goal(db(), uid, year)
 

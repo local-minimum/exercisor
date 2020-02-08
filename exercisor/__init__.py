@@ -4,11 +4,16 @@ from flask import Flask
 from flask_restful import Api
 
 from .api import event, goal, route, user
+from .transactions.User import user_loader_setup
+from .database import db
 
 BASEURL = os.environ.get("EXERCISOR_BASEURL", "/exercisor/api")
 app = Flask(__name__)
+app.secret_key = os.environ.get('EXERCISOR_SECRET', 'testenvironment')
 
 api = Api(app)
+login_manager = user.login_manager(app)
+user_loader_setup(login_manager, db())
 
 api.add_resource(route.ListRoutes, f"{BASEURL}/route")
 
