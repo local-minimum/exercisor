@@ -14,12 +14,17 @@ export default class Login extends React.Component {
 
   handleEnter = (e) => {
     if (e.key === 'Enter') {
-      const { match, onLogin } = this.props;
+      const { match, onLogin, routeLogin } = this.props;
       const { name, password } = this.state;
-      const { url } = match;
-      const prefix = url.endsWith('/') ? url : `${url}/`
-      const userUrl = `${prefix}${name.toLocaleLowerCase()}`
-      onLogin(name, password, userUrl);
+      if (routeLogin) {
+        const { url } = match;
+        const prefix = url.endsWith('/') ? url : `${url}/`
+        const userUrl = `${prefix}${name.toLocaleLowerCase()}`
+        onLogin(name, password, userUrl);
+      } else {
+        onLogin(name, password);
+      }
+
     }
   }
 

@@ -8,7 +8,7 @@ export default function FrontHeader({ match, history, onLogin, error }) {
   return  (
     <header className="App-header header-only">
       <h1>Exercisor</h1>
-      <Login onLogin={onLogin} match={match} error={error} />
+      <Login onLogin={onLogin} match={match} error={error} routeLogin />
       <Link className="register" to={regUrl}>Registring</Link>
     </header>
   );

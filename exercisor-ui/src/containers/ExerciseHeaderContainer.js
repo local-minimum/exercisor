@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { logout } from '../redux/thunks';
+import { logout, login, mySettings } from '../redux/thunks';
 import ExerciseHeader from '../components/ExerciseHeader'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -10,6 +10,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onLogout: () => dispatch(logout()),
+  onLogin: (name, password) => dispatch(login(name, password)),
+  testSession: () => dispatch(mySettings()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseHeader);

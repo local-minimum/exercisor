@@ -2,10 +2,12 @@ import { jsonRequest, emptyOrNull } from './util';
 
 const BASE_URL = '/exercisor/api';
 
+export const getMySettings = () => {
+  return jsonRequest(`${BASE_URL}/my/settings`);
+}
+
 export const getUserEventList = (user) => {
-  return jsonRequest(
-      `${BASE_URL}/user/${user}/event`,
-    );
+  return jsonRequest(`${BASE_URL}/user/${user}/event`);
 }
 
 const str2minutes = (str) => {

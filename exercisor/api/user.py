@@ -16,6 +16,7 @@ class AccessRole(Enum):
     PUBLIC = 0
     LOGGED_IN_READ = 1
     USER = 2
+    SESSION = 3
 
 
 class Authorization:
@@ -29,8 +30,21 @@ class Authorization:
             return Authorization.has_logged_in_read(endpoint)
         elif self._role is AccessRole.USER:
             return Authorization.has_user_write_access(endpoint)
+        elif self._role is AccessRole.SESSION:
+            return Authorization.has_valid_session(endpoint)
         else:
             abort(HTTPStatus.FORBIDDEN.value, message="Åtkomst nekad")
+
+    @staticmethod
+    def has_valid_session(endpoint: Callable):
+        def authorize(other, *args, **kwargs):
+            if not current_user.is_authenticated:
+                return abort(HTTPStatus.FORBIDDEN.value, message="Du måste vara inloggad")
+            if User.get_user_status_from_session(db(), current_user.get_id()):
+                return endpoint(other, *args, **kwargs)
+            return abort(HTTPStatus.FORBIDDEN.value, message="Du behöver logga in igen")
+
+        return authorize
 
     @staticmethod
     def has_logged_in_read(endpoint: Callable):
@@ -134,3 +148,9 @@ class ListUser(Resource):
         return abort(
             HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Kunde inte logga ut, kanske är du redan utloggad?",
         )
+
+
+class MySettings(Resource):
+    @Authorization(AccessRole.SESSION)
+    def get(self):
+        return {}

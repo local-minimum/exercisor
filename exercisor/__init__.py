@@ -15,8 +15,13 @@ api = Api(app)
 login_manager = user.login_manager(app)
 user_loader_setup(login_manager, db())
 
+# ~/route/*
 api.add_resource(route.ListRoutes, f"{BASEURL}/route")
 
+# ~/my/*
+api.add_resource(user.MySettings, f"{BASEURL}/my/settings")
+
+# ~/user/*
 USERURL = f"{BASEURL}/user/<string:user>"
 api.add_resource(user.ListUser, f"{BASEURL}/user")
 api.add_resource(goal.UserYearGoals, f"{USERURL}/goal/<int:year>")

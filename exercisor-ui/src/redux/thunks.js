@@ -6,7 +6,7 @@ import {
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
   registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns, postRoute,
-  postLogin, deleteLogin,
+  postLogin, deleteLogin, getMySettings,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -16,6 +16,18 @@ import {
   REGISTER_ERROR, EXERCISE_VIEW_ERROR, EXERCISE_TABLE_ERROR,
   EXERCISE_MAP_ERROR, EXERCISE_GOALS_ERROR, LOGIN_ERROR,
 } from '../errors';
+
+export function mySettings() {
+  return (dispatch, getState) => {
+    return getMySettings()
+      .then(settings => {
+        //TODO: ???
+      })
+      .catch(_ => {
+        dispatch(setLoggedIn(null));
+      });
+  }
+}
 
 export function login(name, password, url, history) {
   return (dispatch, getState) => {
