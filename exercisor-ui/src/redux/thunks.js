@@ -20,12 +20,14 @@ import {
 
 export function login(name, password, url, history) {
   return (dispatch, getState) => {
+    dispatch(setErrorMessage());
     postLogin(name, password)
       .then(_ => {
         dispatch(setName(name));
         history.push(url);
       })
       .catch(message => {
+        console.log(message);
         dispatch(setErrorMessage(message, LOGIN_ERROR));
       });
   }
@@ -124,14 +126,16 @@ export function loadRouteDesigns() {
   return (dispatch, getState) => {
     const { name } = getState();
       const promises = [];
-      promises.push(
-        getUserRouteDesigns(name)
-          .then(designs => dispatch(setUserRouteDesigns(designs)))
-          .catch(message => {
-            dispatch(setUserRouteDesigns([]));
-            console.log(message);
-          })
-      );
+      if (name != null) {
+        promises.push(
+          getUserRouteDesigns(name)
+            .then(designs => dispatch(setUserRouteDesigns(designs)))
+            .catch(message => {
+              dispatch(setUserRouteDesigns([]));
+              console.log(message);
+            })
+        );
+      }
       promises.push(
         getPublicRouteDesigns()
           .then(designs => dispatch(setPublicRouteDesigns(designs)))

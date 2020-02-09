@@ -2,21 +2,10 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import ExerciseContainer from './containers/ExerciseContainer';
 import RegisterContainer from './containers/RegisterContainer';
-import Login from './components/Login';
+import FrontHeaderContainer from './containers/FrontHeaderContainer';
 import './App.css';
 
 
-function NoUserHeader({ match, history }) {
-  const onLinkEnter = (name, password, url, hist) => hist.push(url);
-  const regUrl = match.path.length > 1 ? `${match.path}/register` : 'register';
-  return  (
-    <header className="App-header header-only">
-      <h1>Exercisor</h1>
-      <Login onLogin={onLinkEnter} match={match} history={history} />
-      <Link className="register" to={regUrl}>Registring</Link>
-    </header>
-  );
-}
 
 function UserHeader({ match }) {
   const { name } = match.params;
@@ -45,7 +34,7 @@ function ExercisorRoutingHeader({ match }) {
     <Switch>
       <Route path={`${match.path}/register`} component={RegisterHeader} />
       <Route path={`${match.path}/:name`} component={UserHeader} />
-      <Route path={`${match.path}`} component={NoUserHeader} />
+      <Route path={`${match.path}`} component={FrontHeaderContainer} />
     </Switch>
   );
 }
@@ -67,7 +56,7 @@ function App() {
           <Route path="/exercisor" component={ExercisorRoutingHeader} />
           <Route path="/register" component={RegisterHeader} />
           <Route path="/:name" component={UserHeader} />
-          <Route path="/" component={NoUserHeader} />
+          <Route path="/" component={FrontHeaderContainer} />
         </Switch>
         <div className="App-main">
           <Switch>

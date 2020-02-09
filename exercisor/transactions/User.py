@@ -65,7 +65,7 @@ def get_user_status_from_session(db: Database, session_hash: str) -> Optional[Us
 
     res = db[USER_SETTINGS].find_one({
         "session": session_hash,
-        "lastseen": {"$gt": {dt.datetime.utcnow() - dt.timedelta(days=7)}},
+        "last-seen": {"$gt": dt.datetime.utcnow() - dt.timedelta(days=7)},
     })
     if res is None:
         return None
@@ -91,7 +91,7 @@ def migrate_legacy_password(db: Database, uid: ObjectId, password: str):
     db[USER_SETTINGS].update_one(
         {"_id": uid},
         {"$set": {
-            "password": bcrypt.hashpw(password, bcrypt.gensalt()),
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()),
             "edit": None,
         }},
     )
@@ -105,7 +105,7 @@ def start_user_session(db: Database, user: str, password: str) -> Optional[UserS
         if legacy_password(password) != doc["edit"]:
             return None
         migrate_legacy_password(db, doc["_id"], password)
-    elif not bcrypt.checkpw(password, doc["password"]):
+    elif not bcrypt.checkpw(password.encode(), doc["password"]):
         return None
     user_status = UserStatus(doc["_id"])
     db[USER_SETTINGS].update_one(
@@ -131,7 +131,7 @@ def add_user(db: Database, user: str, password: str, public: Optional[bool]):
         raise DatabaseError("Already taken")
     res = db[USER_SETTINGS].insert_one({
         "user": user,
-        "password": bcrypt.hashpw(password, bcrypt.gensalt()),
+        "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()),
         "public": public,
     })
     return str(res.inserted_id)

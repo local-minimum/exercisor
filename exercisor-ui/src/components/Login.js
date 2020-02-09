@@ -1,5 +1,8 @@
 import React from 'react';
 
+import Error from './Error';
+import { LOGIN_ERROR } from '../errors';
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -11,12 +14,12 @@ export default class Login extends React.Component {
 
   handleEnter = (e) => {
     if (e.key === 'Enter') {
-      const { match, history, onLogin } = this.props;
+      const { match, onLogin } = this.props;
       const { name, password } = this.state;
       const { url } = match;
       const prefix = url.endsWith('/') ? url : `${url}/`
       const userUrl = `${prefix}${name.toLocaleLowerCase()}`
-      onLogin(name, password, userUrl, history);
+      onLogin(name, password, userUrl);
     }
   }
 
@@ -24,9 +27,11 @@ export default class Login extends React.Component {
   handleChangePassword = (e) => this.setState({ password: e.target.value });
 
   render() {
+    const { error } = this.props;
     const { name, password } = this.state;
     return (
       <div>
+        <Error error={error} targetFilter={LOGIN_ERROR} />
         <input
           type="text"
           autoFocus
