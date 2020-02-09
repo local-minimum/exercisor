@@ -15,7 +15,7 @@ export default class ExerciseViewAll extends React.Component {
       onLoadRoute, routes, goals, locations,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute, error, eventTypeFilters,
+      onUpdateRoute, error, eventTypeFilters, exerciseViewChange,
     } = this.props;
     const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
@@ -34,6 +34,7 @@ export default class ExerciseViewAll extends React.Component {
         onLoadRouteDesigns={onLoadRouteDesigns}
         onSetRouteDesignConsidered={onSetRouteDesignConsidered}
         onSetSelectedRoute={onSetSelectedRoute}
+        exerciseViewChange={exerciseViewChange}
         error={error}
       /> :
       <DoEViewMode
@@ -44,6 +45,7 @@ export default class ExerciseViewAll extends React.Component {
         ownRouteDesigns={userRouteDesigns}
         allRouteDesigns={publicRouteDesigns}
         onLoadRouteDesigns={onLoadRouteDesigns}
+        exerciseViewChange={exerciseViewChange}
         error={error}
       />
     return (
@@ -63,7 +65,10 @@ export default class ExerciseViewAll extends React.Component {
   }
 
   componentDidUpdate() {
-    const { onLoadGoals, goals } = this.props;
-    if (goals != null && Number.isFinite(Number(goals.year))) onLoadGoals(this.getName(), "total");
+    const { onLoadGoals, exerciseViewChange, onChangeYear, year, goals } = this.props;
+    if (exerciseViewChange) {
+      if (year != null) onChangeYear(null);
+      if (goals != null && Number.isFinite(Number(goals.year))) onLoadGoals(this.getName(), "total");
+    }
   }
 }

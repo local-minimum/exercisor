@@ -131,3 +131,11 @@ export const postLogin = (user, password) => {
     'POST',
   );
 }
+
+export const deleteLogin = () => {
+  return jsonRequest(
+    `${BASE_URL}/user`,
+    {},
+    'DELETE',
+  );
+}

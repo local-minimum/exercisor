@@ -119,11 +119,13 @@ def start_user_session(db: Database, user: str, password: str) -> Optional[UserS
 
 
 def end_user_session(db: Database, user: UserStatus):
-    res = db[USER_SETTINGS].update_one(
-        {"_id", user.uid},
-        {"session": None},
-    )
-    return res.modified_count == 1
+    if user.is_authenticated:
+        res = db[USER_SETTINGS].update_one(
+            {"_id": user.uid},
+            {"$set": {"session": None}},
+        )
+        return res.modified_count == 1
+    return True
 
 
 def add_user(db: Database, user: str, password: str, public: Optional[bool]):

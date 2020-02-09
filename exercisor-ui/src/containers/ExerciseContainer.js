@@ -6,7 +6,7 @@ import {
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
-  setEntry, settingListAll, setGoalsEventSum, setEntryType,
+  setEntry, settingListAll, setGoalsEventSum, setEntryType, setYear,
   setGoalsWeeklyDist, setRouteDesignConsidered, setEventTypeFilter,
 } from '../redux/actions';
 
@@ -17,6 +17,7 @@ const mapStateToProps = (state, ownProps) => ({
   entry: state.entry,
   events: state.events,
   name: ownProps.match.params.name,
+  year: state.year,
   years: state.years,
   userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
   locations: state.locations,
@@ -26,6 +27,7 @@ const mapStateToProps = (state, ownProps) => ({
   publicRouteDesigns: state.publicRouteDesigns,
   consideredRouteDesign: state.consideredRouteDesign,
   eventTypeFilters: state.eventTypeFilters,
+  exerciseViewChange: state.exerciseViewChange,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -39,6 +41,7 @@ const mapDispatchToProps = dispatch => ({
   onSetEntry: entry => dispatch(setEntry(entry)),
   onRemoveEntry: entryId => dispatch(removeEvent(entryId)),
   onListAll: value => dispatch(settingListAll(value)),
+  onChangeYear: year => dispatch(setYear(year)),
   onLoadGoals: (user, year) => dispatch(loadYearGoals(user, year)),
   onSetGoalsEventSum: events => dispatch(setGoalsEventSum(events)),
   onSetGoalsDistanceWeekly: dist => dispatch(setGoalsWeeklyDist(dist)),

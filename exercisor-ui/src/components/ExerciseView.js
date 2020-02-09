@@ -22,10 +22,10 @@ class ExerciseView extends React.Component {
   render() {
     const {
       years, match, error, events, eventTypeFilters,
-      onSetEventTypeFilter,
+      onSetEventTypeFilter, onChangeYear
     } = this.props;
     return <div className="App-main-item">
-      <ExerciseYears years={years} match={match} />
+      <ExerciseYears years={years} match={match} onChangeYear={onChangeYear} />
       <ExerciseTypeFilter
         events={events}
         eventTypeFilters={eventTypeFilters}

@@ -1,18 +1,21 @@
 import { combineReducers } from 'redux';
 import {
-  SET_NAME, SET_EVENTS, SET_YEARS,
+  SET_NAME, SET_EVENTS, SET_YEARS, SET_LOGGED_IN,
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
   SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
   SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
-  SET_EVENT_TYPE_FILTER,
+  SET_EVENT_TYPE_FILTER, SET_YEAR,
 } from './actions';
 import { minutes2str } from '../util';
 
 const defaultSettings = {listAll: false};
 const settings = (state = defaultSettings, action) => {
   switch (action.type) {
+    case SET_NAME:
+    case SET_YEAR:
+      return defaultSettings;
     case SETTING_LISTALL:
       return Object.assign({}, state, {listAll: action.value});
     default:
@@ -61,6 +64,7 @@ const entry = (state = defaultEntry, action) => {
 const eventTypeFilters = (state = [], action) => {
   switch (action.type) {
     case SET_NAME:
+    case SET_LOGGED_IN:
       return [];
     case SET_EVENT_TYPE_FILTER:
       if (action.status) {
@@ -69,6 +73,15 @@ const eventTypeFilters = (state = [], action) => {
       } else {
         return state.filter(f => f !== action.eventType);
       }
+    default:
+      return state;
+  }
+}
+
+const loggedIn = (state = true, action) => {
+  switch (action.type) {
+    case SET_LOGGED_IN:
+      return action.name != null;
     default:
       return state;
   }
@@ -83,9 +96,22 @@ const name = (state = null, action) => {
   }
 }
 
+const year = (state = null, action) => {
+  switch (action.type) {
+    case SET_NAME:
+    case SET_LOGGED_IN:
+      return null;
+    case SET_YEAR:
+      return action.year;
+    default:
+      return state;
+  }
+}
+
 const events = (state = [], action) => {
   switch (action.type) {
     case SET_NAME:
+    case SET_LOGGED_IN:
       return [];
     case SET_EVENTS:
       return action.events;
@@ -97,6 +123,7 @@ const events = (state = [], action) => {
 const years = (state = {}, action) => {
   switch (action.type) {
     case SET_NAME:
+    case SET_LOGGED_IN:
       return {};
     case SET_YEARS:
       return action.years;
@@ -108,8 +135,9 @@ const years = (state = {}, action) => {
 const goals = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
-    case SET_YEARS:
-      return {};
+    case SET_YEAR:
+    case SET_LOGGED_IN:
+      return null;
     case SET_GOALS_EVENTSSUM:
       return Object.assign(
         {},
@@ -165,7 +193,9 @@ const routes = (state = {}, action) => {
 
 const error = (state = null, action) => {
   switch (action.type) {
+    case SET_LOGGED_IN:
     case SET_NAME:
+    case SET_YEAR:
     case SET_YEARS:
     case SET_GOALS:
     case SET_EVENTS:
@@ -186,24 +216,26 @@ const error = (state = null, action) => {
 
 const defaultReg = {user: '', pwd: '', pwd2: ''};
 const register = (state = defaultReg, action) => {
-    switch (action.type) {
-      case SET_NAME:
-        return defaultReg;
-      case SET_REG_USER:
-        return Object.assign({}, state, {user: action.user.toLocaleLowerCase()});
-      case SET_REG_PWD:
-        return Object.assign({}, state, {pwd: action.pwd});
-      case SET_REG_PWD2:
-        return Object.assign({}, state, {pwd2: action.pwd2});
-      default:
-        return state;
+  switch (action.type) {
+    case SET_NAME:
+    case SET_LOGGED_IN:
+      return defaultReg;
+    case SET_REG_USER:
+      return Object.assign({}, state, {user: action.user.toLocaleLowerCase()});
+    case SET_REG_PWD:
+      return Object.assign({}, state, {pwd: action.pwd});
+    case SET_REG_PWD2:
+      return Object.assign({}, state, {pwd2: action.pwd2});
+    default:
+      return state;
 
-    }
+  }
 }
 
 const userRouteDesigns = (state = [], action) => {
   switch (action.type) {
     case SET_NAME:
+    case SET_LOGGED_IN:
       return [];
     case SET_ROUTE_DESIGNS_USER:
       return action.designs;
@@ -224,6 +256,7 @@ const publicRouteDesigns = (state = [], action) => {
 const consideredRouteDesign = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
+    case SET_LOGGED_IN:
     case SET_GOALS:
       return null;
     case SET_ROUTE_DESIGN_CONSIDERED:
@@ -233,8 +266,19 @@ const consideredRouteDesign = (state = null, action) => {
   }
 }
 
+const exerciseViewChange = (state = false, action) => {
+  switch (action.type) {
+    case SET_NAME:
+    case SET_YEAR:
+    case SET_LOGGED_IN:
+      return true;
+    default:
+      return false;
+  }
+}
+
 export default combineReducers({
-  name, events, years, entry, settings, goals, locations, routes,
+  name, events, year, years, entry, settings, goals, locations, routes,
   error, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
-  eventTypeFilters,
+  eventTypeFilters, exerciseViewChange, loggedIn,
 });

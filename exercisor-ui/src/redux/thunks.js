@@ -1,12 +1,12 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
   setOSMLocation, setOSMRoute, setErrorMessage, setUserRouteDesigns,
-  setPublicRouteDesigns,
+  setPublicRouteDesigns, setLoggedIn,
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
   registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns, postRoute,
-  postLogin,
+  postLogin, deleteLogin,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -17,18 +17,29 @@ import {
   EXERCISE_MAP_ERROR, EXERCISE_GOALS_ERROR, LOGIN_ERROR,
 } from '../errors';
 
-
 export function login(name, password, url, history) {
   return (dispatch, getState) => {
     dispatch(setErrorMessage());
     postLogin(name, password)
       .then(_ => {
-        dispatch(setName(name));
-        history.push(url);
+        dispatch(setLoggedIn(name));
+        if (url != null) history.push(url);
       })
       .catch(message => {
-        console.log(message);
         dispatch(setErrorMessage(message, LOGIN_ERROR));
+      });
+  }
+}
+
+export function logout() {
+  return (dispatch, getState) => {
+    dispatch(setErrorMessage());
+    deleteLogin()
+      .then(_ => {
+        dispatch(setLoggedIn(null));
+      })
+      .catch(message => {
+        dispatch(setLoggedIn(null));
       });
   }
 }
@@ -51,6 +62,7 @@ export function loadYearGoals(name, year) {
     const { goals } = getState();
     const invalid = goals == null || goals.user !== name || goals.year !== Number(year);
     if (invalid) {
+      dispatch(setGoals({}));
       return getGoals(name, year)
         .then(goals => {
           if (goals == null) {

@@ -125,11 +125,12 @@ class ListUser(Resource):
         login_user(user, duration=dt.timedelta(days=7))
         return {}
 
-    @Authorization(AccessRole.LOGGED_IN_READ)
-    def delete(self, user: User.UserStatus):
-        if User.end_user_session(db(), user):
-            logout_user()
-            return {}
+    @Authorization(AccessRole.PUBLIC)
+    def delete(self):
+        if current_user.is_authenticated:
+            if User.end_user_session(db(), current_user):
+                logout_user()
+                return {}
         return abort(
             HTTPStatus.INTERNAL_SERVER_ERROR.value, message="Kunde inte logga ut, kanske är du redan utloggad?",
         )

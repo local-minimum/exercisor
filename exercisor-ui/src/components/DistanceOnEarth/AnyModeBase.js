@@ -108,8 +108,8 @@ export default class DoEEditMode extends React.Component {
   }
 
   componentDidUpdate() {
-    const { onLoadRouteDesigns, ownRouteDesigns } = this.props;
-    if (onLoadRouteDesigns != null && ownRouteDesigns == null ) onLoadRouteDesigns();
+    const { exerciseViewChange, onLoadRouteDesigns } = this.props;
+    if (exerciseViewChange) onLoadRouteDesigns();
     this.loadRoute();
   }
 }
