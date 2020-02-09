@@ -12,7 +12,7 @@ export default class ExerciseViewAll extends React.Component {
 
   render() {
     const {
-      editKey, onLoadRoute, routes, goals, locations, editKeyDidChange,
+      onLoadRoute, routes, goals, locations,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
       onUpdateRoute, error, eventTypeFilters,
@@ -20,7 +20,7 @@ export default class ExerciseViewAll extends React.Component {
     const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
-    const DistanceOnEarth = editKey.length > 0 ?
+    const DistanceOnEarth = false ?
       <DoEEditMode
         routesData={routes}
         locations={locations}
@@ -34,8 +34,6 @@ export default class ExerciseViewAll extends React.Component {
         onLoadRouteDesigns={onLoadRouteDesigns}
         onSetRouteDesignConsidered={onSetRouteDesignConsidered}
         onSetSelectedRoute={onSetSelectedRoute}
-        editKey={editKey}
-        editKeyDidChange={editKeyDidChange}
         error={error}
       /> :
       <DoEViewMode

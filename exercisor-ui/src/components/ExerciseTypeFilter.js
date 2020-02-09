@@ -18,6 +18,7 @@ export default function ExerciseTypeFilter({
     .forEach(t => options
       .push((
         <ToggleBtn
+          key={t}
           toggled={eventTypeFilters.some(f => f === t)}
           name={t}
           onClick={onToggleFilter}

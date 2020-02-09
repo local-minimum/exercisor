@@ -2,9 +2,9 @@ import { jsonRequest, emptyOrNull } from './util';
 
 const BASE_URL = '/exercisor/api';
 
-export const getUserEventList = (user, editKey) => {
+export const getUserEventList = (user) => {
   return jsonRequest(
-      `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
+      `${BASE_URL}/user/${user}/event`,
     );
 }
 
@@ -17,7 +17,7 @@ const str2minutes = (str) => {
 
 const safeDate = (str) => new Date(str).toISOString().split("T")[0]
 
-export const putEvent = (user, editKey, evt) => {
+export const putEvent = (user, evt) => {
   const data = {
     date: safeDate(evt.date),
     duration: emptyOrNull(evt.duration) ? null : str2minutes(evt.duration),
@@ -27,13 +27,13 @@ export const putEvent = (user, editKey, evt) => {
   };
   Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
   return jsonRequest(
-    `${BASE_URL}/user/${user}/event?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event`,
     data,
     'PUT',
   );
 }
 
-export const postEvent = (user, id, editKey, evt) => {
+export const postEvent = (user, id, evt) => {
   const data = {
     date: safeDate(evt.date),
     duration: emptyOrNull(evt.duration) ? null : str2minutes(evt.duration),
@@ -43,24 +43,24 @@ export const postEvent = (user, id, editKey, evt) => {
   };
   Object.keys(data).forEach((key) => (data[key] == null) && delete data[key]);
   return jsonRequest(
-    `${BASE_URL}/user/${user}/event/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event/${id}`,
     data,
     'POST',
   );
 }
 
-export const deleteEvent = (user, id, editKey) => {
+export const deleteEvent = (user, id) => {
   const data = {};
   return jsonRequest(
-    `${BASE_URL}/user/${user}/event/${id}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/event/${id}`,
     data,
     'DELETE',
   );
 }
 
-export const getGoals = (user, year, editKey) => {
+export const getGoals = (user, year) => {
   return jsonRequest(
-      `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
+      `${BASE_URL}/user/${user}/goal/${year}`,
     );
 }
 
@@ -73,24 +73,21 @@ const extractNullableGoal = (goals, path) => {
     return val === '' ? null : val;
 }
 
-export const upsertGoals = (user, year, goals, editKey) => {
+export const upsertGoals = (user, year, goals) => {
   const data = {
     "sum-events": extractNullableGoal(goals, ['sums', 'events']),
     "weekly-dist": extractNullableGoal(goals, ['weekly', 'distance']),
     "route": goals.route,
   };
   return jsonRequest(
-    `${BASE_URL}/user/${user}/goal/${year}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/goal/${year}`,
     data,
     'POST',
   );
 }
 
-export const registerUser = (user, editKey) => {
-  const data = {
-    user,
-    'edit-key': editKey,
-  };
+export const registerUser = (user, password) => {
+  const data = { user, password };
   return jsonRequest(
     `${BASE_URL}/user`,
     data,
@@ -98,30 +95,39 @@ export const registerUser = (user, editKey) => {
   );
 }
 
-export const putRoute = (user, name, waypoints, editKey) => {
+export const putRoute = (user, name, waypoints) => {
   const data = { name, waypoints: waypoints.map(([from, to]) => `${from}|${to}`) };
   return jsonRequest(
-    `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/route`,
     data,
     'PUT',
   );
 }
 
-export const postRoute = (user, routeId, name, waypoints, editKey) => {
+export const postRoute = (user, routeId, name, waypoints) => {
   const data = { name, waypoints: waypoints.map(([from, to]) => `${from}|${to}`) };
   return jsonRequest(
-    `${BASE_URL}/user/${user}/route/${routeId}?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/route/${routeId}`,
     data,
     'POST',
   );
 }
 
-export const getUserRouteDesigns = (user, editKey) => {
+export const getUserRouteDesigns = (user) => {
   return jsonRequest(
-    `${BASE_URL}/user/${user}/route?edit-key=${editKey}`,
+    `${BASE_URL}/user/${user}/route`,
   );
 }
 
 export const getPublicRouteDesigns = () => {
   return jsonRequest(`${BASE_URL}/route`);
+}
+
+export const postLogin = (user, password) => {
+  const data = { user, password };
+  return jsonRequest(
+    `${BASE_URL}/user`,
+    data,
+    'POST',
+  );
 }

@@ -108,8 +108,8 @@ export default class DoEEditMode extends React.Component {
   }
 
   componentDidUpdate() {
-    const { editKeyDidChange, onLoadRouteDesigns } = this.props;
-    if (editKeyDidChange && onLoadRouteDesigns != null) onLoadRouteDesigns();
+    const { onLoadRouteDesigns, ownRouteDesigns } = this.props;
+    if (onLoadRouteDesigns != null && ownRouteDesigns == null ) onLoadRouteDesigns();
     this.loadRoute();
   }
 }

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import {
   SET_NAME, SET_EVENTS, SET_YEARS,
   SET_ENTRY_DATE, SET_ENTRY_DURATION, SET_ENTRY_DISTANCE, SET_ENTRY_CALORIES, CLEAR_ENTRY,
-  SET_EDITKEY, SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
+  SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
   SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
@@ -71,27 +71,6 @@ const eventTypeFilters = (state = [], action) => {
       }
     default:
       return state;
-  }
-}
-
-const editKey = (state = "", action) => {
-  switch (action.type) {
-    case SET_NAME:
-      return "";
-    case SET_EDITKEY:
-      return action.key;
-    default:
-      return state;
-  }
-}
-
-const editKeyDidChange = (state = true, action) => {
-  switch (action.type) {
-    case SET_NAME:
-    case SET_EDITKEY:
-      return true;
-    default:
-      return false;
   }
 }
 
@@ -190,7 +169,6 @@ const error = (state = null, action) => {
     case SET_YEARS:
     case SET_GOALS:
     case SET_EVENTS:
-    case SET_EDITKEY:
       return null;
     case SET_ERROR_MESSAGE:
       const msg = typeof(action.message) === 'object' ? Object
@@ -246,7 +224,6 @@ const publicRouteDesigns = (state = [], action) => {
 const consideredRouteDesign = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
-    case SET_EDITKEY:
     case SET_GOALS:
       return null;
     case SET_ROUTE_DESIGN_CONSIDERED:
@@ -257,7 +234,7 @@ const consideredRouteDesign = (state = null, action) => {
 }
 
 export default combineReducers({
-  name, events, years, entry, editKey, settings, goals, locations, routes,
+  name, events, years, entry, settings, goals, locations, routes,
   error, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
-  editKeyDidChange, eventTypeFilters,
+  eventTypeFilters,
 });

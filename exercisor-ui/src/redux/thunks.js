@@ -6,6 +6,7 @@ import {
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
   registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns, postRoute,
+  postLogin,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -13,8 +14,22 @@ import {
 import { aDay } from '../util';
 import {
   REGISTER_ERROR, EXERCISE_VIEW_ERROR, EXERCISE_TABLE_ERROR,
-  EXERCISE_MAP_ERROR, EXERCISE_GOALS_ERROR,
+  EXERCISE_MAP_ERROR, EXERCISE_GOALS_ERROR, LOGIN_ERROR,
 } from '../errors';
+
+
+export function login(name, password, url, history) {
+  return (dispatch, getState) => {
+    postLogin(name, password)
+      .then(_ => {
+        dispatch(setName(name));
+        history.push(url);
+      })
+      .catch(message => {
+        dispatch(setErrorMessage(message, LOGIN_ERROR));
+      });
+  }
+}
 
 function yearCount(events) {
     const now = new Date()
@@ -31,10 +46,10 @@ function yearCount(events) {
 
 export function loadYearGoals(name, year) {
   return (dispatch, getState) => {
-    const { goals, editKey } = getState();
+    const { goals } = getState();
     const invalid = goals == null || goals.user !== name || goals.year !== Number(year);
     if (invalid) {
-      return getGoals(name, year, editKey)
+      return getGoals(name, year)
         .then(goals => {
           if (goals == null) {
             dispatch(setGoals({
@@ -53,9 +68,9 @@ export function loadYearGoals(name, year) {
 
 export function saveGoals(name, year) {
   return (dispatch, getState) => {
-    const { goals, editKey } = getState();
+    const { goals } = getState();
     if (goals != null) {
-      upsertGoals(name, year, goals, editKey)
+      upsertGoals(name, year, goals)
         .then(_ => dispatch(loadYearGoals(name, year)))
         .catch(message => dispatch(setErrorMessage(message, EXERCISE_GOALS_ERROR)));
     }
@@ -64,9 +79,8 @@ export function saveGoals(name, year) {
 
 export function loadEvents(name) {
   return (dispatch, getState) => {
-    const { editKey } = getState();
     dispatch(setName(name));
-    return getUserEventList(name, editKey)
+    return getUserEventList(name)
       .then(events => {
         dispatch(setYears(yearCount(events)));
         dispatch(setEvents(events))
@@ -77,17 +91,17 @@ export function loadEvents(name) {
 
 export function saveEvent() {
   return (dispatch, getState) => {
-    const {entry, name, editKey} = getState();
+    const {entry, name } = getState();
     dispatch(clearEntry());
     if (entry.id == null) {
-      return putEvent(name, editKey, entry)
+      return putEvent(name, entry)
         .then(res => {
             dispatch(loadEvents(name));
         })
         .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
 
     }
-    return postEvent(name, entry.id, editKey, entry)
+    return postEvent(name, entry.id, entry)
         .then(res => {
             dispatch(loadEvents(name));
         })
@@ -97,8 +111,8 @@ export function saveEvent() {
 
 export function removeEvent(evtId) {
   return (dispatch, getState) => {
-    const { name, editKey } = getState();
-    return deleteEvent(name, evtId, editKey)
+    const { name } = getState();
+    return deleteEvent(name, evtId)
       .then(res => {
         dispatch(loadEvents(name));
       })
@@ -108,12 +122,15 @@ export function removeEvent(evtId) {
 
 export function loadRouteDesigns() {
   return (dispatch, getState) => {
-    const { name, editKey } = getState();
+    const { name } = getState();
       const promises = [];
       promises.push(
-        getUserRouteDesigns(name, editKey)
+        getUserRouteDesigns(name)
           .then(designs => dispatch(setUserRouteDesigns(designs)))
-          .catch(console.log)
+          .catch(message => {
+            dispatch(setUserRouteDesigns([]));
+            console.log(message);
+          })
       );
       promises.push(
         getPublicRouteDesigns()
@@ -126,8 +143,8 @@ export function loadRouteDesigns() {
 
 export function makeRoute(routeName, waypoints) {
   return (dispatch, getState) => {
-    const { name, editKey } = getState();
-    return putRoute(name, routeName, waypoints, editKey)
+    const { name } = getState();
+    return putRoute(name, routeName, waypoints)
       .then(_ => dispatch(loadRouteDesigns()))
       .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }
@@ -135,8 +152,8 @@ export function makeRoute(routeName, waypoints) {
 
 export function updateRoute(routeId, routeName, waypoints) {
   return (dispatch, getState) => {
-    const { name, editKey } = getState();
-    return postRoute(name, routeId, routeName, waypoints, editKey)
+    const { name } = getState();
+    return postRoute(name, routeId, routeName, waypoints)
       .then(_ => dispatch(loadRouteDesigns()))
       .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }
@@ -144,9 +161,9 @@ export function updateRoute(routeId, routeName, waypoints) {
 
 export function saveSelectedRoute(routeId, year) {
   return (dispatch, getState) => {
-    const { name, goals, editKey } = getState();
+    const { name, goals } = getState();
     const nextGoals = Object.assign({}, goals, { route: routeId });
-    upsertGoals(name, year, nextGoals, editKey)
+    upsertGoals(name, year, nextGoals)
       .then(_ => dispatch(loadYearGoals(name, year)))
       .catch(message => dispatch(setErrorMessage(message, EXERCISE_MAP_ERROR)));
   }

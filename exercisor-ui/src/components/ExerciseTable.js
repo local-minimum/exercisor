@@ -23,12 +23,13 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
 export default function ExerciseTable({
     events, error,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
-    entry, onSave, onSetEditKey, editKey, onSetEntry, onRemoveEntry,
+    entry, onSave, onSetEditKey, onSetEntry, onRemoveEntry,
     settings, onListAll, onEntryType,
   }) {
+  const editing = false;
   const eventRows = events
     .slice(0, settings.listAll ? events.length : 5)
-    .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editKey.length > 0));
+    .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editing));
   const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
   const hasEntered = entry.date.length > 0 || entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0;
   const saveBtn = canSave ?
@@ -57,7 +58,7 @@ export default function ExerciseTable({
           {eventRows}
         </tbody>
         <tfoot>
-          {editKey !== "" &&
+          {editing &&
             <tr>
               <td><input type='date' onChange={evt => onEntryDate(evt.target.value)} value={entry.date}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
@@ -70,7 +71,7 @@ export default function ExerciseTable({
               </td>
             </tr>
           }
-          {editKey !== "" &&
+          {editing &&
             <tr>
               <td colSpan={3}>{saveBtn}</td>
             </tr>
