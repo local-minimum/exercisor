@@ -91,6 +91,6 @@ export default class ExerciseViewYear extends React.Component {
   componentDidUpdate() {
     const year = this.getYear();
     const { onLoadGoals, goals } = this.props;
-    if (goals == null || goals.year !== Number(year)) onLoadGoals(this.getName(), year);
+    if (goals != null && !Number.isFinite(Number(goals.year))) onLoadGoals(this.getName(), year);
   }
 }

@@ -35,9 +35,6 @@ class Authorization:
     @staticmethod
     def has_logged_in_read(endpoint: Callable):
         def authorize(other, user: str, *args, **kwargs):
-            if not current_user.is_authenticated:
-                return abort(HTTPStatus.FORBIDDEN.value, message="Du måste vara inloggad")
-
             uid = User.get_user_id(db(), user)
             if uid is None:
                 return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namned")
@@ -48,6 +45,8 @@ class Authorization:
 
             if public or uid == current_user.uid:
                 return endpoint(other, uid, *args, **kwargs)
+
+            return abort(HTTPStatus.FORBIDDEN.value, message="Du måste vara inloggad")
 
         return authorize
 

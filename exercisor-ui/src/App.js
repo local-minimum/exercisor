@@ -2,28 +2,23 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import ExerciseContainer from './containers/ExerciseContainer';
 import RegisterContainer from './containers/RegisterContainer';
+import Login from './components/Login';
 import './App.css';
 
 
-function NoUserHeader({match, history}) {
-  const onLinkEnter = (e) => {
-    if (e.key === 'Enter') {
-      const { url } = match;
-      const prefix = url.endsWith('/') ? url : `${url}/`
-      history.push(`${prefix}${e.target.value.toLocaleLowerCase()}`);
-    }
-  }
+function NoUserHeader({ match, history }) {
+  const onLinkEnter = (name, password, url, hist) => hist.push(url);
   const regUrl = match.path.length > 1 ? `${match.path}/register` : 'register';
   return  (
     <header className="App-header header-only">
       <h1>Exercisor</h1>
-      <input type="text" autoFocus placeholder="Name" onKeyDown={onLinkEnter} />
+      <Login onLogin={onLinkEnter} match={match} history={history} />
       <Link className="register" to={regUrl}>Registring</Link>
     </header>
   );
 }
 
-function UserHeader({match}) {
+function UserHeader({ match }) {
   const { name } = match.params;
   const path = match.url.split('/')
   const root = path.slice(0, path.indexOf(match.params.name)).join('/')
@@ -35,7 +30,7 @@ function UserHeader({match}) {
   );
 }
 
-function RegisterHeader({match}) {
+function RegisterHeader({ match }) {
   const path = match.url.split('/')
   const root = path.slice(0, path.indexOf(match.params.name)).join('/')
   return (

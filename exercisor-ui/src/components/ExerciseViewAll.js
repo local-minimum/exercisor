@@ -66,6 +66,6 @@ export default class ExerciseViewAll extends React.Component {
 
   componentDidUpdate() {
     const { onLoadGoals, goals } = this.props;
-    if (goals == null || goals.year !== "total") onLoadGoals(this.getName(), "total");
+    if (goals != null && Number.isFinite(Number(goals.year))) onLoadGoals(this.getName(), "total");
   }
 }
