@@ -15,12 +15,12 @@ export default class ExerciseViewAll extends React.Component {
       onLoadRoute, routes, goals, locations,
       onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute, error, eventTypeFilters, exerciseViewChange,
+      onUpdateRoute, error, eventTypeFilters, exerciseViewChange, editMode,
     } = this.props;
     const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
-    const DistanceOnEarth = false ?
+    const DistanceOnEarth = editMode ?
       <DoEEditMode
         routesData={routes}
         locations={locations}

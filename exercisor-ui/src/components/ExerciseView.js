@@ -5,6 +5,7 @@ import ExerciseViewYear from './ExerciseViewYear';
 import ExerciseViewAll from './ExerciseViewAll';
 import Error from './Error';
 import ExerciseTypeFilter from './ExerciseTypeFilter';
+import EditMode from './EditMode';
 import './ExerciseView.css'
 import { EXERCISE_VIEW_ERROR } from '../errors';
 
@@ -22,9 +23,11 @@ class ExerciseView extends React.Component {
   render() {
     const {
       years, match, error, events, eventTypeFilters,
-      onSetEventTypeFilter, onChangeYear
+      onSetEventTypeFilter, onChangeYear, onSetEditMode,
+      loggedIn, editMode,
     } = this.props;
     return <div className="App-main-item">
+      <EditMode onSetEditMode={onSetEditMode} editMode={editMode} loggedIn={loggedIn} />
       <ExerciseYears years={years} match={match} onChangeYear={onChangeYear} />
       <ExerciseTypeFilter
         events={events}

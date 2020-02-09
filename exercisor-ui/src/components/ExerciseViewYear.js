@@ -25,7 +25,7 @@ export default class ExerciseViewYear extends React.Component {
       onSetGoalsDistanceWeekly, locations, consideredRouteDesign,
       userRouteDesigns, publicRouteDesigns, onLoadRouteDesigns,
       onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute, error,
-      eventTypeFilters, exerciseViewChange,
+      eventTypeFilters, exerciseViewChange, editMode
     } = this.props;
     const year = this.getYear();
     const events = filterEvents(
@@ -34,7 +34,7 @@ export default class ExerciseViewYear extends React.Component {
     );
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
-    const Goals = false ? <YearGoalsEdit
+    const Goals = editMode ? <YearGoalsEdit
       year={year}
       goals={goals}
       onSetGoalsEventSum={onSetGoalsEventSum}
@@ -43,7 +43,7 @@ export default class ExerciseViewYear extends React.Component {
       name={this.getName()}
       error={error}
     /> : <YearGoals year={year} goals={goals} events={events} error={error} />;
-    const DistanceOnEarth = false ?
+    const DistanceOnEarth = editMode ?
       <DoEEditMode
         routesData={routes}
         locations={locations}

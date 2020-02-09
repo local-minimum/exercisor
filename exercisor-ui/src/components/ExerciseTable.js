@@ -24,12 +24,11 @@ export default function ExerciseTable({
     events, error,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
     entry, onSave, onSetEditKey, onSetEntry, onRemoveEntry,
-    settings, onListAll, onEntryType,
+    settings, onListAll, onEntryType, editMode
   }) {
-  const editing = false;
   const eventRows = events
     .slice(0, settings.listAll ? events.length : 5)
-    .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editing));
+    .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editMode));
   const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
   const hasEntered = entry.date.length > 0 || entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0;
   const saveBtn = canSave ?
@@ -58,7 +57,7 @@ export default function ExerciseTable({
           {eventRows}
         </tbody>
         <tfoot>
-          {editing &&
+          {editMode &&
             <tr>
               <td><input type='date' onChange={evt => onEntryDate(evt.target.value)} value={entry.date}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
@@ -71,7 +70,7 @@ export default function ExerciseTable({
               </td>
             </tr>
           }
-          {editing &&
+          {editMode &&
             <tr>
               <td colSpan={3}>{saveBtn}</td>
             </tr>

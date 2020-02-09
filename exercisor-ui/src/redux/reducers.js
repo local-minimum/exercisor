@@ -6,7 +6,7 @@ import {
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
   SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
-  SET_EVENT_TYPE_FILTER, SET_YEAR,
+  SET_EVENT_TYPE_FILTER, SET_YEAR, SET_EDIT_MODE,
 } from './actions';
 import { minutes2str } from '../util';
 
@@ -277,8 +277,19 @@ const exerciseViewChange = (state = false, action) => {
   }
 }
 
+const editMode = (state = false, action) => {
+  switch (action.type) {
+    case SET_LOGGED_IN:
+      return false;
+    case SET_EDIT_MODE:
+      return action.value;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   name, events, year, years, entry, settings, goals, locations, routes,
   error, register, userRouteDesigns, publicRouteDesigns, consideredRouteDesign,
-  eventTypeFilters, exerciseViewChange, loggedIn,
+  eventTypeFilters, exerciseViewChange, loggedIn, editMode,
 });

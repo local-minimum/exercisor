@@ -8,9 +8,12 @@ import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEntry, settingListAll, setGoalsEventSum, setEntryType, setYear,
   setGoalsWeeklyDist, setRouteDesignConsidered, setEventTypeFilter,
+  setEditMode,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
+  editMode: state.editMode,
+  loggedIn: state.loggedIn,
   goals: state.goals,
   settings: state.settings,
   editKey: state.editKey,
@@ -31,6 +34,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  onSetEditMode: value => dispatch(setEditMode(value)),
   onReloadUser: user => dispatch(loadEvents(user)),
   onEntryDate: date => dispatch(setEntryDate(date)),
   onEntryDuration: duration => dispatch(setEntryDuration(duration)),

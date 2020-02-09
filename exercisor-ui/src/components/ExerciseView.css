@@ -1,3 +1,10 @@
+.edit-mode-btn {
+  float: right;
+  position: relative;
+  margin-left: -100% !important;
+  margin-right: 6px !important;
+}
+
 table {
   margin: 6px 2vw;
 }

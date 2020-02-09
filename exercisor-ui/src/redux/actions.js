@@ -8,6 +8,7 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
+export const SET_EDIT_MODE = 'SET_EDIT_MODE';
 export const SET_EVENT_TYPE_FILTER = 'SET_EVENT_TYPE_FILTER';
 export const SET_NAME = 'SET_NAME';
 export const SET_EVENTS = 'SET_EVENTS';
@@ -35,6 +36,7 @@ export const SET_ROUTE_DESIGNS_USER = 'SET_ROUTE_DESIGNS_USER';
 export const SET_ROUTE_DESIGNS_PUBLIC = 'SET_ROUTE_DESIGNS_PUBLIC';
 export const SET_ROUTE_DESIGN_CONSIDERED = 'SET_ROUTE_DESIGN_CONSIDERED';
 
+export const setEditMode = makeActionCreator(SET_EDIT_MODE, 'value');
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
 export const setName = makeActionCreator(SET_NAME, 'name');
 export const setLoggedIn = makeActionCreator(SET_LOGGED_IN, 'name');
