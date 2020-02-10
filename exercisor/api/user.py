@@ -51,7 +51,7 @@ class Authorization:
         def authorize(other, user: str, *args, **kwargs):
             uid = User.get_user_id(db(), user)
             if uid is None:
-                return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namned")
+                return abort(HTTPStatus.NOT_FOUND.value, message="Det finns ingen med det namnet")
             try:
                 public = User.get_public_user(db(), uid)
             except DatabaseError:

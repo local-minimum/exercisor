@@ -101,6 +101,7 @@ const name = (state = null, action) => {
 const year = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
+      return null;
     case SET_LOGGED_IN:
       return action.redirect ? null : state;
     case SET_YEAR:
@@ -112,9 +113,6 @@ const year = (state = null, action) => {
 
 const events = (state = [], action) => {
   switch (action.type) {
-    case SET_NAME:
-    case SET_LOGGED_IN:
-      return [];
     case SET_EVENTS:
       return action.events;
     default:
@@ -124,9 +122,6 @@ const events = (state = [], action) => {
 
 const years = (state = {}, action) => {
   switch (action.type) {
-    case SET_NAME:
-    case SET_LOGGED_IN:
-      return {};
     case SET_YEARS:
       return action.years;
     default:
@@ -136,9 +131,7 @@ const years = (state = {}, action) => {
 
 const goals = (state = null, action) => {
   switch (action.type) {
-    case SET_NAME:
     case SET_YEAR:
-    case SET_LOGGED_IN:
       return null;
     case SET_GOALS_EVENTSSUM:
       return Object.assign(
@@ -236,9 +229,6 @@ const register = (state = defaultReg, action) => {
 
 const userRouteDesigns = (state = [], action) => {
   switch (action.type) {
-    case SET_NAME:
-    case SET_LOGGED_IN:
-      return [];
     case SET_ROUTE_DESIGNS_USER:
       return action.designs;
     default:
@@ -268,12 +258,18 @@ const consideredRouteDesign = (state = null, action) => {
   }
 }
 
+const prevLoginAndName = { name: null, login: null };
+
 const exerciseViewChange = (state = false, action) => {
   switch (action.type) {
     case SET_LOGGED_IN:
+      const loginChange = action.name !== prevLoginAndName.login;
+      prevLoginAndName.login = action.name;
+      return loginChange;
     case SET_NAME:
-    case SET_YEAR:
-      return true;
+      const nameChange = action.name !== prevLoginAndName.name;
+      prevLoginAndName.name = action.name;
+      return nameChange;
     default:
       return false;
   }

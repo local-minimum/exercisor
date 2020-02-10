@@ -11,13 +11,13 @@ import { EXERCISE_VIEW_ERROR } from '../errors';
 
 class ExerciseView extends React.Component {
   componentDidMount() {
-    const { onReloadUser, name } = this.props;
-    onReloadUser(name);
+    const { onReloadUser, name, userOutOfSync } = this.props;
+    if (name != null) onReloadUser(name, true);
   }
 
   componentDidUpdate() {
     const { userOutOfSync, onReloadUser, name } = this.props;
-    if (userOutOfSync) onReloadUser(name);
+    if (userOutOfSync) onReloadUser(name, true);
   }
 
   render() {

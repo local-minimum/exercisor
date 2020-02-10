@@ -13,9 +13,9 @@ export default class ExerciseViewAll extends React.Component {
   render() {
     const {
       onLoadRoute, routes, goals, locations,
-      onMakeRoute, onLoadRouteDesigns, userRouteDesigns, publicRouteDesigns,
+      onMakeRoute, userRouteDesigns, publicRouteDesigns,
       consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute, error, eventTypeFilters, exerciseViewChange, editMode,
+      onUpdateRoute, error, eventTypeFilters, editMode,
     } = this.props;
     const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
@@ -31,10 +31,8 @@ export default class ExerciseViewAll extends React.Component {
         onLoadRoute={onLoadRoute}
         onMakeRoute={onMakeRoute}
         onUpdateRoute={onUpdateRoute}
-        onLoadRouteDesigns={onLoadRouteDesigns}
         onSetRouteDesignConsidered={onSetRouteDesignConsidered}
         onSetSelectedRoute={onSetSelectedRoute}
-        exerciseViewChange={exerciseViewChange}
         error={error}
       /> :
       <DoEViewMode
@@ -44,8 +42,6 @@ export default class ExerciseViewAll extends React.Component {
         routeId={goals && goals.route} year="total"
         ownRouteDesigns={userRouteDesigns}
         allRouteDesigns={publicRouteDesigns}
-        onLoadRouteDesigns={onLoadRouteDesigns}
-        exerciseViewChange={exerciseViewChange}
         error={error}
       />
     return (
@@ -60,13 +56,13 @@ export default class ExerciseViewAll extends React.Component {
   }
 
   componentDidMount() {
-    const { onLoadGoals } = this.props;
-    onLoadGoals(this.getName(), "total");
+    const { onLoadGoals, name } = this.props;
+    if (name != null) onLoadGoals(this.getName(), "total");
   }
 
   componentDidUpdate() {
-    const { onLoadGoals, exerciseViewChange, onChangeYear, year, goals } = this.props;
-    if (exerciseViewChange) {
+    const { onLoadGoals, exerciseViewChange, onChangeYear, year, goals, name } = this.props;
+    if (exerciseViewChange && name != null) {
       if (year != null) onChangeYear(null);
       if (goals != null && Number.isFinite(Number(goals.year))) onLoadGoals(this.getName(), "total");
     }

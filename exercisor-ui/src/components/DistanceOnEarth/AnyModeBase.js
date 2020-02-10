@@ -67,14 +67,11 @@ export default class DoEEditMode extends React.Component {
       nextState.exhausted = features.length > 0 ? exhausted : false;
       nextState.featuresId = featuresId;
     } else if (this.state.exhausted) {
-      if (Object.keys(nextState).length > 0) {
-        this.setState(nextState, loadCallback);
-      }
       return;
     }
     if (!exhausted) {
       const fullViewRoute = this.getWaypointsFromId(routeId);
-      const loading = fullViewRoute.some((wptPair, idx) => {
+      const loading = fullViewRoute.length === 0 || fullViewRoute.some((wptPair, idx) => {
           if (wptPair == null) return false;
           const hasLoadedRoute = this.getRoute(wptPair) != null
           const isInViewRoute = viewRoute.some(pair => pair === wptPair)
@@ -99,17 +96,11 @@ export default class DoEEditMode extends React.Component {
   }
 
   componentDidMount() {
-    const { onLoadRouteDesigns } = this.props;
-    if (onLoadRouteDesigns != null) onLoadRouteDesigns();
     this.loadRoute();
-    if (this.state.exhausted) {
-      this.setState({exhausted: false});
-    }
+    this.setState({ exhausted: false });
   }
 
   componentDidUpdate() {
-    const { exerciseViewChange, onLoadRouteDesigns } = this.props;
-    if (exerciseViewChange) onLoadRouteDesigns();
     this.loadRoute();
   }
 }

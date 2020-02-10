@@ -22,19 +22,31 @@ export function mySettings() {
     return getMySettings()
       .then(settings => {
         dispatch(setLoggedIn(settings.name, false))
+        dispatch(loadRouteDesigns());
       })
       .catch(_ => {
         dispatch(setLoggedIn(null, false));
+        dispatch(loadRouteDesigns());
       });
+  }
+}
+
+export function reloadUser(name) {
+  return (dispatch, getState) => {
+    dispatch(setName(name));
+    dispatch(loadEvents(name));
   }
 }
 
 export function login(name, password, url, history) {
   return (dispatch, getState) => {
+    const viewName = getState().name;
     dispatch(setErrorMessage());
     postLogin(name, password)
       .then(_ => {
         dispatch(setLoggedIn(name, url != null));
+        dispatch(loadRouteDesigns());
+        dispatch(loadEvents(url != null ? name : viewName));
         if (url != null) history.push(url);
       })
       .catch(message => {
@@ -45,13 +57,18 @@ export function login(name, password, url, history) {
 
 export function logout() {
   return (dispatch, getState) => {
+    const name = getState().name;
     dispatch(setErrorMessage());
     deleteLogin()
       .then(_ => {
         dispatch(setLoggedIn(null, false));
+        dispatch(loadRouteDesigns());
+        dispatch(loadEvents(name));
       })
       .catch(message => {
         dispatch(setLoggedIn(null, false));
+        dispatch(loadRouteDesigns());
+        dispatch(loadEvents(name));
       });
   }
 }
@@ -105,11 +122,10 @@ export function saveGoals(name, year) {
 
 export function loadEvents(name) {
   return (dispatch, getState) => {
-    dispatch(setName(name));
     return getUserEventList(name)
       .then(events => {
         dispatch(setYears(yearCount(events)));
-        dispatch(setEvents(events))
+        dispatch(setEvents(events));
       })
       .catch(message => dispatch(setErrorMessage(message, EXERCISE_TABLE_ERROR)));
   }

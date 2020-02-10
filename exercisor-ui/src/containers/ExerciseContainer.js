@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
   loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
-  makeRoute, loadRouteDesigns, saveSelectedRoute, updateRoute,
+  makeRoute, loadRouteDesigns, saveSelectedRoute, updateRoute, reloadUser,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
@@ -19,10 +19,10 @@ const mapStateToProps = (state, ownProps) => ({
   editKey: state.editKey,
   entry: state.entry,
   events: state.events,
-  name: ownProps.match.params.name,
+  name: state.name,
   year: state.year,
   years: state.years,
-  userOutOfSync: ownProps.match.params.name !== state.name && state.name != null,
+  userOutOfSync: ownProps.match.params.name !== state.name,
   locations: state.locations,
   routes: state.routes,
   error: state.error,
@@ -33,9 +33,9 @@ const mapStateToProps = (state, ownProps) => ({
   exerciseViewChange: state.exerciseViewChange,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   onSetEditMode: value => dispatch(setEditMode(value)),
-  onReloadUser: user => dispatch(loadEvents(user)),
+  onReloadUser: () => dispatch(reloadUser(ownProps.match.params.name)),
   onEntryDate: date => dispatch(setEntryDate(date)),
   onEntryDuration: duration => dispatch(setEntryDuration(duration)),
   onEntryDistance: distance => dispatch(setEntryDistance(distance)),
@@ -53,7 +53,6 @@ const mapDispatchToProps = dispatch => ({
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
   onMakeRoute: (routeName, waypoints) => dispatch(makeRoute(routeName, waypoints)),
   onUpdateRoute: (routeId, routeName, waypoints) => dispatch(updateRoute(routeId, routeName, waypoints)),
-  onLoadRouteDesigns: () => dispatch(loadRouteDesigns()),
   onSetRouteDesignConsidered: (routeId) => dispatch(setRouteDesignConsidered(routeId)),
   onSetSelectedRoute: (routeId, year) => dispatch(saveSelectedRoute(routeId, year)),
   onSetEventTypeFilter: (status, name) => dispatch(setEventTypeFilter(name, status)),
