@@ -24,10 +24,10 @@ class ExerciseView extends React.Component {
     const {
       years, match, error, events, eventTypeFilters,
       onSetEventTypeFilter, onChangeYear, onSetEditMode,
-      loggedIn, editMode,
+      loggedIn, editMode, name
     } = this.props;
     return <div className="App-main-item">
-      <EditMode onSetEditMode={onSetEditMode} editMode={editMode} loggedIn={loggedIn} />
+      <EditMode onSetEditMode={onSetEditMode} editMode={editMode} loggedIn={loggedIn} name={name} />
       <ExerciseYears years={years} match={match} onChangeYear={onChangeYear} />
       <ExerciseTypeFilter
         events={events}

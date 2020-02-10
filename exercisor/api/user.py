@@ -41,7 +41,7 @@ class Authorization:
             if not current_user.is_authenticated:
                 return abort(HTTPStatus.FORBIDDEN.value, message="Du måste vara inloggad")
             if User.get_user_status_from_session(db(), current_user.get_id()):
-                return endpoint(other, *args, **kwargs)
+                return endpoint(other, current_user, *args, **kwargs)
             return abort(HTTPStatus.FORBIDDEN.value, message="Du behöver logga in igen")
 
         return authorize
@@ -152,5 +152,5 @@ class ListUser(Resource):
 
 class MySettings(Resource):
     @Authorization(AccessRole.SESSION)
-    def get(self):
-        return {}
+    def get(self, user):
+        return {"name": user.name}

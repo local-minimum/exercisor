@@ -14,10 +14,10 @@ export default class ExerciseHeader extends React.Component {
     const { loggedIn, match, onLogout, onLogin, error } = this.props;
     const { showLogin } = this.state;
     const { name } = match.params;
-    const UserBtn = loggedIn ?
-      <div className="logout pill buttonized" onClick={onLogout}>Logga ut</div>
-      : (showLogin ? null : <div className="logout pill buttonized" onClick={() => this.setState({ showLogin: true })}>Logga in</div>);
-    const ShowLogin = !loggedIn && showLogin ? <Login onLogin={onLogin} error={error} /> : null;
+    const UserBtn = loggedIn == null ?
+      (showLogin ? null : <div className="logout pill buttonized" onClick={() => this.setState({ showLogin: true })}>Logga in</div>)
+      : <div className="logout pill buttonized" onClick={onLogout}>Logga ut</div>;
+    const ShowLogin = loggedIn == null && showLogin ? <Login onLogin={onLogin} error={error} /> : null;
     return (
       <header className="App-header header-with-main">
         {UserBtn}
@@ -35,6 +35,6 @@ export default class ExerciseHeader extends React.Component {
   componentDidUpdate() {
     const { showLogin } = this.state;
     const { loggedIn } = this.props;
-    if (loggedIn && showLogin) this.setState({ showLogin: false });
+    if (loggedIn != null && showLogin) this.setState({ showLogin: false });
   }
 }

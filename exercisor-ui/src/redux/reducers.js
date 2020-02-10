@@ -78,10 +78,10 @@ const eventTypeFilters = (state = [], action) => {
   }
 }
 
-const loggedIn = (state = true, action) => {
+const loggedIn = (state = null, action) => {
   switch (action.type) {
     case SET_LOGGED_IN:
-      return action.name != null;
+      return action.name;
     default:
       return state;
   }
@@ -89,6 +89,8 @@ const loggedIn = (state = true, action) => {
 
 const name = (state = null, action) => {
   switch (action.type) {
+    case SET_LOGGED_IN:
+      return action.redirect ? action.name : state;
     case SET_NAME:
       return action.name;
     default:
@@ -100,7 +102,7 @@ const year = (state = null, action) => {
   switch (action.type) {
     case SET_NAME:
     case SET_LOGGED_IN:
-      return null;
+      return action.redirect ? null : state;
     case SET_YEAR:
       return action.year;
     default:
@@ -268,9 +270,9 @@ const consideredRouteDesign = (state = null, action) => {
 
 const exerciseViewChange = (state = false, action) => {
   switch (action.type) {
+    case SET_LOGGED_IN:
     case SET_NAME:
     case SET_YEAR:
-    case SET_LOGGED_IN:
       return true;
     default:
       return false;

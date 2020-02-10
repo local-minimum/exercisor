@@ -21,10 +21,10 @@ export function mySettings() {
   return (dispatch, getState) => {
     return getMySettings()
       .then(settings => {
-        //TODO: ???
+        dispatch(setLoggedIn(settings.name, false))
       })
       .catch(_ => {
-        dispatch(setLoggedIn(null));
+        dispatch(setLoggedIn(null, false));
       });
   }
 }
@@ -34,7 +34,7 @@ export function login(name, password, url, history) {
     dispatch(setErrorMessage());
     postLogin(name, password)
       .then(_ => {
-        dispatch(setLoggedIn(name));
+        dispatch(setLoggedIn(name, url != null));
         if (url != null) history.push(url);
       })
       .catch(message => {
@@ -48,10 +48,10 @@ export function logout() {
     dispatch(setErrorMessage());
     deleteLogin()
       .then(_ => {
-        dispatch(setLoggedIn(null));
+        dispatch(setLoggedIn(null, false));
       })
       .catch(message => {
-        dispatch(setLoggedIn(null));
+        dispatch(setLoggedIn(null, false));
       });
   }
 }

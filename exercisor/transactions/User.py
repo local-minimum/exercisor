@@ -14,10 +14,11 @@ USER_SETTINGS = 'users'
 
 
 class UserStatus(UserMixin):
-    def __init__(self, uid: Optional[ObjectId] = None, session: Optional[str] = None):
+    def __init__(self, uid: Optional[ObjectId] = None, session: Optional[str] = None, name: Optional[str] = None):
         super().__init__()
         self._session_hash = session if session else str(uuid4())
         self._uid = uid
+        self._name = name if name else ''
 
     @property
     def is_authenticated(self):
@@ -37,6 +38,10 @@ class UserStatus(UserMixin):
     @property
     def uid(self) -> ObjectId:
         return self._uid
+
+    @property
+    def name(self) -> str:
+        return self._name
 
 
 def user_loader_setup(login_manager: LoginManager, db: Database):
@@ -76,6 +81,7 @@ def get_user_status_from_session(db: Database, session_hash: str) -> Optional[Us
     return UserStatus(
         res["_id"],
         res["session"],
+        res["user"],
     )
 
 
@@ -107,7 +113,7 @@ def start_user_session(db: Database, user: str, password: str) -> Optional[UserS
         migrate_legacy_password(db, doc["_id"], password)
     elif not bcrypt.checkpw(password.encode(), doc["password"]):
         return None
-    user_status = UserStatus(doc["_id"])
+    user_status = UserStatus(doc["_id"], name=user)
     db[USER_SETTINGS].update_one(
         {"_id": doc["_id"]},
         {"$set": {
