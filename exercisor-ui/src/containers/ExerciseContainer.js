@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
-  loadEvents, saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
-  makeRoute, loadRouteDesigns, saveSelectedRoute, updateRoute, reloadUser,
+  saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
+  makeRoute, saveSelectedRoute, updateRoute, reloadUser,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
