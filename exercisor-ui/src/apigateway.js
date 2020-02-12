@@ -6,6 +6,22 @@ export const getMySettings = () => {
   return jsonRequest(`${BASE_URL}/my/settings`);
 }
 
+export const getMyFollowing = () => {
+  return jsonRequest(`${BASE_URL}/my/following`);
+}
+
+export const putMyFollowing = (name) => {
+  return jsonRequest(
+    `${BASE_URL}/my/following`,
+    {'user': name},
+    'PUT',
+  );
+}
+
+export const deleteMyFollowing = (userId) => {
+  return jsonRequest(`${BASE_URL}/my/following/${userId}`, {}, 'DELETE');
+}
+
 export const getUserEventList = (user) => {
   return jsonRequest(`${BASE_URL}/user/${user}/event`);
 }

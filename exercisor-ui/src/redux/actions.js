@@ -35,6 +35,7 @@ export const SET_REG_PWD2 = 'SET_REG_PWD2';
 export const SET_ROUTE_DESIGNS_USER = 'SET_ROUTE_DESIGNS_USER';
 export const SET_ROUTE_DESIGNS_PUBLIC = 'SET_ROUTE_DESIGNS_PUBLIC';
 export const SET_ROUTE_DESIGN_CONSIDERED = 'SET_ROUTE_DESIGN_CONSIDERED';
+export const SET_FOLLOWING = 'SET_FOLLOWING';
 
 export const setEditMode = makeActionCreator(SET_EDIT_MODE, 'value');
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
@@ -63,3 +64,4 @@ export const setRegPwd2 = makeActionCreator(SET_REG_PWD2, 'pwd2');
 export const setUserRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_USER, 'designs');
 export const setPublicRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_PUBLIC, 'designs');
 export const setRouteDesignConsidered = makeActionCreator(SET_ROUTE_DESIGN_CONSIDERED, 'routeId');
+export const setFollowing = makeActionCreator(SET_FOLLOWING, 'following');

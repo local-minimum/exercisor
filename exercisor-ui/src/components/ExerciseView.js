@@ -6,6 +6,7 @@ import ExerciseViewAll from './ExerciseViewAll';
 import Error from './Error';
 import ExerciseTypeFilter from './ExerciseTypeFilter';
 import EditMode from './EditMode';
+import Follow from './Follow';
 import './ExerciseView.css'
 import { EXERCISE_VIEW_ERROR } from '../errors';
 
@@ -24,10 +25,11 @@ class ExerciseView extends React.Component {
     const {
       years, match, error, events, eventTypeFilters,
       onSetEventTypeFilter, onChangeYear, onSetEditMode,
-      loggedIn, editMode, name
+      loggedIn, editMode, name, following, onFollow, onUnfollow
     } = this.props;
     return <div className="App-main-item">
       <EditMode onSetEditMode={onSetEditMode} editMode={editMode} loggedIn={loggedIn} name={name} />
+      <Follow name={name} loggedIn={loggedIn} following={following} onFollow={onFollow} onUnfollow={onUnfollow} />
       <ExerciseYears years={years} match={match} onChangeYear={onChangeYear} />
       <ExerciseTypeFilter
         events={events}

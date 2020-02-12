@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ExerciseView from '../components/ExerciseView';
 import {
   saveEvent, removeEvent, loadYearGoals, saveGoals, loadRoute,
-  makeRoute, saveSelectedRoute, updateRoute, reloadUser,
+  makeRoute, saveSelectedRoute, updateRoute, reloadUser, follow, unfollow,
 } from '../redux/thunks';
 import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
@@ -31,6 +31,7 @@ const mapStateToProps = (state, ownProps) => ({
   consideredRouteDesign: state.consideredRouteDesign,
   eventTypeFilters: state.eventTypeFilters,
   exerciseViewChange: state.exerciseViewChange,
+  following: state.following,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -56,6 +57,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onSetRouteDesignConsidered: (routeId) => dispatch(setRouteDesignConsidered(routeId)),
   onSetSelectedRoute: (routeId, year) => dispatch(saveSelectedRoute(routeId, year)),
   onSetEventTypeFilter: (status, name) => dispatch(setEventTypeFilter(name, status)),
+  onFollow: (name) => dispatch(follow(name)),
+  onUnfollow: (uid) => dispatch(unfollow(uid)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

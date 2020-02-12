@@ -1,12 +1,12 @@
 import {
   setName, setEvents, setYears, clearEntry, setGoals,
   setOSMLocation, setOSMRoute, setErrorMessage, setUserRouteDesigns,
-  setPublicRouteDesigns, setLoggedIn,
+  setPublicRouteDesigns, setLoggedIn, setFollowing,
 } from './actions';
 import {
   getUserEventList, putEvent, postEvent, deleteEvent, getGoals, upsertGoals,
   registerUser, putRoute, getUserRouteDesigns, getPublicRouteDesigns, postRoute,
-  postLogin, deleteLogin, getMySettings,
+  postLogin, deleteLogin, getMySettings, getMyFollowing, putMyFollowing, deleteMyFollowing,
 } from '../apigateway';
 import {
   getLocation, getRouteCoordinates,
@@ -23,6 +23,9 @@ export function mySettings() {
       .then(settings => {
         dispatch(setLoggedIn(settings.name, false))
         dispatch(loadRouteDesigns());
+        getMyFollowing()
+          .then(following => dispatch(setFollowing(following)))
+          .catch(console.log);
       })
       .catch(_ => {
         dispatch(setLoggedIn(null, false));
@@ -35,6 +38,31 @@ export function reloadUser(name) {
   return (dispatch, getState) => {
     dispatch(setName(name));
     dispatch(loadEvents(name));
+  }
+}
+
+export function follow(name) {
+  return (dispatch, getState) => {
+    return putMyFollowing(name)
+      .then(_ => {
+        getMyFollowing()
+          .then(following => dispatch(setFollowing(following)))
+          .catch(console.log);
+      })
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_VIEW_ERROR)))
+  }
+}
+
+export function unfollow(uid) {
+  return (dispatch, getState) => {
+    return deleteMyFollowing(uid)
+      .then(_ => {
+        getMyFollowing()
+          .then(following => dispatch(setFollowing(following)))
+          .catch(console.log);
+      })
+      .catch(message => dispatch(setErrorMessage(message, EXERCISE_VIEW_ERROR)))
+
   }
 }
 
