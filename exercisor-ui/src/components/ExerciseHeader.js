@@ -18,7 +18,7 @@ export default class ExerciseHeader extends React.Component {
       (showLogin ? null : <div className="user-nav-btn pill buttonized" onClick={() => this.setState({ showLogin: true })}>Logga in</div>)
       : <div className="user-nav-btn pill buttonized" onClick={onLogout}>Logga ut</div>;
     const ShowLogin = loggedIn == null && showLogin ? <Login onLogin={onLogin} error={error} /> : null;
-    const NavToSelf = loggedIn == null || loggedIn === name ? null : <div className="user-nav-btn pill buttonized name" onClick={() => onSwitchUser(loggedIn)}>{loggedIn}</div>;
+    const NavToSelf = loggedIn == null || loggedIn === name ? null : <div className="user-nav-btn pill buttonized name" onClick={() => onSwitchUser(name, loggedIn)}>{loggedIn}</div>;
     return (
       <header className="App-header header-with-main">
         <div className="App-header user-nav">

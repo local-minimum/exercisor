@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, { match, history }) => ({
   onLogout: () => dispatch(logout()),
   onLogin: (name, password) => dispatch(login(name, password)),
-  onSwitchUser: (name) => switchUser(name, match, history),
+  onSwitchUser: (fromName, toName) => switchUser(fromName, toName, history),
   testSession: () => dispatch(mySettings()),
 });
 

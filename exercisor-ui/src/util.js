@@ -1,17 +1,17 @@
 import $ from 'jquery';
 import { TimeSeries, sum, filter } from "pondjs";
 
-export const switchUser = (user, match, history) => {
-    const pos = history.location.pathname.search(match.url);
+export const switchUser = (fromUser, toUser, history) => {
+    const pos = history.location.pathname.search(fromUser);
     if (pos < 0) {
       console.error("Unexpected path, figure out where user is");
     }
     const base = history.location.pathname.slice(0, pos);
     console.log(base);
     if (base === '') {
-      history.push(`/${user}`);
+      history.push(`/${toUser}`);
     } else {
-      history.push(`${base}/${user}`)
+      history.push(`${base}${toUser}`)
     }
 }
 
