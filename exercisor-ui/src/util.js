@@ -1,6 +1,20 @@
 import $ from 'jquery';
 import { TimeSeries, sum, filter } from "pondjs";
 
+export const switchUser = (user, match, history) => {
+    const pos = history.location.pathname.search(match.url);
+    if (pos < 0) {
+      console.error("Unexpected path, figure out where user is");
+    }
+    const base = history.location.pathname.slice(0, pos);
+    console.log(base);
+    if (base === '') {
+      history.push(`/${user}`);
+    } else {
+      history.push(`${base}/${user}`)
+    }
+}
+
 export const EVENT_TYPES = {
   CrossTrainer: 'CrossTrainer',
   Running: 'Löpning',

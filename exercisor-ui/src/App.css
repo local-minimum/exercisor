@@ -18,7 +18,7 @@
   min-height: 100vh;
 }
 
-.haeder-with-main {
+.header-with-main {
   min-height: 10vh;
 }
 
@@ -48,12 +48,16 @@
   padding-bottom: 12px;
 }
 
-.logout {
-  color: white;
-  display: block;
+.user-nav {
   position: absolute;
-  top: 0px;
-  right: 10px;
+  right: 18px;
+  top: 2px;
+  font-size: 60%;
+}
+
+.user-nav-btn {
+  color: white;
+  width: 100%;
 }
 
 h2 {
