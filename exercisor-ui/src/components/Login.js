@@ -13,18 +13,19 @@ export default class Login extends React.Component {
   }
 
   handleEnter = (e) => {
-    if (e.key === 'Enter') {
-      const { match, onLogin, routeLogin } = this.props;
-      const { name, password } = this.state;
-      if (routeLogin) {
-        const { url } = match;
-        const prefix = url.endsWith('/') ? url : `${url}/`
-        const userUrl = `${prefix}${name.toLocaleLowerCase()}`
-        onLogin(name, password, userUrl);
-      } else {
-        onLogin(name, password);
-      }
+    if (e.key === 'Enter') this.handleLogin();
+  }
 
+  handleLogin = () => {
+    const { match, onLogin, routeLogin } = this.props;
+    const { name, password } = this.state;
+    if (routeLogin) {
+      const { url } = match;
+      const prefix = url.endsWith('/') ? url : `${url}/`
+      const userUrl = `${prefix}${name.toLocaleLowerCase()}`
+      onLogin(name, password, userUrl);
+    } else {
+      onLogin(name, password);
     }
   }
 
@@ -35,7 +36,7 @@ export default class Login extends React.Component {
     const { error } = this.props;
     const { name, password } = this.state;
     return (
-      <div>
+      <div className="logins">
         <Error error={error} targetFilter={LOGIN_ERROR} />
         <input
           type="text"
@@ -52,6 +53,7 @@ export default class Login extends React.Component {
           onChange={this.handleChangePassword}
           value={password}
         />
+        <div className="buttonized pill login-btn" onClick={this.handleLogin}>Logga in</div>
       </div>
     );
   }

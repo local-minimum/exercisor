@@ -63,3 +63,14 @@
 h2 {
   margin-bottom: 8px;
 }
+
+.logins * {
+  margin: 2px 6px;
+}
+
+.login-btn {
+  color: white;
+  font-size: 80%;
+  position: relative;
+  top: 2px;
+}

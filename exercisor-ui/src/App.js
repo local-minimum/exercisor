@@ -11,7 +11,7 @@ function RegisterHeader({ match }) {
   const root = path.slice(0, path.indexOf(match.params.name)).join('/')
   return (
     <header className="App-header header-with-main">
-      <Link className="logout" to={root}>Tillbaka</Link>
+      <Link className="logout pill buttonized" to={root}>Tillbaka</Link>
     </header>
   );
 }
