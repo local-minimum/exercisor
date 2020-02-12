@@ -7,7 +7,6 @@ export const switchUser = (fromUser, toUser, history) => {
       console.error("Unexpected path, figure out where user is");
     }
     const base = history.location.pathname.slice(0, pos);
-    console.log(base);
     if (base === '') {
       history.push(`/${toUser}`);
     } else {
