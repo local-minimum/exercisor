@@ -7,6 +7,7 @@ const mapStateToProps = (state, ownProps) => ({
   error: state.error,
   loggedIn: state.loggedIn,
   name: state.name,
+  following: state.following,
 });
 
 const mapDispatchToProps = (dispatch, { match, history }) => ({
