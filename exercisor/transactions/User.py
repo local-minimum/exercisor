@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Optional
+from typing import Optional, List, Dict
 from uuid import uuid4
 from hashlib import sha512
 
@@ -14,7 +14,12 @@ USER_SETTINGS = 'users'
 
 
 class UserStatus(UserMixin):
-    def __init__(self, uid: Optional[ObjectId] = None, session: Optional[str] = None, name: Optional[str] = None):
+    def __init__(
+        self,
+        uid: Optional[ObjectId] = None,
+        session: Optional[str] = None,
+        name: Optional[str] = None,
+    ):
         super().__init__()
         self._session_hash = session if session else str(uuid4())
         self._uid = uid
@@ -83,6 +88,39 @@ def get_user_status_from_session(db: Database, session_hash: str) -> Optional[Us
         res["session"],
         res["user"],
     )
+
+
+def get_user_following(db: Database, uid: ObjectId) -> List[Dict[str, str]]:
+    res = db[USER_SETTINGS].find_one({"_id": uid})
+    following_ids = res.get("following")
+    if following_ids:
+        return [
+            {
+                "name": doc["user"],
+                "id": str(doc["_id"]),
+            } for doc in db[USER_SETTINGS].find({"_id": {"$in": following_ids}})
+        ]
+    else:
+        return []
+
+
+def put_user_follow(db: Database, uid: ObjectId, other: str) -> bool:
+    doc = db[USER_SETTINGS].find_one({"user": other})
+    if not doc:
+        return False
+    res = db[USER_SETTINGS].update_one(
+        {"_id": uid},
+        {"$push": {"following": doc["_id"]}},
+    )
+    return res.modified_count == 1
+
+
+def delete_user_follow(db: Database, uid: ObjectId, other: str) -> bool:
+    res = db[USER_SETTINGS].update_one(
+        {"_id": uid},
+        {"$pull": {"following": ObjectId(other)}},
+    )
+    return res.modified_count == 1
 
 
 def legacy_password(pwd: Optional[str]) -> Optional[str]:

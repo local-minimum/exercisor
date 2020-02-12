@@ -152,5 +152,38 @@ class ListUser(Resource):
 
 class MySettings(Resource):
     @Authorization(AccessRole.SESSION)
-    def get(self, user):
-        return {"name": user.name}
+    def get(self, user: User.UserStatus):
+        return {
+            "name": user.name,
+        }
+
+
+follow_parser = reqparse.RequestParser()
+follow_parser.add_argument("user", type=str)
+
+
+class MyFollowingList(Resource):
+    @Authorization(AccessRole.SESSION)
+    def get(self, user: User.UserStatus):
+        return User.get_user_following(db(), user.uid)
+
+    @Authorization(AccessRole.SESSION)
+    def put(self, user: User.UserStatus):
+        args = follow_parser.parse_args()
+        if User.put_user_follow(db(), user.uid, args["user"]):
+            return {}
+        return abort(
+            HTTPStatus.BAD_REQUEST.value,
+            message=f"Kunde inte följa '{args['user']}'",
+        )
+
+
+class MyFollowing(Resource):
+    @Authorization(AccessRole.SESSION)
+    def delete(self, user: User.UserStatus, following_id):
+        if User.delete_user_follow(db(), user.uid, following_id):
+            return {}
+        return abort(
+            HTTPStatus.BAD_REQUEST.value,
+            message=f"Hittade ingen att avfölja",
+        )

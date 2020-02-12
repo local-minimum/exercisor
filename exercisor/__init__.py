@@ -20,6 +20,8 @@ api.add_resource(route.ListRoutes, f"{BASEURL}/route")
 
 # ~/my/*
 api.add_resource(user.MySettings, f"{BASEURL}/my/settings")
+api.add_resource(user.MyFollowingList, f"{BASEURL}/my/following")
+api.add_resource(user.MyFollowing, f"{BASEURL}/my/following/<string:following_id>")
 
 # ~/user/*
 USERURL = f"{BASEURL}/user/<string:user>"
