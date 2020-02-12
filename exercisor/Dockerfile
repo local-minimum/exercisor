@@ -6,6 +6,6 @@ RUN ["pip", "install", "gunicorn", "pipenv"]
 COPY "Pipfile*" "./"
 RUN ["pipenv", "install", "--deploy", "--system"]
 COPY "*.py" "exercisor/"
-COPY "api" "exercisor/"
-COPY "transactions" "exercisor/"
+COPY "api" "exercisor/api/"
+COPY "transactions" "exercisor/transactions/"
 CMD ["gunicorn", "exercisor:app"]
