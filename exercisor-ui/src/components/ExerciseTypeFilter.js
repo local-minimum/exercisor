@@ -1,6 +1,7 @@
 import React from 'react';
-import { EVENT_TYPES } from '../util';
+import { EVENT_TYPES, EVENT_ICONS } from '../util';
 import ToggleBtn from './ToggleBtn';
+import Icon from './Icon';
 
 const getEventTypes = (events) => {
   const types = new Set();
@@ -23,6 +24,7 @@ export default function ExerciseTypeFilter({
           name={t}
           onClick={onToggleFilter}
         >
+          <Icon type={EVENT_ICONS[t]} inTextButton/>
           {EVENT_TYPES[t]}
         </ToggleBtn>
       )));

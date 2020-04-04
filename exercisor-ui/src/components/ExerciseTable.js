@@ -1,13 +1,14 @@
 import React from 'react';
-import { minutes2str, EVENT_TYPES } from '../util';
+import { minutes2str, EVENT_TYPES, EVENT_ICONS } from '../util';
 import Error from './Error';
+import Icon from './Icon';
 import { EXERCISE_TABLE_ERROR } from '../errors';
 
 function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
   const btns = canEdit &&
     <span>
-      <input className='action-btn' type='button' value='E' tooltip='Editera' onClick={() => onSetEntry(event)}/>
-      <input className='action-btn' type='button' value='X' tooltip='Ta Bort' onClick={() => onRemoveEntry(event.id)}/>
+      <div className='action-btn buttonized' tooltip='Editera' onClick={() => onSetEntry(event)}><Icon type="edit"/></div>
+      <div className='action-btn buttonized' tooltip='Ta Bort' onClick={() => onRemoveEntry(event.id)}><Icon type="delete"/></div>
     </span>;
   return (
     <tr key={event.id}>
@@ -15,7 +16,7 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
       <td>{event.distance}</td>
       <td>{minutes2str(event.duration)}</td>
       <td>{event.calories}</td>
-      <td>{EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type]}</td>
+      <td><Icon type={EVENT_ICONS[event.type]} inTextButton/>{EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type]}</td>
     </tr>
   )
 }
@@ -23,7 +24,7 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
 export default function ExerciseTable({
     events, error,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
-    entry, onSave, onSetEditKey, onSetEntry, onRemoveEntry,
+    entry, onSave, onSetEntry, onRemoveEntry,
     settings, onListAll, onEntryType, editMode
   }) {
   const eventRows = events
@@ -32,13 +33,18 @@ export default function ExerciseTable({
   const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
   const hasEntered = entry.date.length > 0 || entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0;
   const saveBtn = canSave ?
-    <input type='button' className='small-input' value="Spara" onClick={onSave}/> :
+    (
+      <div className="pill buttonized" onClick={onSave}>
+        <Icon type="save" inTextButton/>Spara  
+      </div>
+    ) :
     <span>{hasEntered ? "Måste fylla i datum och minst ett värde." : "Fyll i alla fält och tryck sedan på spara."}</span>;
-  const viewModeBtn = <input
-    type="button"
-    value={settings.listAll ? "Lista 5 senaste" : "Lista alla"}
-    onClick={() => onListAll(!settings.listAll)}
-  />;
+  const viewModeBtn = (
+    <div className="buttonized pill" onClick={() => onListAll(!settings.listAll)}>
+      <Icon type={settings.listAll ? 'collapse' : 'expand'} inTextButton/>
+      {settings.listAll ? "Lista 5 senaste" : "Lista alla"}
+    </div>
+  );
   return (
     <div>
       <h2>Motionspass</h2>

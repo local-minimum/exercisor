@@ -1,6 +1,8 @@
 import React from 'react';
 
 import Login from './Login';
+import Icon  from './Icon';
+
 const MAX_VIEW_FOLLOW_LIST = 3;
 
 export default class ExerciseHeader extends React.Component {
@@ -16,8 +18,8 @@ export default class ExerciseHeader extends React.Component {
     if (name == null) return <header className="App-header header-with-main"></header>;
     const { showLogin } = this.state;
     const UserBtn = loggedIn == null ?
-      (showLogin ? null : <div className="user-nav-btn pill buttonized" onClick={() => this.setState({ showLogin: true })}>Logga in</div>)
-      : <div className="user-nav-btn pill buttonized" onClick={onLogout}>Logga ut</div>;
+      (showLogin ? null : <div className="user-nav-btn pill buttonized" onClick={() => this.setState({ showLogin: true })}><Icon type="login" inTextButton/>Logga in</div>)
+      : <div className="user-nav-btn pill buttonized" onClick={onLogout}><Icon type="logout" inTextButton/>Logga ut</div>;
     const ShowLogin = loggedIn == null && showLogin ? <Login onLogin={onLogin} error={error} /> : null;
     const NavToSelf = loggedIn == null || loggedIn === name ? null : <div className="user-nav-btn pill buttonized name" onClick={() => onSwitchUser(name, loggedIn)}>{loggedIn}</div>;
     const Follows = following

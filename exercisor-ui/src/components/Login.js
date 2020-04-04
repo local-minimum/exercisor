@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Error from './Error';
+import Icon from './Icon';
 import { LOGIN_ERROR } from '../errors';
 
 export default class Login extends React.Component {
@@ -53,7 +54,7 @@ export default class Login extends React.Component {
           onChange={this.handleChangePassword}
           value={password}
         />
-        <div className="buttonized pill login-btn" onClick={this.handleLogin}>Logga in</div>
+        <div className="buttonized pill login-btn" onClick={this.handleLogin}><Icon type="login" inTextButton/>Logga in</div>
       </div>
     );
   }

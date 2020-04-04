@@ -23,6 +23,15 @@ export const EVENT_TYPES = {
   Golfing: 'Golf',
 };
 
+export const EVENT_ICONS = {
+  CrossTrainer: 'crosstrainer',
+  Running: 'run',
+  Biking: 'bike',
+  Walking: null,
+  Hiking: null,
+  Golfing: null,
+}
+
 const ajaxErrorHandler = ({ responseJSON = {}, statusText }) => {
   const message = responseJSON.message || statusText;
   return Promise.reject(message);
