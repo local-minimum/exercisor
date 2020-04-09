@@ -2,6 +2,24 @@ import React from 'react';
 import { getPeriodDuration } from '../util';
 import './ExerciseSummary.css';
 
+export const niceDuration = (durationMinutes) => {
+  const days = Math.floor(durationMinutes / (60 * 24));
+  const duration = []
+  if (days > 0) {
+    duration.push(<span key='days'><strong>{days.toFixed(0)}</strong> d</span>);
+  }
+  const lessThanDayDuration = durationMinutes - days * 60 * 24;
+  const hours = Math.floor(lessThanDayDuration / 60);
+  if (hours > 0) {
+    if (duration.length > 0) duration.push(' ');
+    duration.push(<span key='hours'><strong>{hours.toFixed(0)}</strong> h</span>);
+  }
+  const minutes = lessThanDayDuration - hours * 60;
+  if (duration.length > 0) duration.push(' ');
+  duration.push(<span key='min'><strong>{minutes.toFixed(0)}</strong> min</span>);
+  return duration
+}
+
 export default function ExerciseSummary({ events, year }) {
     const stats = {distance: 0, duration: 0, calories: 0, events: events.length};
     events.forEach(evt => {
@@ -17,7 +35,7 @@ export default function ExerciseSummary({ events, year }) {
           <div className="summaries-group pill-box">
             <h3>Totalt</h3>
             <div className="pill"><strong>{stats.distance.toFixed(0)}</strong> km</div>
-            <div className="pill"><strong>{stats.duration.toFixed(0)}</strong> min</div>
+    <div className="pill">{niceDuration(stats.duration)}</div>
             <div className="pill"><strong>{stats.calories.toFixed(0)}</strong> kcal</div>
             <div className="pill"><strong>{stats.events}</strong> pass</div>
           </div>

@@ -11,6 +11,8 @@ import logoutIcon from './icons/logout.png';
 import runIcon from './icons/run.png';
 import crosstrainerIcon from './icons/crosstrainer.png';
 import bikeIcon from './icons/bike.png';
+import followIcon from './icons/follow.png';
+import unfollowIcon from './icons/unfollow.png';
 
 import './icons/icons.css';
 
@@ -28,6 +30,8 @@ export default function Icon({ type, inTextButton }) {
     else if (type === 'bike') icon = bikeIcon;
     else if (type === 'run') icon = runIcon;
     else if (type === 'crosstrainer') icon = crosstrainerIcon;
+    else if (type === 'follow') icon = followIcon;
+    else if (type === 'unfollow') icon = unfollowIcon;
     else return null;
     return <img src={icon} alt={type} className={className} />
 }

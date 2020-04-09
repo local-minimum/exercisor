@@ -105,7 +105,7 @@ export default class DoEViewMode extends AnyModeBase {
       );
     }
     const intro = exhausted ? 'Varje segment är ett träningspass' : 'Laddar...';
-    const segmentInfo = segment && events[events.length - segment].date;
+    const segmentInfo = segment && events[events.length - segment];
     return (
       <div>
         <h2>Tillryggalagd sträcka</h2>

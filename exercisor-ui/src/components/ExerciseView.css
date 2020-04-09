@@ -73,16 +73,21 @@ tr:nth-child(even) {
 
 .map-segment-info-inner {
   display: inline;
-  padding: 3px;
+  padding: 3px 12px;
   position: absolute;
   height: 20px;
   font-size: 12px;
   background: white;
+  left: 0px;
 }
 
 .map-segment-info-inner h3 {
   display: inline-block;
-  margin: 0px 12px 0px 0px;
+  margin: 0px 0px 0px 6px;
+}
+
+.map-segment-info-inner span {
+  margin-left: 6px;
 }
 
 .xx-small {

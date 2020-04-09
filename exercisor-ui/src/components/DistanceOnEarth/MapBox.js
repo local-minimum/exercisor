@@ -3,6 +3,8 @@ import Map from 'ol/Map';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import View from 'ol/View';
+import Icon from '../Icon';
+import { EVENT_ICONS } from '../../util';
 
 export default class MapBox extends React.Component {
   constructor(props) {
@@ -56,15 +58,17 @@ export default class MapBox extends React.Component {
     }
     if (this.state.focusMode !== focusMode) this.setState({focusMode});
   }
-
   render() {
     const { segment, segmentInfo } = this.props;
     const mapStyle = { width: "calc(100% - 12)", height: "360px", margin: 6};
     const Segment = segment != null && (
       <div className="map-segment-info">
         <div className="map-segment-info-inner">
-          <h3>{segment}</h3>
-          <span>{segmentInfo}</span>
+          <Icon type={EVENT_ICONS[segmentInfo.type]} />
+          <h3>{segmentInfo.date}</h3>
+          <span>{segmentInfo.distance.toFixed(0)} km</span>
+          <span>{segmentInfo.calories.toFixed(0)} kcal</span>
+          <span>{segmentInfo.duration.toFixed(0)} min</span>
         </div>
       </div>
     );

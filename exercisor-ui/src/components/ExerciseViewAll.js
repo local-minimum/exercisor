@@ -39,7 +39,8 @@ export default class ExerciseViewAll extends React.Component {
         events={events}
         onLoadRoute={onLoadRoute}
         routesData={routes}
-        routeId={goals && goals.route} year="total"
+        routeId={goals && goals.route}
+        year="total"
         ownRouteDesigns={userRouteDesigns}
         allRouteDesigns={publicRouteDesigns}
         error={error}
