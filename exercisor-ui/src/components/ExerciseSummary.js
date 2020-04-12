@@ -4,6 +4,13 @@ import './ExerciseSummary.css';
 
 const MILLIES_IN_A_DAY = 24 * 60 * 60 * 1000;
 
+export const nicePace = (pace) => {
+  const minutes = Math.floor(pace);
+  const seconds = Math.round((pace - minutes) * 60);
+  return `${minutes}:${seconds.toFixed(0).padStart(2, '0')}`
+}
+
+
 export const niceDuration = (durationMinutes) => {
   const days = Math.floor(durationMinutes / (60 * 24));
   const duration = []
@@ -88,7 +95,7 @@ export default function ExerciseSummary({ events, year }) {
         <div className="summaries-group pill-box">
           <h3>Rekord</h3>
           <div className="pill"><i>Längsta </i><strong>{stats.longest}</strong> km</div>
-          <div className="pill"><i>Snabbaste </i><strong>{stats.fastest == null ? 'xxx' : stats.fastest.toFixed(1)}</strong> min/km</div>
+          <div className="pill"><i>Snabbaste </i><strong>{stats.fastest == null ? 'xxx' : nicePace(stats.fastest.toFixed(1))}</strong> min/km</div>
         </div>
         <div className="summaries-group pill-box">
           <h3>Längsta svit</h3>
