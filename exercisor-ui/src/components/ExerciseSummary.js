@@ -46,6 +46,7 @@ export default function ExerciseSummary({ events, year }) {
       },
     };
     events
+      .slice()
       .sort((first, second) => new Date(first.date) - new Date(second.date))
       .forEach((evt, idx) => {
         stats.distance += (evt.distance == null ? 0 : evt.distance);
