@@ -2,6 +2,8 @@ import React from 'react';
 import { getPeriodDuration } from '../util';
 import './ExerciseSummary.css';
 
+const MILLIES_IN_A_DAY = 24 * 60 * 60 * 1000;
+
 export const niceDuration = (durationMinutes) => {
   const days = Math.floor(durationMinutes / (60 * 24));
   const duration = []
@@ -15,18 +17,54 @@ export const niceDuration = (durationMinutes) => {
     duration.push(<span key='hours'><strong>{hours.toFixed(0)}</strong> h</span>);
   }
   const minutes = lessThanDayDuration - hours * 60;
-  if (duration.length > 0) duration.push(' ');
-  duration.push(<span key='min'><strong>{minutes.toFixed(0)}</strong> min</span>);
+  if (minutes > 0 || duration === 0) {
+    if (duration.length > 0) duration.push(' ');
+    duration.push(<span key='min'><strong>{minutes.toFixed(0)}</strong> min</span>);
+  }
   return duration
 }
 
 export default function ExerciseSummary({ events, year }) {
-    const stats = {distance: 0, duration: 0, calories: 0, events: events.length};
-    events.forEach(evt => {
-      stats.distance += (evt.distance == null ? 0 : evt.distance);
-      stats.duration += (evt.duration == null ? 0 : evt.duration);
-      stats.calories += (evt.calories == null ? 0 : evt.calories);
-    });
+    const stats = {
+      distance: 0,
+      duration: 0,
+      calories: 0,
+      events: events.length,
+      longest: 0,
+      fastest: null,
+      streak: {
+        day: null,
+        count: 0,
+        record: 0,
+      },
+    };
+    events
+      .sort((first, second) => new Date(first.date) - new Date(second.date))
+      .forEach((evt, idx) => {
+        stats.distance += (evt.distance == null ? 0 : evt.distance);
+        stats.duration += (evt.duration == null ? 0 : evt.duration);
+        stats.calories += (evt.calories == null ? 0 : evt.calories);
+        if (evt.distance > stats.longest) {
+          stats.longest = evt.distance
+        }
+        if (stats.fastest == null || stats.fastest > (evt.duration / evt.distance)) {
+          stats.fastest = evt.duration / evt.distance;
+        }
+        const today = new Date(evt.date)
+        if (stats.streak.day == null) {
+          stats.streak.count = 1;
+          stats.streak.record = 1;
+        } else {
+          const delta = today - stats.streak.day;
+          if (delta <= MILLIES_IN_A_DAY) {
+            stats.streak.count += 1;
+            stats.streak.record = Math.max(stats.streak.record, stats.streak.count);
+          } else {
+            stats.streak.count = 1;
+          }
+        }
+        stats.streak.day = today;
+      });
     const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
@@ -46,6 +84,15 @@ export default function ExerciseSummary({ events, year }) {
             <div className="pill"><strong>{(stats.calories * weekly).toFixed(1)}</strong> kcal</div>
             <div className="pill"><strong>{(stats.events * weekly).toFixed(1)}</strong> pass</div>
           </div>
+        </div>
+        <div className="summaries-group pill-box">
+          <h3>Rekord</h3>
+          <div className="pill"><i>Längsta </i><strong>{stats.longest}</strong> km</div>
+          <div className="pill"><i>Snabbaste </i><strong>{stats.fastest == null ? 'xxx' : stats.fastest.toFixed(1)}</strong> min/km</div>
+        </div>
+        <div className="summaries-group pill-box">
+          <h3>Längsta svit</h3>
+          <div className="pill"><strong>{stats.streak.record}</strong> dagar</div>
         </div>
       </div>
     );
