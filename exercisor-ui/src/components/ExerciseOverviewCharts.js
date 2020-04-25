@@ -10,12 +10,16 @@ const style = styler([
     { key: "distance", color: "#47bbbb" },
     { key: "calories", color: "#bb47bb" },
     { key: "duration", color: "#bb4747" },
+    { key: "pace", color: "#47bbbb" },
+    { key: "effect", color: "#bb47bb" },
 ]);
 
 const weeklyStyle = styler([
     { key: "distance", color: "#47bbbb99" },
     { key: "calories", color: "#bb47bb99" },
     { key: "duration", color: "#bb474799" },
+    { key: "pace", color: "#47bbbb99" },
+    { key: "effect", color: "#bb47bb99" },
 ]);
 
 const settings = {
@@ -30,7 +34,15 @@ const settings = {
     duration: {
       label: 'Tid [min]',
       decimals: 1,
-    }
+    },
+    pace: {
+      label: 'Takt [min/km]',
+      decimals: 1,
+    },
+    effect: {
+      label: 'Effekt [W]',
+      decimals: 0,
+    },
 };
 
 const MODE_2_TITLE = {
@@ -240,7 +252,7 @@ export default class ExerciseOverviewCharts extends React.Component {
   }
 
   render() {
-    const channels = ['distance', 'calories', 'duration'];
+    const channels = ['distance', 'calories', 'duration', 'pace', 'effect'];
     const { series } = this.props;
     const { tracker, mode } = this.state;
     if (series.size() < 2) {

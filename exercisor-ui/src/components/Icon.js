@@ -16,7 +16,7 @@ import unfollowIcon from './icons/unfollow.png';
 
 import './icons/icons.css';
 
-export default function Icon({ type, inTextButton }) {
+export default function Icon({ type, inTextButton, title }) {
     const className = inTextButton ? "text-button-icon" : "button-icon";
     let icon = null;
     if (type === 'edit') icon = editIcon;
@@ -33,5 +33,5 @@ export default function Icon({ type, inTextButton }) {
     else if (type === 'follow') icon = followIcon;
     else if (type === 'unfollow') icon = unfollowIcon;
     else return null;
-    return <img src={icon} alt={type} className={className} />
+    return <img src={icon} alt={type} className={className} title={title} />
 }

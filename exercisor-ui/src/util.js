@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { TimeSeries, sum, filter } from "pondjs";
+import { TimeSeries, sum, avg, filter } from "pondjs";
 
 export const switchUser = (fromUser, toUser, history) => {
     const pos = history.location.pathname.search(fromUser);
@@ -99,13 +99,14 @@ export const getYearDurationSoFar = (year) => {
   return Math.floor((end - start) / aDay) + 1;
 }
 
-export const minutes2str = (floatMinutes) => {
+export const minutes2str = (floatMinutes, excludeSeconds=true) => {
     if (floatMinutes == null) return '';
     const hours = Math.floor(floatMinutes / 60);
     const minutes = Math.floor(floatMinutes - 60 * hours);
-    const seconds = Math.round((floatMinutes - (minutes + hours * 60)) * 60);
     const zeroPadHours = hours < 10 ? `0${hours}` : hours;
     const zeroPadMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    if (excludeSeconds) return `${zeroPadHours}:${zeroPadMinutes}`;
+    const seconds = Math.round((floatMinutes - (minutes + hours * 60)) * 60);
     const zeroPadSeconds = seconds < 10 ? `0${seconds}` : seconds;
     return `${zeroPadHours}:${zeroPadMinutes}:${zeroPadSeconds}`;
 }
@@ -118,17 +119,24 @@ export const filterEvents = (events, year, evtFilter) => {
 
 export const events2timeSeries = (events) => {
   const data = {
-    columns: ["index", "duration", "distance", "calories", "type"],
+    columns: ["index", "duration", "distance", "calories", "pace", "effect", "type"],
     points: events
       .slice()
       .reverse()
-      .map(evt => [
-        evt.date,
-        Number.isFinite(evt.duration) ? evt.duration : null,
-        Number.isFinite(evt.distance) ? evt.distance : null,
-        Number.isFinite(evt.calories) ? evt.calories : null,
-        evt.type == null ? "CrossTrainer" : evt.type,
-      ]),
+      .map(evt => {
+        const duration = Number.isFinite(evt.duration) ? evt.duration : null;
+        const distance = Number.isFinite(evt.distance) ? evt.distance : null;
+        const energy = Number.isFinite(evt.calories) ? evt.calories : null;
+        return [
+          evt.date,
+          duration,
+          distance,
+          energy,
+          duration != null && distance != null ? duration / distance : null,
+          duration != null && energy != null ? energy / (duration / 60 * 0.85984522785899) : null,
+          evt.type == null ? "CrossTrainer" : evt.type,
+        ];
+      }),
   };
   return new TimeSeries(data);
 }
@@ -167,6 +175,8 @@ export const events2weeklySum = (events, evtFilter) => {
       duration: {duration: sum(filter.ignoreMissing)},
       distance: {distance: sum(filter.ignoreMissing)},
       calories: {calories: sum(filter.ignoreMissing)},
+      pace: {pace: avg(filter.ignoreMissing)},
+      effect: {effect: avg(filter.ignoreMissing)},
     }
   });
 }

@@ -10,13 +10,15 @@ function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
       <div className='action-btn buttonized' tooltip='Editera' onClick={() => onSetEntry(event)}><Icon type="edit"/></div>
       <div className='action-btn buttonized' tooltip='Ta Bort' onClick={() => onRemoveEntry(event.id)}><Icon type="delete"/></div>
     </span>;
+  const typeText = EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type];
+  const typeIcon = <Icon type={EVENT_ICONS[event.type]} title={typeText} />
   return (
     <tr key={event.id}>
       <td>{event.date} {btns}</td>
       <td>{event.distance}</td>
       <td>{minutes2str(event.duration)}</td>
       <td>{event.calories}</td>
-      <td><Icon type={EVENT_ICONS[event.type]} inTextButton/>{EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type]}</td>
+      <td>{typeIcon != null ? typeIcon : typeText}</td>
     </tr>
   )
 }
@@ -53,9 +55,9 @@ export default function ExerciseTable({
         <thead>
           <tr>
             <th>Datum</th>
-            <th>Distans <span className="xx-small">[km]</span></th>
-            <th>Tid <span className="xx-small">[hh:mm:ss]</span></th>
-            <th>Energi <span className="xx-small">[kcal]</span></th>
+            <th>km</th>
+            <th>hh:mm</th>
+            <th>kcal</th>
             <th>Typ</th>
           </tr>
         </thead>
