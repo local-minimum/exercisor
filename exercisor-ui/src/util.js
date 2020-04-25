@@ -133,7 +133,7 @@ export const events2timeSeries = (events) => {
           distance,
           energy,
           duration != null && distance != null ? duration / distance : null,
-          duration != null && energy != null ? energy / (duration / 60 * 0.85984522785899) : null,
+          duration != null && energy != null ? energy * 1000 / (duration / 60) * 0.00116222222 : null,
           evt.type == null ? "CrossTrainer" : evt.type,
         ];
       }),
