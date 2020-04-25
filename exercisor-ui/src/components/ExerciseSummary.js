@@ -40,8 +40,8 @@ export default function ExerciseSummary({ events, year }) {
       longest: 0,
       fastest: null,
       streak: {
-        day: null,
-        count: 0,
+        currentStart: null,
+        currentEnd: 0,
         record: 0,
       },
     };
@@ -59,20 +59,24 @@ export default function ExerciseSummary({ events, year }) {
           stats.fastest = evt.duration / evt.distance;
         }
         const today = new Date(evt.date)
-        if (stats.streak.day == null) {
-          stats.streak.count = 1;
+        if (stats.streak.currentStart == null) {
+          stats.streak.currentStart = today;
+          stats.streak.currentEnd = today;
           stats.streak.record = 1;
         } else {
-          const delta = today - stats.streak.day;
+          let delta = today - stats.streak.currentEnd;
           if (delta <= MILLIES_IN_A_DAY) {
-            stats.streak.count += 1;
-            stats.streak.record = Math.max(stats.streak.record, stats.streak.count);
+            stats.streak.currentEnd = today;
           } else {
-            stats.streak.count = 1;
+            delta = stats.streak.currentEnd - stats.streak.currentStart;
+            stats.streak.record = Math.max(stats.streak.record, Math.floor(delta / MILLIES_IN_A_DAY) + 1);
+            stats.streak.currentEnd = today;
+            stats.streak.currentStart = today;
           }
         }
-        stats.streak.day = today;
       });
+    const delta = stats.streak.currentEnd - stats.streak.currentStart;
+    stats.streak.record = Math.max(stats.streak.record, Math.floor(delta / MILLIES_IN_A_DAY));
     const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
