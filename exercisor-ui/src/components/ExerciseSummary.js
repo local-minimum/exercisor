@@ -65,7 +65,7 @@ export default function ExerciseSummary({ events, year }) {
           stats.streak.record = 1;
         } else {
           let delta = today - stats.streak.currentEnd;
-          if (Math.round(delta / MILLIES_IN_A_DAY) === 1) {
+          if (Math.round(delta / MILLIES_IN_A_DAY) <= 1) {
             stats.streak.currentEnd = today;
           } else {
             delta = stats.streak.currentEnd - stats.streak.currentStart;
