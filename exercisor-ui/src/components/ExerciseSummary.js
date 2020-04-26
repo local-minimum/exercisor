@@ -65,18 +65,18 @@ export default function ExerciseSummary({ events, year }) {
           stats.streak.record = 1;
         } else {
           let delta = today - stats.streak.currentEnd;
-          if (delta <= MILLIES_IN_A_DAY) {
+          if (Math.round(delta / MILLIES_IN_A_DAY) === 1) {
             stats.streak.currentEnd = today;
           } else {
             delta = stats.streak.currentEnd - stats.streak.currentStart;
-            stats.streak.record = Math.max(stats.streak.record, Math.floor(delta / MILLIES_IN_A_DAY) + 1);
+            stats.streak.record = Math.max(stats.streak.record, Math.round(delta / MILLIES_IN_A_DAY) + 1);
             stats.streak.currentEnd = today;
             stats.streak.currentStart = today;
           }
         }
       });
     const delta = stats.streak.currentEnd - stats.streak.currentStart;
-    stats.streak.record = Math.max(stats.streak.record, Math.floor(delta / MILLIES_IN_A_DAY));
+    stats.streak.record = Math.max(stats.streak.record, Math.round(delta / MILLIES_IN_A_DAY) + 1);
     const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
