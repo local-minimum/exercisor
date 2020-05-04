@@ -2,13 +2,14 @@ import React from 'react';
 import { minutes2str, EVENT_TYPES, EVENT_ICONS } from '../util';
 import Error from './Error';
 import Icon from './Icon';
+import OverlayDialogue from './OverlayDialogue';
 import { EXERCISE_TABLE_ERROR } from '../errors';
 
-function renderTableRow(event, onSetEntry, onRemoveEntry, canEdit) {
+function renderTableRow(event, onSetEntry, onDialgueRemoveEntry, canEdit) {
   const btns = canEdit &&
     <span>
       <div className='action-btn buttonized' tooltip='Editera' onClick={() => onSetEntry(event)}><Icon type="edit"/></div>
-      <div className='action-btn buttonized' tooltip='Ta Bort' onClick={() => onRemoveEntry(event.id)}><Icon type="delete"/></div>
+      <div className='action-btn buttonized' tooltip='Ta Bort' onClick={() => onDialgueRemoveEntry(event.id)}><Icon type="delete"/></div>
     </span>;
   const typeText = EVENT_TYPES[event.type] == null ? event.type : EVENT_TYPES[event.type];
   const typeIcon = <Icon type={EVENT_ICONS[event.type]} title={typeText} />
@@ -27,11 +28,12 @@ export default function ExerciseTable({
     events, error,
     onEntryDate, onEntryCalories, onEntryDistance, onEntryDuration,
     entry, onSave, onSetEntry, onRemoveEntry,
-    settings, onListAll, onEntryType, editMode
+    onDialgueRemoveEntry, onCancelRemoveEntry,
+    settings, onListAll, onEntryType, editMode, queryToRemove,
   }) {
   const eventRows = events
     .slice(0, settings.listAll ? events.length : 5)
-    .map(evt => renderTableRow(evt, onSetEntry, onRemoveEntry, editMode));
+    .map(evt => renderTableRow(evt, onSetEntry, onDialgueRemoveEntry, editMode));
   const canSave = entry.date.length > 0 && (entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0);
   const hasEntered = entry.date.length > 0 || entry.duration.length > 0 || entry.distance.length > 0 || entry.calories.length > 0;
   const saveBtn = canSave ?
@@ -86,6 +88,14 @@ export default function ExerciseTable({
         </tfoot>
       </table>
       {viewModeBtn}
+      {queryToRemove && <OverlayDialogue
+        header="Radera pass"
+        body="Är du helt säker på att du vill radera passet? Det går inte att ångra sig!"
+        buttons={[
+          {title: "Ta bort!", icon: "delete", action: () => {onRemoveEntry(queryToRemove); onCancelRemoveEntry();}},
+          {title: "Avbryt", icon: "abort", action: () => onCancelRemoveEntry()},
+        ]}
+      />}
     </div>
   );
 }

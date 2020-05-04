@@ -8,7 +8,7 @@ import {
   setEntryDate, setEntryCalories, setEntryDistance, setEntryDuration,
   setEntry, settingListAll, setGoalsEventSum, setEntryType, setYear,
   setGoalsWeeklyDist, setRouteDesignConsidered, setEventTypeFilter,
-  setEditMode,
+  setEditMode, setQueryToRemove,
 } from '../redux/actions';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -32,6 +32,7 @@ const mapStateToProps = (state, ownProps) => ({
   eventTypeFilters: state.eventTypeFilters,
   exerciseViewChange: state.exerciseViewChange,
   following: state.following,
+  queryToRemove: state.queryToRemove,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -59,6 +60,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onSetEventTypeFilter: (status, name) => dispatch(setEventTypeFilter(name, status)),
   onFollow: (name) => dispatch(follow(name)),
   onUnfollow: (uid) => dispatch(unfollow(uid)),
+  onDialgueRemoveEntry: (eventId) => dispatch(setQueryToRemove(eventId)),
+  onCancelRemoveEntry: () => dispatch(setQueryToRemove(null)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExerciseView);

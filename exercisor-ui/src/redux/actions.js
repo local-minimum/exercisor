@@ -36,6 +36,7 @@ export const SET_ROUTE_DESIGNS_USER = 'SET_ROUTE_DESIGNS_USER';
 export const SET_ROUTE_DESIGNS_PUBLIC = 'SET_ROUTE_DESIGNS_PUBLIC';
 export const SET_ROUTE_DESIGN_CONSIDERED = 'SET_ROUTE_DESIGN_CONSIDERED';
 export const SET_FOLLOWING = 'SET_FOLLOWING';
+export const SET_QUERYTOREMOVE = 'SET_QUERYTOREMOVE';
 
 export const setEditMode = makeActionCreator(SET_EDIT_MODE, 'value');
 export const settingListAll = makeActionCreator(SETTING_LISTALL, 'value');
@@ -65,3 +66,4 @@ export const setUserRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_USER, 'de
 export const setPublicRouteDesigns = makeActionCreator(SET_ROUTE_DESIGNS_PUBLIC, 'designs');
 export const setRouteDesignConsidered = makeActionCreator(SET_ROUTE_DESIGN_CONSIDERED, 'routeId');
 export const setFollowing = makeActionCreator(SET_FOLLOWING, 'following');
+export const setQueryToRemove = makeActionCreator(SET_QUERYTOREMOVE, 'eventId');
