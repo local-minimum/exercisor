@@ -150,7 +150,10 @@ export default class DoEEditMode extends AnyModeBase {
           onUpdateRoute(designRouteId, designRouteName, waypoints)
         }
         this.handleSetEditModeSelect();
+      } else {
+        console.warn("Won't save empty rout", waypoints, designRoute);
       }
+
   }
 
   renderCreate() {
