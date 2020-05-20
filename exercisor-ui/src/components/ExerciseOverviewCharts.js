@@ -284,8 +284,9 @@ export default class ExerciseOverviewCharts extends React.Component {
               showGrid={false}
               trackerPosition={tracker}
               onTrackerChanged={this.handleTrackerChanged}
-              timeAxisTickCount={7}
+              timeAxisTickCount={10}
               timeAxisAngledLabels={true}
+              timeAxisHeight={100}
             >
               {channels.map(this.renderChartRow)}
             </ChartContainer>
