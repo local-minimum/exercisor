@@ -86,6 +86,7 @@ export default function ExerciseSummary({ events, year }) {
     const delta = stats.streak.currentEnd - stats.streak.currentStart;
     stats.streak.currentDays = Math.round(delta / MILLIES_IN_A_DAY) + 1;
     stats.streak.recordDays = Math.max(stats.streak.recordDays, stats.streak.currentDays);
+    stats.streak.recordDistance = Math.max(stats.streak.recordDistance, stats.streak.currentDistance)
     const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
