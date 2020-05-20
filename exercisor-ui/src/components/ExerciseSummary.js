@@ -42,7 +42,10 @@ export default function ExerciseSummary({ events, year }) {
       streak: {
         currentStart: null,
         currentEnd: 0,
-        record: 0,
+        recordDays: 0,
+        currentDays: 0,
+        recordDistance: 0,
+        currentDistance: 0,
       },
     };
     events
@@ -62,21 +65,27 @@ export default function ExerciseSummary({ events, year }) {
         if (stats.streak.currentStart == null) {
           stats.streak.currentStart = today;
           stats.streak.currentEnd = today;
-          stats.streak.record = 1;
+          stats.streak.recordDays = 1;
+          stats.streak.currentDistance = evt.distance;
         } else {
           let delta = today - stats.streak.currentEnd;
           if (Math.round(delta / MILLIES_IN_A_DAY) <= 1) {
             stats.streak.currentEnd = today;
+            stats.streak.currentDistance += evt.distance;
           } else {
             delta = stats.streak.currentEnd - stats.streak.currentStart;
-            stats.streak.record = Math.max(stats.streak.record, Math.round(delta / MILLIES_IN_A_DAY) + 1);
+            stats.streak.currentDays = Math.round(delta / MILLIES_IN_A_DAY) + 1;
+            stats.streak.recordDays = Math.max(stats.streak.recordDays, stats.streak.currentDays);
             stats.streak.currentEnd = today;
             stats.streak.currentStart = today;
+            stats.streak.recordDistance = Math.max(stats.streak.recordDistance, stats.streak.currentDistance)
+            stats.streak.currentDistance = evt.distance;
           }
         }
       });
     const delta = stats.streak.currentEnd - stats.streak.currentStart;
-    stats.streak.record = Math.max(stats.streak.record, Math.round(delta / MILLIES_IN_A_DAY) + 1);
+    stats.streak.currentDays = Math.round(delta / MILLIES_IN_A_DAY) + 1;
+    stats.streak.recordDays = Math.max(stats.streak.recordDays, stats.streak.currentDays);
     const weekly = 7 / getPeriodDuration(events, year);
     return (
       <div className="summary">
@@ -103,8 +112,9 @@ export default function ExerciseSummary({ events, year }) {
           <div className="pill"><i>Snabbaste </i><strong>{stats.fastest == null ? 'xxx' : nicePace(stats.fastest.toFixed(1))}</strong> min/km</div>
         </div>
         <div className="summaries-group pill-box">
-          <h3>Längsta svit</h3>
-          <div className="pill"><strong>{stats.streak.record}</strong> dagar</div>
+          <h3>Längsta svit (nuvarande)</h3>
+          <div className="pill"><strong>{stats.streak.recordDays}</strong> dagar ({stats.streak.currentDays} dagar)</div>
+          <div className="pill"><strong>{stats.streak.recordDistance}</strong> km ({stats.streak.currentDistance} km)</div>
         </div>
       </div>
     );
