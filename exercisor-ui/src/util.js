@@ -7,10 +7,11 @@ export const switchUser = (fromUser, toUser, history) => {
       console.error("Unexpected path, figure out where user is");
     }
     const base = history.location.pathname.slice(0, pos);
+    const suffix = history.location.pathname.slice(pos + fromUser.length);
     if (base === '') {
-      history.push(`/${toUser}`);
+      history.push(`/${toUser}${suffix}`);
     } else {
-      history.push(`${base}${toUser}`)
+      history.push(`${base}${toUser}${suffix}`)
     }
 }
 

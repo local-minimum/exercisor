@@ -33,7 +33,7 @@ export default class ExerciseHeader extends React.Component {
         {NavToSelf}
         {Follows}
         </div>
-        <h1>Exercisor: <span className='name'>{name}</span></h1>
+        <h1><span className='name'>{name}</span></h1>
         {ShowLogin}
       </header>
     );

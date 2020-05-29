@@ -24,7 +24,7 @@ export const niceDuration = (durationMinutes) => {
     duration.push(<span key='hours'><strong>{hours.toFixed(0)}</strong> h</span>);
   }
   const minutes = lessThanDayDuration - hours * 60;
-  if (minutes > 0 || duration === 0) {
+  if (minutes > 0 || duration.length === 0) {
     if (duration.length > 0) duration.push(' ');
     duration.push(<span key='min'><strong>{minutes.toFixed(0)}</strong> min</span>);
   }
