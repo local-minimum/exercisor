@@ -109,13 +109,13 @@ export default function ExerciseSummary({ events, year }) {
         </div>
         <div className="summaries-group pill-box">
           <h3>Rekord</h3>
-          <div className="pill"><i>Längsta </i><strong>{stats.longest}</strong> km</div>
+          <div className="pill"><i>Längsta </i><strong>{stats.longest.toFixed(2)}</strong> km</div>
           <div className="pill"><i>Snabbaste </i><strong>{stats.fastest == null ? 'xxx' : nicePace(stats.fastest.toFixed(1))}</strong> min/km</div>
         </div>
         <div className="summaries-group pill-box">
           <h3>Längsta svit (nuvarande)</h3>
-          <div className="pill"><strong>{stats.streak.recordDays}</strong> dagar ({stats.streak.currentDays} dagar)</div>
-          <div className="pill"><strong>{stats.streak.recordDistance}</strong> km ({stats.streak.currentDistance} km)</div>
+          <div className="pill"><strong>{stats.streak.recordDays.toFixed(0)}</strong> dagar ({stats.streak.currentDays.toFixed(0)} dagar)</div>
+          <div className="pill"><strong>{stats.streak.recordDistance.toFixed(0)}</strong> km ({stats.streak.currentDistance.toFixed(0)} km)</div>
         </div>
       </div>
     );
