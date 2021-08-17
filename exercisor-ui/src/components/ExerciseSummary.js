@@ -79,7 +79,7 @@ export default function ExerciseSummary({ events, year }) {
             stats.streak.currentEnd = today;
             stats.streak.currentStart = today;
             stats.streak.recordDistance = Math.max(stats.streak.recordDistance, stats.streak.currentDistance)
-            stats.streak.currentDistance = evt.distance;
+            stats.streak.currentDistance = evt.distance == null ? 0 : evt.distance;
           }
         }
       });
