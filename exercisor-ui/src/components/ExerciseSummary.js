@@ -66,12 +66,12 @@ export default function ExerciseSummary({ events, year }) {
           stats.streak.currentStart = today;
           stats.streak.currentEnd = today;
           stats.streak.recordDays = 1;
-          stats.streak.currentDistance = evt.distance;
+          stats.streak.currentDistance = evt.distance == null ? 0 : evt.distance;
         } else {
           let delta = today - stats.streak.currentEnd;
           if (Math.round(delta / MILLIES_IN_A_DAY) <= 1) {
             stats.streak.currentEnd = today;
-            stats.streak.currentDistance += evt.distance;
+            stats.streak.currentDistance += evt.distance == null ? 0 : evt.distance;
           } else {
             delta = stats.streak.currentEnd - stats.streak.currentStart;
             stats.streak.currentDays = Math.round(delta / MILLIES_IN_A_DAY) + 1;
