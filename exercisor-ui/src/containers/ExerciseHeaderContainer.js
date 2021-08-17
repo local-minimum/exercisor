@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
       following = recent.map(name => ({ name, id: name }));
     } else {
       recent.forEach(user => {
-        if (recent !== state.name && !following.some(usr => usr.name === user)) {
+        if (user !== state.name && !following.some(usr => usr.name === user)) {
           following.push({name: user, id: user});
         }
       });

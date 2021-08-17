@@ -3,8 +3,8 @@ import ExerciseSummary from './ExerciseSummary';
 import ExerciseTable from './ExerciseTable';
 import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import CompensateCalories from './CompensateCalories';
-import DoEViewMode from './DistanceOnEarth/ViewMode';
-import DoEEditMode from './DistanceOnEarth/EditMode';
+//import DoEViewMode from './DistanceOnEarth/ViewMode';
+//import DoEEditMode from './DistanceOnEarth/EditMode';
 import { events2timeSeries, events2weeklySum, filterEvents } from '../util';
 
 export default class ExerciseViewAll extends React.Component {
@@ -12,14 +12,16 @@ export default class ExerciseViewAll extends React.Component {
 
   render() {
     const {
-      onLoadRoute, routes, goals, locations,
-      onMakeRoute, userRouteDesigns, publicRouteDesigns,
-      consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
-      onUpdateRoute, error, eventTypeFilters, editMode,
+      // onLoadRoute, routes, goals, locations,
+      // onMakeRoute, userRouteDesigns, publicRouteDesigns,
+      // consideredRouteDesign, onSetRouteDesignConsidered, onSetSelectedRoute,
+      // onUpdateRoute, error, editMode,
+      eventTypeFilters,
     } = this.props;
     const events = filterEvents(this.props.events, null, eventTypeFilters);
     const series = events2timeSeries(events);
     const weeklySeries = events2weeklySum(events);
+    /*
     const DistanceOnEarth = editMode ?
       <DoEEditMode
         routesData={routes}
@@ -45,11 +47,11 @@ export default class ExerciseViewAll extends React.Component {
         allRouteDesigns={publicRouteDesigns}
         error={error}
       />
+    */
     return (
       <div>
         <ExerciseSummary events={events} />
         <ExerciseTable {...this.props} events={events} />
-        {DistanceOnEarth}
         <CompensateCalories events={events} />
         <ExerciseOverviewCharts series={series} weeklySeries={weeklySeries} />
       </div>

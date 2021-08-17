@@ -71,7 +71,7 @@ export default function ExerciseTable({
             <tr>
               <td><input type='date' onChange={evt => onEntryDate(evt.target.value)} value={entry.date}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryDistance(evt.target.value)} value={entry.distance}/></td>
-              <td><input type='text' className='small-input' onChange={evt => onEntryDuration(evt.target.value)} value={entry.duration}/></td>
+              <td><input type='text' className='small-input' onChange={evt => onEntryDuration(evt.target.value)} value={minutes2str(entry.duration)}/></td>
               <td><input type='text' className='small-input' onChange={evt => onEntryCalories(evt.target.value)} value={entry.calories}/></td>
               <td>
                 <select onChange={evt => onEntryType(evt.target.value)} value={entry.type}>

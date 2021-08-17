@@ -6,8 +6,8 @@ import ExerciseOverviewCharts from './ExerciseOverviewCharts';
 import YearGoalsEdit from './YearGoalsEdit';
 import YearGoals from './YearGoals';
 import CompensateCalories from './CompensateCalories';
-import DoEViewMode from './DistanceOnEarth/ViewMode';
-import DoEEditMode from './DistanceOnEarth/EditMode';
+// import DoEViewMode from './DistanceOnEarth/ViewMode';
+// import DoEEditMode from './DistanceOnEarth/EditMode';
 import { events2timeSeries, events2weeklySum } from '../util';
 
 export default class ExerciseViewYear extends React.Component {
@@ -21,11 +21,12 @@ export default class ExerciseViewYear extends React.Component {
 
   render() {
     const {
-      goals, onSetGoalsEventSum, onSaveGoals, onLoadRoute, routes,
-      onSetGoalsDistanceWeekly, locations, consideredRouteDesign,
-      userRouteDesigns, publicRouteDesigns,
-      onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute, error,
-      eventTypeFilters, editMode, onUpdateRoute
+      goals, onSetGoalsEventSum, onSaveGoals,
+      onSetGoalsDistanceWeekly,
+      // onLoadRoute, routes, locations, consideredRouteDesign,
+      // userRouteDesigns, publicRouteDesigns, onUpdateRoute
+      // onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute,
+      error, eventTypeFilters, editMode,
     } = this.props;
     const year = this.getYear();
     const events = filterEvents(
@@ -43,6 +44,7 @@ export default class ExerciseViewYear extends React.Component {
       name={this.getName()}
       error={error}
     /> : <YearGoals year={year} goals={goals} events={events} error={error} />;
+    /*
     const DistanceOnEarth = editMode ?
       <DoEEditMode
         routesData={routes}
@@ -68,12 +70,12 @@ export default class ExerciseViewYear extends React.Component {
         allRouteDesigns={publicRouteDesigns}
         error={error}
       />
+    */
     return (
       <div>
         <ExerciseSummary events={events} year={year} />
         {Goals}
         <ExerciseTable {...this.props} events={events} />
-        {DistanceOnEarth}
         <CompensateCalories events={events} />
         <ExerciseOverviewCharts series={series} weeklySeries={weeklySeries} />
       </div>
