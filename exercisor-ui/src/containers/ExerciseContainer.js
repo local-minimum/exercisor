@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onLoadGoals: (user, year) => dispatch(loadYearGoals(user, year)),
   onSetGoalsEventSum: events => dispatch(setGoalsEventSum(events)),
   onSetGoalsDistanceWeekly: dist => dispatch(setGoalsWeeklyDist(dist)),
-  onSetGoalsDurationWeekly: duration => dispatch(setGoalsWeeklyDuration(duration))
+  onSetGoalsDurationWeekly: duration => dispatch(setGoalsWeeklyDuration(duration)),
   onSaveGoals : (user, year) => dispatch(saveGoals(user, year)),
   onLoadRoute : (from, to) => dispatch(loadRoute(from, to)),
   onMakeRoute: (routeName, waypoints) => dispatch(makeRoute(routeName, waypoints)),
