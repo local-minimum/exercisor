@@ -10,6 +10,7 @@ goals_parser = reqparse.RequestParser()
 goals_parser.add_argument("edit-key", type=str, default=None)
 goals_parser.add_argument("sum-events", type=int, default=None, help="Total number of events this year")
 goals_parser.add_argument("weekly-dist", type=float, default=None, help="Genomsnittsavstånd per vecka")
+goals_parser.add_argument("weekly-duration", type=float, default=None, help="Genomsnittstid per vecka")
 goals_parser.add_argument("route", type=str, default=None, help="Rutt id för rutt på kartan")
 
 
