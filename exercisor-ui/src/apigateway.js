@@ -95,6 +95,7 @@ export const upsertGoals = (user, year, goals) => {
   const data = {
     "sum-events": extractNullableGoal(goals, ['sums', 'events']),
     "weekly-dist": extractNullableGoal(goals, ['weekly', 'distance']),
+    "weekly-duration": extractNullableGoal(goals, ['weekly', 'duration']),
     "route": goals.route,
   };
   return jsonRequest(
