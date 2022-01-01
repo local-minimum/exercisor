@@ -46,6 +46,7 @@ class UserYearGoals(Resource):
             },
             {
                 "distance": args['weekly-dist'],
+                "duration": args['weekly-duration'],
             },
             args["route"],
         )
