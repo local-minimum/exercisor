@@ -101,26 +101,49 @@ function EventsGoal(year, events, goals) {
     );
 }
 
-function WeeklyDistGoal(year, events, goals) {
+function WeeklyGoal(year, events, goals) {
+    const days = getYearDurationSoFar(year);
     const totalDistance = events
       .reduce((acc, evt) => acc + (evt.distance == null ? 0 : evt.distance), 0);
-    const target = goals.weekly.distance;
-    const days = getYearDurationSoFar(year);
-    const weekly = totalDistance / days * 7;
-    const gauge = Math.max(
+    const totalDuration = events
+      .reduce((acc, evt) => acc + (evt.duration == null ? 0 : evt.duration / 60), 0);
+    const distTarget = goals.weekly.distance;
+    const durationTarget = goals.weekly.duration;
+    const weeklyDist = totalDistance / days * 7;
+    const weeklyDuration = totalDuration / days * 7;
+    const distGauge = Math.max(
       Math.min(
-        (weekly / target) - 0.5,
+        (weeklyDist / distTarget) - 0.5,
         1,
       ),
       0,
     );
-    return Goal(
-      'weekly-distance',
-      `${weekly.toFixed(1)} km / vecka`,
-      null,
-      weekly,
-      target,
-      gauge,
+    const durationGauge = Math.max(
+      Math.min(
+        (weeklyDuration / durationTarget) - 0.5,
+        1,
+      ),
+      0,
+    );
+    return (
+        <div>
+            {Goal(
+              'weekly-distance',
+              `${weeklyDist.toFixed(1)} km / vecka`,
+              null,
+              weeklyDist,
+              distTarget,
+              distGauge,
+            )}
+            {Goal(
+              'weekly-duration',
+              `${weeklyDuration.toFixed(1)} h / vecka`,
+              null,
+              weeklyDuration,
+              durationTarget,
+              durationGauge,
+            )}
+        </div>
     );
 }
 
@@ -138,7 +161,7 @@ export default function YearGoals({ events, goals, year }) {
     Goals.push(EventsGoal(year, events, goals));
   }
   if (goals.weekly != null && goals.weekly.distance != null && goals.weekly.distance > 0) {
-    Goals.push(WeeklyDistGoal(year, events, goals));
+    Goals.push(WeeklyGoal(year, events, goals));
   }
   return (
     <div>

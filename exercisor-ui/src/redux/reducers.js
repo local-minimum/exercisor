@@ -5,6 +5,7 @@ import {
   SET_ENTRY, SETTING_LISTALL, SET_GOALS, SET_GOALS_EVENTSSUM,
   SET_OSM_ROUTE, SET_OSM_LOCATION, SET_ENTRY_TYPE, SET_ERROR_MESSAGE,
   SET_REG_USER, SET_REG_PWD, SET_REG_PWD2, SET_GOALS_WEEKLYDIST,
+  SET_GOALS_WEEKLYDURATION,
   SET_ROUTE_DESIGNS_USER, SET_ROUTE_DESIGNS_PUBLIC, SET_ROUTE_DESIGN_CONSIDERED,
   SET_EVENT_TYPE_FILTER, SET_YEAR, SET_EDIT_MODE, SET_FOLLOWING, SET_QUERYTOREMOVE,
 } from './actions';
@@ -162,6 +163,16 @@ const goals = (state = null, action) => {
           {distance: ''},
           state && state.weekly,
           {distance: action.distance}
+        )},
+      );
+    case SET_GOALS_WEEKLYDURATION:
+      return Object.assign(
+        {},
+        state,
+        {weekly: Object.assign(
+          {duration: ''},
+          state && state.weekly,
+          {duration: action.duration}
         )},
       );
     case SET_GOALS:

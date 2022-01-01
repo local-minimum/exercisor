@@ -25,7 +25,8 @@ export default class ExerciseViewYear extends React.Component {
       onSetGoalsDistanceWeekly, locations, consideredRouteDesign,
       userRouteDesigns, publicRouteDesigns,
       onMakeRoute, onSetRouteDesignConsidered, onSetSelectedRoute, error,
-      eventTypeFilters, editMode, onUpdateRoute
+      eventTypeFilters, editMode, onUpdateRoute,
+      onSetGoalsDurationWeekly,
     } = this.props;
     const year = this.getYear();
     const events = filterEvents(
@@ -39,6 +40,7 @@ export default class ExerciseViewYear extends React.Component {
       goals={goals}
       onSetGoalsEventSum={onSetGoalsEventSum}
       onSetGoalsDistanceWeekly={onSetGoalsDistanceWeekly}
+      onSetGoalsDurationWeekly={onSetGoalsDurationWeekly}
       onSaveGoals={onSaveGoals}
       name={this.getName()}
       error={error}
